@@ -161,7 +161,7 @@ command terminated with exit code 28
 The network policy correctly switched the default ingress behavior from default allow to default deny. Let's now selectively re-allow traffic again, but only from frontend to backend.
 
 
-## Task {{% param sectionnumber %}}.4: Allow traffic from frontend to backend
+## Task {{% param sectionnumber %}}.5: Allow traffic from frontend to backend
 
 We can do it by crafting a new network policy manually, but we can also use the Network Policy Editor to help us out:
 
