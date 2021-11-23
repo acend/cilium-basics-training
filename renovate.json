@@ -1,0 +1,34 @@
+{
+  "extends": [
+    "config:base"
+  ],
+  "git-submodules": {
+    "enabled": true
+  },
+  "prConcurrentLimit": 4,
+  "packageRules": [
+    {
+      "matchDepTypes": ["devDependencies"],
+      "matchPackagePatterns": ["husky", "markdownlint-cli"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "automerge": true
+    },
+    {
+      "matchDatasources": ["docker"],
+      "matchPackagePatterns": ["klakegg/hugo", "nginxinc/nginx-unprivileged"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "automerge": true
+    },
+    {
+      "matchManagers": ["git-submodules"],
+      "matchPackageNames": ["themes/docsy-plus", "themes/docsy-acend", "themes/docsy-puzzle"],
+      "automerge": true
+    },
+    {
+      "matchManagers": ["git-submodules"],
+      "matchPackageNames": ["themes/docsy"],
+      "schedule": ["after 9pm on sunday"],
+      "automerge": false
+    }
+  ]
+}

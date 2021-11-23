@@ -1,0 +1,55 @@
+# changeme 
+# Change the following parts to your current installation
+# - Helm Target Namespace
+# - Repository: you might need to change the name of your repository, depending on the choosen name
+# - Secrets
+#   - QUAYIO_API_TOKEN is needed for house keeping and removing old tagged images
+#   - KUBECONFIG_TEST content of the Kubeconfig File, Account must have access to the k8s namespace. It's used in the helm steps
+name: PRCleanup
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  deployment:
+    runs-on: 'ubuntu-latest'
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      -
+        name: 'Install Helm'
+        uses: azure/setup-helm@v1
+        with:
+          version: v3.6.2
+      -
+        name: Install Kubectl
+        uses: azure/setup-kubectl@v1
+        with:
+          version: v1.21.2
+      -
+        name: Create KUBECONFIG
+        env:
+          KUBE_CONFIG: '${{ secrets.KUBECONFIG_TEST }}'
+        run: |
+          mkdir -p $HOME/.kube
+          echo "$KUBE_CONFIG" > $HOME/.kube/config
+      -
+        name: Remove PR Environment Helm Release
+        env:
+          TRAINING_HELM_RELEASE: 'pr-${{ github.event.pull_request.number }}'
+          TRAINING_NAMESPACE: '	acend-cilium-basics-training-test'
+          TRAINING_VERSION: '${{ github.sha }}'
+        run: |
+          helm uninstall $TRAINING_HELM_RELEASE --kubeconfig $HOME/.kube/config  --namespace=$TRAINING_NAMESPACE
+      -
+        name: Delete Tags on Quay
+        id: delete_tags
+        env:
+          PR_NUMBER: '${{ github.event.pull_request.number }}'
+          QUAYIO_API_TOKEN: '${{ secrets.QUAYIO_API_TOKEN }}'
+          REPOSITORY: '${{ github.repository }}'
+        run: |
+          curl -X DELETE -H "Authorization: Bearer ${QUAYIO_API_TOKEN}" https://quay.io/api/v1/repository/${REPOSITORY}/tag/pr-${PR_NUMBER}{,-puzzle}

@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: object-counts
+spec:
+  hard:
+    count/deployments.apps: "20"
+    pods: "50"
+    configmaps: "50"
+    secrets: "50"

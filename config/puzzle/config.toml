@@ -1,0 +1,26 @@
+theme = ["docsy-puzzle", "docsy-plus", "docsy"]
+
+[params]
+copyright = "Puzzle ITC GmbH"
+imagePrefix = "puzzle_"
+
+[[Languages.en.menu.main]]
+copyright = "Puzzle ITC GmbH"
+url = "https://www.puzzle.ch"
+
+############################## social links ##############################
+[params.links]
+[[params.links.developer]]
+name = "GitHub"
+icon = "fab fa-github"
+url = "https://github.com/acend/cilium-basics-training"
+
+[[params.links.user]]
+name = "Twitter"
+icon = "fab fa-twitter"
+url = "https://twitter.com/puzzleitc"
+
+[[params.links.user]]
+name = "LinkedIn"
+icon = "fab fa-linkedin-in"
+url = "https://linkedin.com/company/puzzle-itc/"
