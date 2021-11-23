@@ -73,13 +73,13 @@ This is only rendered when `enabledModule` in `config.toml` **does not** contain
 Build the image:
 
 ```bash
-docker build <--build-arg TRAINING_HUGO_ENV=...> -t acend/cilium-basics-training .
+docker build <--build-arg TRAINING_HUGO_ENV=...> -t quay.io/acend/cilium-basics-training .
 ```
 
 Run it locally:
 
 ```bash
-docker run -i -p 8080:8080 acend/cilium-basics-training
+docker run -i -p 8080:8080 quay.io/acend/cilium-basics-training
 ```
 
 
