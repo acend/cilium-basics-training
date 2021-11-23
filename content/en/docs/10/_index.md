@@ -1,5 +1,5 @@
 ---
-title: "10. Service Mesh with Istio"
+title: "10. Advanced Networking"
 weight: 10
 sectionnumber: 10
 ---
