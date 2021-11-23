@@ -1,7 +1,5 @@
 ---
-title: "8. Metrics"
+title: "8. Cluster Mesh"
 weight: 8
 sectionnumber: 8
 ---
-
-
