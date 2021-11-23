@@ -46,3 +46,162 @@ rm cilium-darwin-amd64.tar.gz{,.sha256sum}
 
 Get the Windows binary files from the [latest Release](https://github.com/cilium/cilium-cli/releases/latest/)
 
+
+## Cilium CLI
+
+Now that we have the `cilium` CLI let's have a look at some commands:
+
+```bash
+cilium version
+```
+
+which should give you an output similar to this:
+
+```
+cilium-cli: v0.9.3 compiled with go1.17.3 on linux/amd64
+cilium image (default): v1.10.5
+cilium image (stable): v1.10.5
+cilium image (running): unknown. Unable to obtain cilium version, no cilium pods found in namespace "kube-system"
+```
+
+Them lets look at
+
+```bash
+cilium status
+```
+
+```
+cilium status 
+    /¯¯\
+ /¯¯\__/¯¯\    Cilium:         1 errors
+ \__/¯¯\__/    Operator:       disabled
+ /¯¯\__/¯¯\    Hubble:         disabled
+ \__/¯¯\__/    ClusterMesh:    disabled
+    \__/
+
+Containers:      cilium             
+                 cilium-operator    
+Cluster Pods:    0/0 managed by Cilium
+Errors:          cilium    cilium    daemonsets.apps "cilium" not found
+
+```
+
+We don't have yet installed cilium, therefore the error is perfectly fine.
+
+
+## Install Cilium
+
+Let's install cilium:
+
+```bash
+cilium install
+```
+
+and now run again the `cilium status` command:
+
+```
+cilium status 
+    /¯¯\
+ /¯¯\__/¯¯\    Cilium:         OK
+ \__/¯¯\__/    Operator:       OK
+ /¯¯\__/¯¯\    Hubble:         disabled
+ \__/¯¯\__/    ClusterMesh:    disabled
+    \__/
+
+DaemonSet         cilium             Desired: 1, Ready: 1/1, Available: 1/1
+Deployment        cilium-operator    Desired: 1, Ready: 1/1, Available: 1/1
+Containers:       cilium             Running: 1
+                  cilium-operator    Running: 1
+Cluster Pods:     1/1 managed by Cilium
+Image versions    cilium             quay.io/cilium/cilium:v1.10.5: 1
+                  cilium-operator    quay.io/cilium/operator-generic:v1.10.5: 1
+
+```
+
+Take a look at the pods again to see what happened under the hood:
+
+```bash
+kubectl get pods -A
+```
+
+and you should see now the Pods related to Cilium:
+
+```
+kubectl get pod -A
+NAMESPACE     NAME                               READY   STATUS    RESTARTS   AGE
+kube-system   cilium-hsk8g                       1/1     Running   0          89s
+kube-system   cilium-operator-8dd4dc946-n9ght    1/1     Running   0          89s
+kube-system   coredns-558bd4d5db-xzvc9           1/1     Running   0          111s
+kube-system   etcd-minikube                      1/1     Running   0          118s
+kube-system   kube-apiserver-minikube            1/1     Running   0          118s
+kube-system   kube-controller-manager-minikube   1/1     Running   0          118s
+kube-system   kube-proxy-bqs4d                   1/1     Running   0          111s
+kube-system   kube-scheduler-minikube            1/1     Running   0          118s
+kube-system   storage-provisioner                1/1     Running   1          2m3s
+
+```
+
+Alright, Cilium is up and running, lets make some tests. The `cilium` CLI allows you to run a connectivity test:
+
+```bash
+cilium connectivity test
+```
+
+This will run fore some minutes, let's wait.
+
+```
+ℹ️  Single-node environment detected, enabling single-node connectivity test
+ℹ️  Monitor aggregation detected, will skip some flow validation steps
+✨ [minikube] Creating namespace for connectivity check...
+✨ [minikube] Deploying echo-same-node service...
+✨ [minikube] Deploying same-node deployment...
+✨ [minikube] Deploying client deployment...
+✨ [minikube] Deploying client2 deployment...
+⌛ [minikube] Waiting for deployments [client client2 echo-same-node] to become ready...
+⌛ [minikube] Waiting for deployments [] to become ready...
+⌛ [minikube] Waiting for CiliumEndpoint for pod cilium-test/client-6488dcf5d4-fkv57 to appear...
+⌛ [minikube] Waiting for CiliumEndpoint for pod cilium-test/client2-5998d566b4-l66kc to appear...
+⌛ [minikube] Waiting for CiliumEndpoint for pod cilium-test/echo-same-node-745bd5c77-dqxr9 to appear...
+⌛ [minikube] Waiting for Service cilium-test/echo-same-node to become ready...
+⌛ [minikube] Waiting for NodePort 192.168.49.2:31041 (cilium-test/echo-same-node) to become ready...
+ℹ️  Skipping IPCache check
+⌛ [minikube] Waiting for pod cilium-test/client-6488dcf5d4-fkv57 to reach default/kubernetes service...
+⌛ [minikube] Waiting for pod cilium-test/client2-5998d566b4-l66kc to reach default/kubernetes service...
+🔭 Enabling Hubble telescope...
+⚠️  Unable to contact Hubble Relay, disabling Hubble telescope and flow validation: rpc error: code = Unavailable desc = connection error: desc = "transport: Error while dialing dial tcp 127.0.0.1:4245: connect: connection refused"
+ℹ️  Expose Relay locally with:
+   cilium hubble enable
+   cilium status --wait
+   cilium hubble port-forward&
+🏃 Running tests...
+
+[=] Test [no-policies]
+....................
+[=] Test [allow-all]
+................
+[=] Test [client-ingress]
+..
+[=] Test [echo-ingress]
+..
+[=] Test [client-egress]
+..
+[=] Test [to-entities-world]
+......
+[=] Test [to-cidr-1111]
+....
+[=] Test [echo-ingress-l7]
+..
+[=] Test [client-egress-l7]
+........
+[=] Test [dns-only]
+........
+[=] Test [to-fqdns]
+......
+✅ All 11 tests (76 actions) successful, 0 tests skipped, 0 scenarios skipped.
+```
+
+Once done, clean up the connectivity test namespace:
+
+```bash
+kubectl delete ns cilium-test --wait=false
+```
