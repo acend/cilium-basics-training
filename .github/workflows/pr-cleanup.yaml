@@ -61,8 +61,8 @@ jobs:
         run : |
           ORG=$(echo $REPOSITORY | cut -d "/" -f1)
           REPO=$(echo $REPOSITORY | cut -d "/" -f2)
-          for PACKAGE_VERSION_ID in $(curl -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/orgs/${ORG}/packages/container/${REPO}/versions | jq '.[] | select (.metadata.container.tags[] | contains ("$PR_NUMBER")) | .id')
+          for PACKAGE_VERSION_ID in $(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/orgs/${ORG}/packages/container/${REPO}/versions | jq '.[] | select (.metadata.container.tags[] | contains ("pr-$PR_NUMBER")) | .id')
           do
               echo "Delete package with id ${PACKAGE_VERSION_ID}"
-              curl -X DELETE -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/orgs/${ORG}/packages/container/${REPO}/versions/${PACKAGE_VERSION_ID}
+              curl -s -X DELETE -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/orgs/${ORG}/packages/container/${REPO}/versions/${PACKAGE_VERSION_ID}
           done
