@@ -54,6 +54,9 @@ jobs:
           curl -X DELETE -H "Authorization: Bearer ${QUAYIO_API_TOKEN}" https://quay.io/api/v1/repository/${REPOSITORY}/tag/pr-${PR_NUMBER}{,-puzzle}
 
       - 
+        name: Delete Tag on ghcr.io
         uses: actions/delete-package-versions@v2
+        env:
+          PR_NUMBER: '${{ github.event.pull_request.number }}'
         with: 
           package-name: 'cilium-basics-training:pr-${PR_NUMBER}{,-puzzle}'

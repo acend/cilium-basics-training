@@ -21,6 +21,7 @@ RUN wkhtmltopdf --outline-depth 4 --enable-internal-links --enable-local-file-ac
 
 FROM nginxinc/nginx-unprivileged:1.21-alpine
 
+LABEL maintainer acend.ch
 LABEL org.opencontainers.image.title "acend.ch's Cilium Basics Training"
 LABEL org.opencontainers.image.description "Container with the Training Content for acend.ch's Cilium Basics Training"
 LABEL org.opencontainers.image.authors acend.ch
