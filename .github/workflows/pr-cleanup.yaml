@@ -58,7 +58,7 @@ jobs:
         env:
           PR_NUMBER: '${{ github.event.pull_request.number }}'
           REPOSITORY: '${{ github.repository }}'
-          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}''
+          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
         run : |
           ORG=$(echo $REPOSITORY | cut -d "/" -f2)
           REPO=$(echo $REPOSITORY | cut -d "/" -f2)
