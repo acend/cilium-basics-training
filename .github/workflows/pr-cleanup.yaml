@@ -49,7 +49,11 @@ jobs:
         id: delete_tags
         env:
           PR_NUMBER: '${{ github.event.pull_request.number }}'
-          QUAYIO_API_TOKEN: '${{ secrets.QUAYIO_API_TOKEN }}'
           REPOSITORY: '${{ github.repository }}'
         run: |
           curl -X DELETE -H "Authorization: Bearer ${QUAYIO_API_TOKEN}" https://quay.io/api/v1/repository/${REPOSITORY}/tag/pr-${PR_NUMBER}{,-puzzle}
+
+      - 
+        uses: actions/delete-package-versions@v2
+        with: 
+          package-name: 'cilium-basics-training:pr-${PR_NUMBER}{,-puzzle}'
