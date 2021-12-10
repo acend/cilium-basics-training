@@ -42,6 +42,15 @@ jobs:
           registry: quay.io
           username: ${{ secrets.QUAYIO_USERNAME }}
           password: ${{ secrets.QUAYIO_TOKEN }}
+
+      - 
+        name: Log in to the ghcr.io Container registry
+        uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
       -
         name: Build Latest Version
         uses: docker/build-push-action@v2
@@ -51,6 +60,7 @@ jobs:
           push: true
           tags: |
             quay.io/acend/cilium-basics-training:pr-${{ github.event.pull_request.number }}
+            ghcr.io/acend/cilium-basics-training:pr-${{ github.event.pull_request.number }}
       -
         name: Run vulnerability scanner
         uses: aquasecurity/trivy-action@master
@@ -79,6 +89,7 @@ jobs:
           push: true
           tags: |
             quay.io/acend/cilium-basics-training:pr-${{ github.event.pull_request.number }}-puzzle
+            ghcr.io/acend/cilium-basics-training:pr-${{ github.event.pull_request.number }}-puzzle
       -
         name: 'Install Helm'
         uses: azure/setup-helm@v1
