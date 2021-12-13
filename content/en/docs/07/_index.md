@@ -4,9 +4,12 @@ weight: 7
 sectionnumber: 7
 ---
 ## Host traffic/endpoint traffic encryption
+
 Cilium supports the transparent encryption of Cilium-managed host traffic and traffic between Cilium-managed endpoints either using IPsec or [WireGuard®](https://www.wireguard.com/).
 
+
 ### WireGuard Encryption
+
 
 ### Enable traffic encryption with WireGuard
 
@@ -14,9 +17,11 @@ Cilium supports the transparent encryption of Cilium-managed host traffic and tr
 kubectl patch -n kube-system cm cilium-config --patch '{"data":{"enable-wireguard": "true", "enable-l7-proxy": "false", "enable-wireguard-userspace-fallback": "true"}}'
 kubectl -n kube-system rollout restart daemonset cilium
 kubectl -n kube-system rollout status daemonset cilium
-
 ```
-### Verify encryption is working:
+
+
+### Verify encryption is working
+
 
 Add a second node in case you only have a 1 node cluster
 
