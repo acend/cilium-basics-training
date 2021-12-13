@@ -100,7 +100,7 @@ cilium clustermesh status --context cluster1 --wait
 🔀 Global services: [ min:0 / avg:0.0 / max:0 ]
 ```
 
-In order to connect the two clisters, the following step needs to be done in one direction only. The connection will automatically be established in both directions:
+In order to connect the two clusters, the following step needs to be done in one direction only. The connection will automatically be established in both directions:
 
 ```bash
 cilium clustermesh connect --context cluster1 --destination-context cluster2
@@ -128,7 +128,7 @@ The output should look something like this:
 ✅ Connected cluster cluster1 and cluster2!
 ```
 
-It may take a bit for the clusters to be connected. You can run cilium clustermesh status --wait to wait for the connection to be successful:
+It may take a bit for the clusters to be connected. You can the following command to wait for the connection to be successful:
 
 ```bash
 cilium clustermesh status --context cluster1 --wait
@@ -152,11 +152,51 @@ And we can also run the connectivity test again:
 cilium connectivity test --context cluster1 --multi-cluster cluster2
 ```
 
-// TODO: Verify why two tests are failing
+// TODO: Verify why two tests are failing, Probably due to the Minikube Setup?
 
 The two clusters are now connected.
 
 
 ## Cluster Mesh Troubleshooting
 
-Follow the steps in [Cilium's Cluster Mesh Troubleshooting Guide](https://docs.cilium.io/en/v1.11/operations/troubleshooting/#troubleshooting-clustermesh)
+Use the following list of steps to troubleshoot issues with ClusterMesh:
+
+```bash
+cilium status --context cluster1
+```
+
+or
+
+```bash
+cilium status --context cluster2
+```
+
+which gives you an output similar to this:
+
+```
+    /¯¯\
+ /¯¯\__/¯¯\    Cilium:         OK
+ \__/¯¯\__/    Operator:       OK
+ /¯¯\__/¯¯\    Hubble:         OK
+ \__/¯¯\__/    ClusterMesh:    OK
+    \__/
+
+DaemonSet         cilium                   Desired: 1, Ready: 1/1, Available: 1/1
+Deployment        cilium-operator          Desired: 1, Ready: 1/1, Available: 1/1
+Deployment        hubble-relay             Desired: 1, Ready: 1/1, Available: 1/1
+Deployment        clustermesh-apiserver    Desired: 1, Ready: 1/1, Available: 1/1
+Containers:       cilium                   Running: 1
+                  cilium-operator          Running: 1
+                  hubble-relay             Running: 1
+                  clustermesh-apiserver    Running: 1
+Cluster Pods:     6/6 managed by Cilium
+Image versions    cilium                   quay.io/cilium/cilium:v1.11.0: 1
+                  cilium-operator          quay.io/cilium/operator-generic:v1.11.0: 1
+                  hubble-relay             quay.io/cilium/hubble-relay:v1.11.0: 1
+                  clustermesh-apiserver    quay.io/coreos/etcd:v3.4.13: 1
+                  clustermesh-apiserver    quay.io/cilium/clustermesh-apiserver:v1.11.0: 1
+
+```
+
+
+If you cannot resolve the issue with the above commands, follow the steps in [Cilium's Cluster Mesh Troubleshooting Guide](https://docs.cilium.io/en/v1.11/operations/troubleshooting/#troubleshooting-clustermesh)
