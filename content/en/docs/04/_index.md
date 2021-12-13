@@ -42,6 +42,8 @@ Lets have a look at the following `CiliumNetworkPolicy`:
 
 The policy will deny all egress traffic from pods labelled `app=backend` except when traffic is destined for `kubernetes.io` or is a DNS request (necessary for resolving `kubernetes.io` from coredns).
 
+![Cilium Editor - DNS-aware Network Policy](cilium_dns_policy.png)
+
 Apply the network policy:
 
 ```bash
