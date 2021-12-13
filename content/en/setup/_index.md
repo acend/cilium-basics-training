@@ -19,7 +19,8 @@ Check the [Minikube start Guide](https://minikube.sigs.k8s.io/docs/start/) for i
 We are going to spin up a new Kubernetes cluster with the following command:
 
 ```bash
-minikube start --network-plugin=cni --cni=false --kubernetes-version=1.21.6
+minikube delete
+minikube start --network-plugin=cni --cni=false --kubernetes-version=1.23.0
 ```
 
 This will install a new Kubernetes Cluster without any Container Network Interface (CNI). The CNI will be installed later in the labs.
@@ -40,7 +41,7 @@ This should produce an output similar to the following:
 
 ```
 NAME       STATUS   ROLES                  AGE   VERSION
-minikube   Ready    control-plane,master   61s   v1.21.6
+minikube   Ready    control-plane,master   86s   v1.23.0
 ```
 Depending on your minikube version and environment your node might stay NotReady because no CNI exists. It will become ready after the cilium installation.
 
