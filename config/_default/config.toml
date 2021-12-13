@@ -70,7 +70,7 @@ url = "https://www.acend.ch"
 
 [params]
 copyright = "acend gmbh"
-github_repo = "https://github.com/acend/ciliun-basics-training"
+github_repo = "https://github.com/acend/cilium-basics-training"
 github_branch = "main"
 
 enabledModule = "base"
