@@ -22,7 +22,7 @@ minikube start --network-plugin=cni --cni=false --kubernetes-version=1.21.6 -p c
 and the install Cilium using the `cilium` CLI. Remember, we need a different PodCIDR for the second cluster, therefore while installing Cilium, we have to change this config:
 
 ```bash
-cilium install --config cluster-pool-ipv4-cidr=172.16.0.0/20
+cilium install --config cluster-pool-ipv4-cidr=10.2.0.0/16 --cluster-name cluster2 --cluster-id 2
 ```
 
 Then wait until the Cluster and Cilium is ready.
@@ -55,19 +55,77 @@ kubectl get pod -A -o wide
 Have a look at the `codedns-` Pod and verify that it's IP is from your defined `172.16.0.0/24` range.
 
 ```
-NAMESPACE     NAME                               READY   STATUS    RESTARTS   AGE     IP             NODE       NOMINATED NODE   READINESS GATES
-kube-system   cilium-htngj                       1/1     Running   0          78s     192.168.58.2   cluster2   <none>           <none>
-kube-system   cilium-operator-776958f5bb-558hr   1/1     Running   0          78s     192.168.58.2   cluster2   <none>           <none>
-kube-system   coredns-558bd4d5db-m9pdb           1/1     Running   0          3m59s   172.16.0.131   cluster2   <none>           <none>
-kube-system   etcd-cluster2                      1/1     Running   0          4m7s    192.168.58.2   cluster2   <none>           <none>
-kube-system   kube-apiserver-cluster2            1/1     Running   0          4m15s   192.168.58.2   cluster2   <none>           <none>
-kube-system   kube-controller-manager-cluster2   1/1     Running   0          4m7s    192.168.58.2   cluster2   <none>           <none>
-kube-system   kube-proxy-cgbbt                   1/1     Running   0          3m59s   192.168.58.2   cluster2   <none>           <none>
-kube-system   kube-scheduler-cluster2            1/1     Running   0          4m7s    192.168.58.2   cluster2   <none>           <none>
-kube-system   storage-provisioner                1/1     Running   1          4m12s   192.168.58.2   cluster2   <none>           <none>
+NAMESPACE     NAME                               READY   STATUS    RESTARTS   AGE   IP             NODE       NOMINATED NODE   READINESS GATES
+kube-system   cilium-operator-776958f5bb-m5hww   1/1     Running   0          29s   192.168.58.2   cluster2   <none>           <none>
+kube-system   cilium-qg9xj                       1/1     Running   0          29s   192.168.58.2   cluster2   <none>           <none>
+kube-system   coredns-558bd4d5db-z6cxh           1/1     Running   0          38s   10.2.0.240     cluster2   <none>           <none>
+kube-system   etcd-cluster2                      1/1     Running   0          44s   192.168.58.2   cluster2   <none>           <none>
+kube-system   kube-apiserver-cluster2            1/1     Running   0          44s   192.168.58.2   cluster2   <none>           <none>
+kube-system   kube-controller-manager-cluster2   1/1     Running   0          44s   192.168.58.2   cluster2   <none>           <none>
+kube-system   kube-proxy-bqk4r                   1/1     Running   0          38s   192.168.58.2   cluster2   <none>           <none>
+kube-system   kube-scheduler-cluster2            1/1     Running   0          44s   192.168.58.2   cluster2   <none>           <none>
+kube-system   storage-provisioner                1/1     Running   1          49s   192.168.58.2   cluster2   <none>           <none>
 ```
 
 Great the second cluster and Cilium is ready to use.
 
 
 ## Task {{% param sectionnumber %}}.2: Enable Cluster Mesh on both Cluster
+
+Now lets enable the Cluster Mesh using the `cilium` CLI on both Cluster:
+
+```bash
+cilium clustermesh enable --context cluster1 --service-type NodePort
+cilium clustermesh enable --context cluster2 --service-type NodePort
+```
+
+You can now verify the clustermesh status using:
+
+```bash
+cilium clustermesh status --context cluster1 --wait
+```
+
+```
+⚠️  Service type NodePort detected! Service may fail when nodes are removed from the cluster!
+✅ Cluster access information is available:
+  - 192.168.49.2:31839
+✅ Service "clustermesh-apiserver" of type "NodePort" found
+⌛ [cluster1] Waiting for deployment clustermesh-apiserver to become ready...
+🔌 Cluster Connections:
+🔀 Global services: [ min:0 / avg:0.0 / max:0 ]
+```
+
+In order to connect the two clisters, the following step needs to be done in one direction only. The connection will automatically be established in both directions:
+
+```bash
+cilium clustermesh connect --context cluster1 --destination-context cluster2
+```
+
+The output should look something like this:
+
+```
+✨ Extracting access information of cluster cluster2...
+🔑 Extracting secrets from cluster cluster2...
+⚠️  Service type NodePort detected! Service may fail when nodes are removed from the cluster!
+ℹ️  Found ClusterMesh service IPs: [192.168.58.2]
+✨ Extracting access information of cluster cluster1...
+🔑 Extracting secrets from cluster cluster1...
+⚠️  Service type NodePort detected! Service may fail when nodes are removed from the cluster!
+ℹ️  Found ClusterMesh service IPs: [192.168.49.2]
+✨ Connecting cluster cluster1 -> cluster2...
+🔑 Secret cilium-clustermesh does not exist yet, creating it...
+🔑 Patching existing secret cilium-clustermesh...
+✨ Patching DaemonSet with IP aliases cilium-clustermesh...
+✨ Connecting cluster cluster2 -> cluster1...
+🔑 Secret cilium-clustermesh does not exist yet, creating it...
+🔑 Patching existing secret cilium-clustermesh...
+✨ Patching DaemonSet with IP aliases cilium-clustermesh...
+✅ Connected cluster cluster1 and cluster2!
+```
+
+It may take a bit for the clusters to be connected. You can run cilium clustermesh status --wait to wait for the connection to be successful:
+
+```bash
+cilium clustermesh status --context cluster1 --wait
+```
+

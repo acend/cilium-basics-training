@@ -94,7 +94,7 @@ We don't have yet installed cilium, therefore the error is perfectly fine.
 Let's install cilium:
 
 ```bash
-cilium install
+cilium install --config cluster-pool-ipv4-cidr=10.1.0.0/16 --cluster-name cluster1 --cluster-id 1
 ```
 
 and now run again the `cilium status` command:
