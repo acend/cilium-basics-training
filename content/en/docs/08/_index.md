@@ -16,10 +16,15 @@ The exact ports are documented in the [Firewall Rules](https://docs.cilium.io/en
 To start a second cluster run the following command:
 
 ```bash
-minikube start --network-plugin=cni --cni=false --kubernetes-version=1.21.6 -p cluster2
+minikube start --network-plugin=cni --cni=false --kubernetes-version=1.21.6 --driver=docker --network=cluster1 -p cluster2
 ```
 
-and the install Cilium using the `cilium` CLI. Remember, we need a different PodCIDR for the second cluster, therefore while installing Cilium, we have to change this config:
+{{% alert title="Note" color="primary" %}}
+As Minikube with the Docker driver uses separated Docker networks, we need to make sure that your system forwards traffic between the two networks. Execute `sudo iptables -I DOCKER-USER -j ACCEPT` to enable forwarding by default. TODO: Is there an other way?
+{{% /alert %}}
+
+
+Then install Cilium using the `cilium` CLI. Remember, we need a different PodCIDR for the second cluster, therefore while installing Cilium, we have to change this config:
 
 ```bash
 cilium install --config cluster-pool-ipv4-cidr=10.2.0.0/16 --cluster-name cluster2 --cluster-id 2
@@ -118,7 +123,7 @@ The output should look something like this:
 ✨ Patching DaemonSet with IP aliases cilium-clustermesh...
 ✨ Connecting cluster cluster2 -> cluster1...
 🔑 Secret cilium-clustermesh does not exist yet, creating it...
-🔑 Patching existing secret cilium-clustermesh...
+🔑 Patching existing secret ciliugm-clustermesh...
 ✨ Patching DaemonSet with IP aliases cilium-clustermesh...
 ✅ Connected cluster cluster1 and cluster2!
 ```
@@ -129,3 +134,29 @@ It may take a bit for the clusters to be connected. You can run cilium clusterme
 cilium clustermesh status --context cluster1 --wait
 ```
 
+```
+⚠️  Service type NodePort detected! Service may fail when nodes are removed from the cluster!
+✅ Cluster access information is available:
+  - 192.168.58.2:32117
+✅ Service "clustermesh-apiserver" of type "NodePort" found
+⌛ [cluster2] Waiting for deployment clustermesh-apiserver to become ready...
+✅ All 1 nodes are connected to all clusters [min:1 / avg:1.0 / max:1]
+🔌 Cluster Connections:
+- cluster1: 1/1 configured, 1/1 connected
+🔀 Global services: [ min:3 / avg:3.0 / max:3 ]
+```
+
+And we can also run the connectivity test again:
+
+```bash
+cilium connectivity test --context cluster1 --multi-cluster cluster2
+```
+
+// TODO: Verify why two tests are failing
+
+The two clusters are now connected.
+
+
+## Cluster Mesh Troubleshooting
+
+Follow the steps in [Cilium's Cluster Mesh Troubleshooting Guide](https://docs.cilium.io/en/v1.11/operations/troubleshooting/#troubleshooting-clustermesh)
