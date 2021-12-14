@@ -41,18 +41,17 @@ kubectl get pods -o wide
 
 ## Task {{% param sectionnumber %}}.3:  Enable node traffic encryption with WireGuard
 
-WireGuard encryption can be enabled while installing cilium with the cli: ```bash cilium install --encryption wireguard```. This does not work for us since we already have an installation running. We enable it by changing the configuration map and restarting the cilium agents.
+WireGuard based encryption with helm is simple:
 
 ```bash
-kubectl patch -n kube-system cm cilium-config \
-      --patch '{"data":
-                        {"enable-wireguard":"true",
-                        "enable-l7-proxy":"false",
-                        "enable-wireguard-userspace-fallback":"true"
-                        }
-                }'
-kubectl -n kube-system rollout restart daemonset cilium
-kubectl -n kube-system rollout status daemonset cilium
+helm upgrade -i cilium cilium/cilium \
+  --namespace kube-system \
+  --reuse-values \
+  --set l7Proxy=false \
+  --set encryption.enabled=true \
+  --set encryption.type=wireguard \
+  --set enryption.wireguard.userspaceFallback=true \
+  --wait
 ```
 
 

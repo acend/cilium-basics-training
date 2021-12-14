@@ -10,7 +10,27 @@ Cilium can be installed using multiple ways:
 * Cilium CLI
 * Using Helm
 
-In this lab we are going to use the [Cilium command line](https://github.com/cilium/cilium-cli/) tool (Cilium CLI)
+In this lab we are going to use [helm](https://helm.sh) since it has more options.
+The [Cilium command line](https://github.com/cilium/cilium-cli/) tool is used (Cilium CLI) for verification and troubleshooting.
+
+
+## Install helm
+
+For a complete overview refer to the helm installation [website](https://helm.sh/docs/intro/install/). If you have helm 3 already installed you can skip this step.
+
+
+### Linux and MacOs Setup
+
+Use your package manager (`apt`, `yum`, `brew` etc), download the [latest Release](https://github.com/helm/helm/releases) or use the following command to install [helm](https://helm.sh/docs/intro/install/) helm:
+
+```bash
+curl -s https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+```
+
+
+### Windows Setup
+
+Get the Windows binary files from the [latest Release](https://github.com/helm/helm/releases)
 
 
 ## Install Cilium CLI
@@ -91,10 +111,17 @@ We don't have yet installed cilium, therefore the error is perfectly fine.
 
 ## Install Cilium
 
-Let's install cilium:
+Let's install cilium with helm:
 
 ```bash
-cilium install --config cluster-pool-ipv4-cidr=10.1.0.0/16 --cluster-name cluster1 --cluster-id 1
+helm repo add cilium https://helm.cilium.io/
+helm upgrade -i cilium cilium/cilium --version 1.11.0 \
+  --namespace kube-system \
+  --set ipam.operator.clusterPoolIPv4PodCIDR=10.1.0.0/16 \
+  --set cluster.name=cluster1 \
+  --set cluster.id=1 \
+  --set operator.replicas=1 \
+  --wait
 ```
 
 and now run again the `cilium status` command:
