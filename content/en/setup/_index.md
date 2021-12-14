@@ -20,7 +20,7 @@ We are going to spin up a new Kubernetes cluster with the following command:
 
 ```bash
 minikube delete
-minikube start --network-plugin=cni --cni=false --kubernetes-version=1.23.0
+minikube start --network-plugin=cni --cni=false --kubernetes-version=1.23.0 -p cluster1 
 ```
 
 This will install a new Kubernetes Cluster without any Container Network Interface (CNI). The CNI will be installed later in the labs.
