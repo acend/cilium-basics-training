@@ -53,7 +53,30 @@ replicaset.apps/not-frontend-5cf6d96558   1         1         0       6s
 ```
 
 
-## Task {{% param sectionnumber %}}.2: Verify connectivity
+## Task {{% param sectionnumber %}}.2: Cilium Endpoint
+
+Each Pod from our application will be represendet in Cilium as an [Endpoint](https://docs.cilium.io/en/stable/concepts/terminology/#endpoint). We can use the `cilium` tool inside a Cilium pod to list them.
+
+First get all Cilium pods with:
+
+```bash
+kubectl -n kube-system get pods -l k8s-app=cilium
+```
+
+```NAME           READY   STATUS    RESTARTS        AGE
+cilium-mvh65   1/1     Running   1 (6h26m ago)   6h30m
+```
+
+and then run:
+
+```bash
+kubectl -n kube-system exec <podname> -- cilium endpoint list
+```
+
+Both ingress and egress policy enforcement is still disabled on all of these pods because no network policy has been imported yet which select any of the pods.
+
+
+## Task {{% param sectionnumber %}}.3: Verify connectivity
 
 In Kubernetes, all traffic is allowed by default. So let's check connectivity between pods.
 
@@ -108,7 +131,7 @@ Connection: keep-alive
 and we see, both applications can connect to the `backend` application.
 
 
-## Task {{% param sectionnumber %}}.3: Disallow traffic with a Network Policy
+## Task {{% param sectionnumber %}}.4: Disallow traffic with a Network Policy
 
 Let's disallow traffic by applying a network policy:
 
@@ -138,7 +161,7 @@ backend-ingress-deny   app=backend    2s
 ```
 
 
-## Task {{% param sectionnumber %}}.4: Verify connectivity again
+## Task {{% param sectionnumber %}}.5: Verify connectivity again
 
 We can now execute the connectivty check again:
 
@@ -161,7 +184,7 @@ command terminated with exit code 28
 The network policy correctly switched the default ingress behavior from default allow to default deny. Let's now selectively re-allow traffic again, but only from frontend to backend.
 
 
-## Task {{% param sectionnumber %}}.5: Allow traffic from frontend to backend
+## Task {{% param sectionnumber %}}.6: Allow traffic from frontend to backend
 
 We can do it by crafting a new network policy manually, but we can also use the Network Policy Editor to help us out:
 
@@ -184,6 +207,10 @@ We can do it by crafting a new network policy manually, but we can also use the 
 
 
 * Download the policy YAML file.
+
+The file should look like this:
+
+{{< highlight yaml >}}{{< readfile file="content/en/docs/03/backend-allow-ingress-frontend.yaml" >}}{{< /highlight >}}
 
 Apply the new policy:
 
@@ -235,3 +262,14 @@ backend-ingress-deny             app=backend    12m
 ```
 
 Network policies are additive. Just like with firewalls, it is thus a good idea to have default DENY policies and then add more specific ALLOW policies as needed.
+
+
+## Task {{% param sectionnumber %}}.7: Inspecting the cilium endpoints again
+
+We can now check the cilium endpoints again. First get all Cilium pods with:
+
+```bash
+kubectl -n kube-system exec <podname> -- cilium endpoint list
+```
+
+And now we see that the pods with the label `app=backend` now have ingress policy enforcement enabled.
