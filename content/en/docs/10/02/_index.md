@@ -4,7 +4,7 @@ weight: 102
 sectionnumber: 10.2
 ---
 
-When running Cilium without kube-proxy, by default, services in a Kubernetes Cluster cannot be reached from the host namespace, only from the pod namespaces. This means, if you have a pod running with `hostNetwork: true` they won't be able to reach any Kubernetes Service.
+When running Cilium by default, services in a Kubernetes Cluster cannot be reached from the host namespace, only from the pod namespaces. This means, if you have a pod running with `hostNetwork: true` they won't be able to reach any Kubernetes Service.
 
 {{% alert title="Note" color="primary" %}}
 Host-reachable services for TCP and UDP requires a v4.19.57, v5.1.16, v5.2.0 or more recent Linux kernel. Note that v5.0.y kernels do not have the fix required to run host-reachable services with UDP since at this point in time the v5.0.y stable kernel is end-of-life (EOL) and not maintained anymore. For only enabling TCP-based host-reachable services a v4.17.0 or newer kernel is required. The most optimal kernel with the full feature set is v5.8.
@@ -12,10 +12,6 @@ Host-reachable services for TCP and UDP requires a v4.19.57, v5.1.16, v5.2.0 or 
 
 
 ## Task {{% param sectionnumber %}}.1: Try access Services from HostNetwork
-
-{{% alert title="Note" color="primary" %}}
-Make sure you do the following tasks on `cluster3`!
-{{% /alert %}}
 
 Let us create a simple NGINX Deployemt using `hostNetwork: true` (& `dnsPolicy: ClusterFirstWithHostNet` for the Service DNS resolution to work)
 
