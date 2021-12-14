@@ -13,6 +13,10 @@ Host-reachable services for TCP and UDP requires a v4.19.57, v5.1.16, v5.2.0 or 
 
 ## Task {{% param sectionnumber %}}.1: Try access Services from HostNetwork
 
+{{% alert title="Note" color="primary" %}}
+Make sure you do the following tasks on `cluster3`!
+{{% /alert %}}
+
 Let us create a simple NGINX Deployemt using `hostNetwork: true` (& `dnsPolicy: ClusterFirstWithHostNet` for the Service DNS resolution to work)
 
 Here's the `nginx.yaml` to deploy NGINX with a service:
@@ -34,16 +38,8 @@ kubectl exec -it <nginx-podname> -- curl -v -m 2 http://backend:8080
 and now indeed you see, the `nginx` Pod is not able to reach our `backend` Service
 
 ```
-*   Trying 10.99.155.192:8080...
-* Connection timed out after 2000 milliseconds
-* Closing connection 0
-curl: (28) Connection timed out after 2000 milliseconds
-command terminated with exit code 28
+// TODO: print expected output, but currently this already works
 ```
-
-{{% alert title="Note" color="primary" %}}
-Remember in Lab 3 we created a NetworkPolicy and only Pods with a label `app: frontend` are allowed to access the `backend` pods. Therefore our `nginx` Pod also has this label.
-{{% /alert %}}
 
 
 ## Task {{% param sectionnumber %}}.2: Enable Host-Reachable Services
@@ -60,5 +56,8 @@ kubectl -n kube-system rollout restart ds cilium
 ```
 
 
-## Task {{% param sectionnumber %}}.3: Enable Host-Reachable Services
+## Task {{% param sectionnumber %}}.3: Call the `backend` Service again
 
+```bash
+kubectl exec -it <nginx-podname> -- curl -v -m 2 http://backend:8080
+```
