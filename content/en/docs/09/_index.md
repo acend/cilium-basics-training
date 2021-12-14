@@ -59,4 +59,4 @@ Access Grafana with kubectl proxy-forward
 kubectl -n cilium-monitoring port-forward service/grafana --address 0.0.0.0 --address :: 3000:3000 &
 ```
 
-Now open your browser and go to http://localhost:3000/dashboards.
+Now open your browser and go to http://localhost:3000/dashboards. After you have finished you can stop port-forwarding with `kill %1`
