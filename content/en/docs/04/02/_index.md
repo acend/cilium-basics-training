@@ -1,5 +1,5 @@
 ---
-title: "4.2HTTP-aware L7 Policy"
+title: "4.2 HTTP-aware L7 Policy"
 weight: 42
 sectionnumber: 4.2
 ---
