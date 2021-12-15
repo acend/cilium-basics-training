@@ -4,6 +4,10 @@ weight: 9
 sectionnumber: 9
 ---
 
+{{% alert title="Note" color="primary" %}}
+This lab should be done on your `cluster1`, make sure to switch to `cluster1` with `minikube profile cluster1`
+{{% /alert %}}
+
 Cilium and Hubble can both be configured to serve Prometheus metrics independently of each other.
 
 Cilium metrics provide insights into the state of Cilium itself, namely of the cilium-agent, cilium-envoy, and cilium-operator processes.

@@ -4,6 +4,11 @@ weight: 102
 sectionnumber: 10.2
 ---
 
+{{% alert title="Note" color="primary" %}}
+This lab should be done on your `cluster1`, make sure to switch to `cluster1` with `minikube profile cluster1`
+{{% /alert %}}
+
+
 When running Cilium by default, services in a Kubernetes Cluster cannot be reached from the host namespace, only from the pod namespaces. This means, if you have a pod running with `hostNetwork: true` they won't be able to reach any Kubernetes Service.
 
 {{% alert title="Note" color="primary" %}}
