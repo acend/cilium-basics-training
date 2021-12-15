@@ -23,6 +23,11 @@ minikube delete
 minikube start --network-plugin=cni --cni=false --kubernetes-version=1.23.0 -p cluster1 
 ```
 
+{{% alert title="Note" color="primary" %}}
+During this training you will create multiple clusters. For this we use a feature in minikube called profile which you see with the `-p cluster1` option. You can list all your profiles with `minikube profile list` and you can change to a other cluster with `minikube profile <profilename>`, this will also set your current context for `kubectl` to the specified profile/cluster.
+{{% /alert %}}
+
+
 This will install a new Kubernetes Cluster without any Container Network Interface (CNI). The CNI will be installed later in the labs.
 
 Minikube added a new context into your Kubernetes config file and set this as your default context. Check it with the following command:
