@@ -16,7 +16,7 @@ acendTraining:
         annotations: 
           kubernetes.io/ingress.class: nginx-public
         secretOverride: acend-wildcard
-        appname: cilium-basics-training
+        appname: cilium-basics
         domain: training.acend.ch
     - 
       name: puzzle
