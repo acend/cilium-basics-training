@@ -5,15 +5,15 @@ sectionnumber: 7
 ---
 ## Host traffic/endpoint traffic encryption
 
-Cilium supports the transparent encryption of Cilium-managed host traffic and traffic between Cilium-managed endpoints either using IPsec or [WireGuard®](https://www.wireguard.com/).
+To secure communication inside a kubernetes cluster Cilium supports transparent encryption of traffic between Cilium-managed endpoints either using IPsec or [WireGuard®](https://www.wireguard.com/).
 
 
 ## Task {{% param sectionnumber %}}.1: Increase cluster size
 
-By default minikube create single node clusters. A a second node to the cluster:
+By default minikube create single node clusters. Add a second node to the cluster:
 
 ```bash
-minikube node add
+minikube -p cluster1 node add
 ```
 
 
@@ -26,7 +26,7 @@ spec:
   template:
     spec:
       nodeSelector:
-        kubernetes.io/hostname: minikube-m02 
+        kubernetes.io/hostname: cluster1-m02 
 ```
 
 ```bash
@@ -41,7 +41,7 @@ kubectl get pods -o wide
 
 ## Task {{% param sectionnumber %}}.3:  Enable node traffic encryption with WireGuard
 
-WireGuard based encryption with helm is simple:
+Enabling WireGuard based encryption with helm is simple:
 
 ```bash
 helm upgrade -i cilium cilium/cilium \
@@ -52,7 +52,9 @@ helm upgrade -i cilium cilium/cilium \
   --set encryption.type=wireguard \
   --set enryption.wireguard.userspaceFallback=true \
   --wait
+kubectl -n kube-system rollout restart ds cilium
 ```
+Currently L7 policy enforcement and visibility is [not supported](https://github.com/cilium/cilium/issues/15462) with WireGuard, this is why we have to disable it.
 
 
 ### Verify encryption is working
@@ -82,4 +84,9 @@ FRONTEND=$(kubectl get pods -l app=frontend -o jsonpath='{.items[0].metadata.nam
 kubectl exec -ti ${FRONTEND} -- curl -Is backend:8080
 ```
 You should now see traffic flowing through the WireGuard tunnel interface cilium_wg0.
+
+
+## Legal
+
+“WireGuard” is a registered trademark of Jason A. Donenfeld.
 
