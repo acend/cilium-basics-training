@@ -85,6 +85,8 @@ kubectl exec -ti ${FRONTEND} -- curl -Is backend:8080
 ```
 You should now see traffic flowing through the WireGuard tunnel interface cilium_wg0.
 
+
 ## Legal
+
 “WireGuard” is a registered trademark of Jason A. Donenfeld.
 
