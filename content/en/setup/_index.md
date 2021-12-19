@@ -19,7 +19,7 @@ Check the [Minikube start Guide](https://minikube.sigs.k8s.io/docs/start/) for i
 We are going to spin up a new Kubernetes cluster with the following command:
 
 ```bash
-minikube delete
+minikube delete -p cluster1
 minikube start --network-plugin=cni --cni=false --kubernetes-version=1.23.0 -p cluster1 
 ```
 
