@@ -7,6 +7,7 @@ NOTE: Cilium Service Mesh is still in Beta you will find the relevante informati
 
 
 ## Task {{% param sectionnumber %}}.1: Installation
+
 As the Cilium Service Mesh is still in Beta and uses specific images we will use a dedicated Cluster for it.
 
 ```bash
@@ -17,9 +18,11 @@ cilium hubble enable --ui
 
 
 ## Task {{% param sectionnumber %}}.2: Create Ingress
-We deploy [the sample app from chapter 3](https://cilium-basics.training.acend.ch/docs/03/#task-31-deploy-simple-application). 
-´´´bash
----
+
+We deploy [the sample app from chapter 3](https://cilium-basics.training.acend.ch/docs/03/#task-31-deploy-simple-application).
+
+
+```bash
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -42,6 +45,7 @@ spec:
         imagePullPolicy: IfNotPresent
         command: [ "/bin/ash", "-c", "sleep 1000000000" ]
 ---
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
