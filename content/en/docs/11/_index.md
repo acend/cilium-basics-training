@@ -45,7 +45,6 @@ spec:
         imagePullPolicy: IfNotPresent
         command: [ "/bin/ash", "-c", "sleep 1000000000" ]
 ---
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -145,6 +144,7 @@ As a workaround we can test the service from inside kubernetes.
 serviceIP=$(kubectl get svc cilium-ingress-backend -ojsonpath={.spec.clusterIP})
 kubectl run --rm=true -it --restart=Never --image=docker.io/byrnedo/alpine-curl:0.1.8 -- curl http://${serviceIP}/public
 ```
+
 
 ## Task {{% param sectionnumber %}}.3: Layer 7 Loadbalancing
 
