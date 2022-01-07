@@ -3,7 +3,7 @@
 	url = https://github.com/google/docsy.git
 [submodule "themes/docsy-plus"]
 	path = themes/docsy-plus
-	url = https://github.com/puzzle/docsy-plus.git
+	url = https://github.com/acend/docsy-plus.git
 	branch = main
 [submodule "themes/docsy-acend"]
 	path = themes/docsy-acend
