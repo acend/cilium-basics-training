@@ -54,7 +54,7 @@ helm upgrade -i cilium cilium/cilium --version 1.11.0 \
   --set cluster.name=cluster3 \
   --set cluster.id=3 \
   --set operator.replicas=1 \
-  --set ubeProxyReplacement=strict \
+  --set kubeProxyReplacement=strict \
   --set k8sServiceHost=REPLACE_WITH_API_SERVER_IP \
   --set k8sServicePort=REPLACE_WITH_API_SERVER_PORT \
   --wait

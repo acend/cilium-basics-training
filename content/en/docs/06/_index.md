@@ -5,6 +5,9 @@ sectionnumber: 6
 ---
 
 
+For more details on Troubleshooting, have a look into the [Cilium's Troubleshooting Documentation](https://docs.cilium.io/en/stable/operations/troubleshooting/).
+
+
 ## Component & Cluster Health
 
 An initial overview of Cilium can be retrieved by listing all pods to verify whether all pods have the status `Running`:
@@ -126,4 +129,28 @@ kube-system/kube-addon-manager-minikube
 kube-system/kube-dns-54cccfbdf8-zmv2c
 kube-system/kubernetes-dashboard-77d8b98585-g52k5
 kube-system/storage-provisioner
+```
+
+
+## Reporting a problem - Automatic log & state collection
+
+Before you report a problem, make sure to retrieve the necessary information from your cluster before the failure state is lost.
+
+Execute `cilium sysdump` command to collect troubleshooting information from your Kubernetes cluster:
+
+```bash
+cilium sysdump
+```
+
+Note that by default `cilium sysdump` will attempt to collect as much logs as possible and for all the nodes in the cluster. If your cluster size is above 20 nodes, consider setting the following options to limit the size of the sysdump. This is not required, but useful for those who have a constraint on bandwidth or upload size.
+
+* set the `--node-list` option to pick only a few nodes in case the cluster has many of them.
+* set the `--logs-since-time` option to go back in time to when the issues started.
+* set the `--logs-limit-bytes` option to limit the size of the log files (note: passed onto kubectl logs; does not apply to entire collection archive).
+Ideally, a sysdump that has a full history of select nodes, rather than a brief history of all the nodes, would be preferred (by using `--node-list`). The second recommended way would be to use `--logs-since-time` if you are able to narrow down when the issues started. Lastly, if the Cilium agent and Operator logs are too large, consider `--logs-limit-bytes`.
+
+Use `--help` to see more options:
+
+```bash
+cilium sysdump --help
 ```
