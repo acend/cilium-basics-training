@@ -24,11 +24,19 @@ As Minikube with the Docker driver uses separated Docker networks, we need to ma
 {{% /alert %}}
 
 
-Then install Cilium using the `cilium` CLI. Remember, we need a different PodCIDR for the second cluster, therefore while installing Cilium, we have to change this config:
+Then install Cilium using again Helm. Remember, we need a different PodCIDR for the second cluster, therefore while installing Cilium, we have to change this config:
 
 ```bash
-cilium install --config cluster-pool-ipv4-cidr=10.2.0.0/16 --cluster-name cluster2 --cluster-id 2
+helm upgrade -i cilium cilium/cilium --version 1.11.0 \
+  --namespace kube-system \
+  --set ipam.operator.clusterPoolIPv4PodCIDR=10.2.0.0/16 \
+  --set cluster.name=cluster2 \
+  --set cluster.id=2 \
+  --set operator.replicas=1 \
+  --wait
 ```
+
+// TODO: cilium-ca for https://docs.cilium.io/en/stable/gettingstarted/clustermesh/clustermesh/#shared-certificate-authority
 
 Then wait until the Cluster and Cilium is ready.
 
@@ -57,7 +65,7 @@ kubectl get pod -A -o wide
 
 ```
 
-Have a look at the `codedns-` Pod and verify that it's IP is from your defined `172.16.0.0/24` range.
+Have a look at the `codedns-` Pod and verify that it's IP is from your defined `10.2.0.0/16` range.
 
 ```
 NAMESPACE     NAME                               READY   STATUS    RESTARTS   AGE   IP             NODE       NOMINATED NODE   READINESS GATES
@@ -78,6 +86,11 @@ Great the second cluster and Cilium is ready to use.
 ## Task {{% param sectionnumber %}}.2: Enable Cluster Mesh on both Cluster
 
 Now lets enable the Cluster Mesh using the `cilium` CLI on both Cluster:
+
+
+{{% alert title="Note" color="primary" %}}
+Altough so far we used Helm up install & update cilium, enabeling Cilium using Helm currently has some bugs, therefore we use the `cilium` CLI to achieve this task.
+{{% /alert %}}
 
 ```bash
 cilium clustermesh enable --context cluster1 --service-type NodePort
@@ -145,14 +158,6 @@ cilium clustermesh status --context cluster1 --wait
 - cluster1: 1/1 configured, 1/1 connected
 🔀 Global services: [ min:3 / avg:3.0 / max:3 ]
 ```
-
-And we can also run the connectivity test again:
-
-```bash
-cilium connectivity test --context cluster1 --multi-cluster cluster2
-```
-
-// TODO: Verify why two tests are failing, Probably due to the Minikube Setup?
 
 The two clusters are now connected.
 

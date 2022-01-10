@@ -92,7 +92,24 @@ Use "hubble [command] --help" for more information about a command.
 
 ## Task {{% param sectionnumber %}}.2: Enable Hubble in Cilium
 
-The Hubble component is not enabled by default, therefore let us enbale Hubble using the `cilium` CLI:
+When you install Cilium using Helm, then Hubble is already enabled. The value for this is `hubble.enabled` which is set to `true` in the `values.yaml` of the Cilium Helm Chart. But we also want to enable the Hubble Relay. With the following Helm command you can enable Hubble with the Hubble Relay:
+
+```
+```bash
+helm repo add cilium https://helm.cilium.io/
+helm upgrade -i cilium cilium/cilium --version 1.11.0 \
+  --namespace kube-system \
+  --set ipam.operator.clusterPoolIPv4PodCIDR=10.1.0.0/16 \
+  --set cluster.name=cluster1 \
+  --set cluster.id=1 \
+  --set operator.replicas=1 \
+  --set hubble.enabled=true \
+  --set hubble.relay.enabled=true \
+  --wait
+```
+
+
+If you have installed Cilium with the `cilium` cli then Hubble component is not enabled by default (nor is Hubble Relay), and you can enbale Hubble using the following `cilium` CLI command:
 
 ```bash
 cilium hubble enable
@@ -111,7 +128,7 @@ and then wait until Hubble is enabled:
 ✅ Hubble was successfully enabled!
 ```
 
-When you have a look at your running pods with `kubectl get pod -A` you should see now a pod with a name starting with `hubble-relay`:
+When you have a look at your running pods with `kubectl get pod -A` you should see a pod with a name starting with `hubble-relay`:
 
 ```
 kubectl get pod -A                                                                         
@@ -140,7 +157,6 @@ cilium status --wait
 which should give you an output similar to this:
 
 ```
-cilium status
     /¯¯\
  /¯¯\__/¯¯\    Cilium:         OK
  \__/¯¯\__/    Operator:       OK
@@ -151,14 +167,13 @@ cilium status
 DaemonSet         cilium             Desired: 1, Ready: 1/1, Available: 1/1
 Deployment        cilium-operator    Desired: 1, Ready: 1/1, Available: 1/1
 Deployment        hubble-relay       Desired: 1, Ready: 1/1, Available: 1/1
-Containers:       cilium-operator    Running: 1
+Containers:       cilium             Running: 1
+                  cilium-operator    Running: 1
                   hubble-relay       Running: 1
-                  cilium             Running: 1
-Cluster Pods:     5/5 managed by Cilium
-Image versions    cilium             quay.io/cilium/cilium:v1.10.5: 1
-                  cilium-operator    quay.io/cilium/operator-generic:v1.10.5: 1
-                  hubble-relay       quay.io/cilium/hubble-relay:v1.10.5: 1
-
+Cluster Pods:     9/9 managed by Cilium
+Image versions    cilium             quay.io/cilium/cilium:v1.11.0@sha256:ea677508010800214b0b5497055f38ed3bff57963fa2399bcb1c69cf9476453a: 1
+                  cilium-operator    quay.io/cilium/operator-generic:v1.11.0@sha256:b522279577d0d5f1ad7cadaacb7321d1b172d8ae8c8bc816e503c897b420cfe3: 1
+                  hubble-relay       quay.io/cilium/hubble-relay:v1.11.0@sha256:306ce38354a0a892b0c175ae7013cf178a46b79f51c52adb5465d87f14df0838: 1
 ```
 
 So the Hubble component is now enabled.

@@ -51,6 +51,20 @@ Install grafana into cilium-monitoring namespace to visualize cilium and hubble 
 kubectl apply -f https://raw.githubusercontent.com/cilium/cilium/v1.11/examples/kubernetes/addons/prometheus/monitoring-example.yaml
 ```
 
+Make sure grafana and prometheus pods are up and running befor continue with the next step.
+
+```bash
+kubectl -n cilium-monitoring get pod
+```
+you should see both Pods in state `Running`:
+
+```
+NAME                          READY   STATUS    RESTARTS   AGE
+grafana-6c7d4c9fd8-2xdp2      1/1     Running   0          41s
+prometheus-55777f54d9-hkpkq   1/1     Running   0          41s
+```
+
+
 Generate some traffic
 ```bash
 FRONTEND=$(kubectl get pods -l app=frontend -o jsonpath='{.items[0].metadata.name}')
@@ -64,3 +78,6 @@ kubectl -n cilium-monitoring port-forward service/grafana --address 0.0.0.0 --ad
 ```
 
 Now open your browser and go to http://localhost:3000/dashboards. After you have finished you can stop port-forwarding with `kill %1`
+
+
+// TODO: and now?

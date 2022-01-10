@@ -31,10 +31,10 @@ Apply the Cilium Network Policy with:
 kubectl apply -f cnp.yaml
 ```
 
-With this policy our `tiefighter` has access to the `deathstar` application:
+With this policy our `tiefighter` has access to the `deathstar` application. You can verify this with:
 
 ```bash
-kubectl exec tiefighter -- curl -m 2-s -XPOST deathstar.default.svc.cluster.local/v1/request-landing
+kubectl exec tiefighter -- curl -m 2 -s -XPOST deathstar.default.svc.cluster.local/v1/request-landing
 ```
 
 ```
@@ -44,7 +44,7 @@ Ship landed
 but the `xwing` does not have:
 
 ```bash
-kubectl exec xwing -- curl -m 2-s -XPOST deathstar.default.svc.cluster.local/v1/request-landing
+kubectl exec xwing -- curl -m 2 -s -XPOST deathstar.default.svc.cluster.local/v1/request-landing
 ```
 
 ```
@@ -54,7 +54,7 @@ command terminated with exit code 28
 
 ## Task {{% param sectionnumber %}}.2: Apply and Test HTTP-aware L7 Policy
 
-n the simple scenario above, it was sufficient to either give tiefighter / xwing full access to deathstar’s API or no access at all. But to provide the strongest security (i.e., enforce least-privilege isolation) between microservices, each service that calls deathstar’s API should be limited to making only the set of HTTP requests it requires for legitimate operation.
+In the simple scenario above, it was sufficient to either give tiefighter / xwing full access to deathstar’s API or no access at all. But to provide the strongest security (i.e., enforce least-privilege isolation) between microservices, each service that calls deathstar’s API should be limited to making only the set of HTTP requests it requires for legitimate operation.
 
 For example, consider that the deathstar service exposes some maintenance APIs which should not be called by random empire ships. To see this run:
 
