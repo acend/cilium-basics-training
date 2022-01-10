@@ -232,3 +232,12 @@ Once done, clean up the connectivity test namespace:
 ```bash
 kubectl delete ns cilium-test --wait=false
 ```
+
+
+## Install Cilium with the `cilium` cli
+
+This is how the installation with the `cilium` cli would have looked like:
+
+```bash
+cilium install --config cluster-pool-ipv4-cidr=10.1.0.0/16 --cluster-name cluster1 --cluster-id 1 
+```

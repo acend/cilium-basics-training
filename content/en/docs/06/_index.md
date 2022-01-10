@@ -26,10 +26,31 @@ If Cilium encounters a problem that it cannot recover from, it will automaticall
 If a particular Cilium pod is not in running state, the status and health of the agent on that node can be retrieved by running cilium status in the context of that pod:
 
 ```bash
-kubectl -n kube-system exec cilium-2hq5z -- cilium status
+kubectl -n kube-system exec <podname> -- cilium status
 ```
 
+The output looks similar like this:
+
 ```
+Defaulted container "cilium-agent" out of: cilium-agent, mount-cgroup (init), clean-cilium-state (init)
+KVStore:                Ok   Disabled
+Kubernetes:             Ok   1.23 (v1.23.0) [linux/amd64]
+Kubernetes APIs:        ["cilium/v2::CiliumClusterwideNetworkPolicy", "cilium/v2::CiliumEndpoint", "cilium/v2::CiliumNetworkPolicy", "cilium/v2::CiliumNode", "core/v1::Namespace", "core/v1::Node", "core/v1::Pods", "core/v1::Service", "discovery/v1::EndpointSlice", "networking.k8s.io/v1::NetworkPolicy"]
+KubeProxyReplacement:   Disabled   
+Host firewall:          Disabled
+Cilium:                 Ok   1.11.0 (v1.11.0-27e0848)
+NodeMonitor:            Listening for events on 32 CPUs with 64x4096 of shared memory
+Cilium health daemon:   Ok   
+IPAM:                   IPv4: 11/254 allocated from 10.1.0.0/24, 
+ClusterMesh:            0/0 clusters ready, 0 global-services
+BandwidthManager:       Disabled
+Host Routing:           Legacy
+Masquerading:           IPTables [IPv4: Enabled, IPv6: Disabled]
+Controller Status:      56/56 healthy
+Proxy Status:           OK, ip 10.1.0.145, 2 redirects active on ports 10000-20000
+Hubble:                 Ok   Current/Max Flows: 4095/4095 (100.00%), Flows/s: 7.17   Metrics: Disabled
+Encryption:             Disabled
+Cluster health:         1/1 reachable   (2022-01-10T12:29:11Z)
 
 ```
 
@@ -56,3 +77,53 @@ If the cilium pod was already restarted due to the liveness problem after encoun
 kubectl -n kube-system logs --timestamps -p <pod-name>
 ```
 
+
+## Policy Troubleshooting - Ensure pod is managed by Cilium
+
+A potential cause for policy enforcement not functioning as expected is that the networking of the pod selected by the policy is not being managed by Cilium. The following situations result in unmanaged pods:
+
+* The pod is running in host networking and will use the host’s IP address directly. Such pods have full network connectivity but Cilium will not provide security policy enforcement for such pods.
+* The pod was started before Cilium was deployed. Cilium only manages pods that have been deployed after Cilium itself was started. Cilium will not provide security policy enforcement for such pods.
+
+If pod networking is not managed by Cilium. Ingress and egress policy rules selecting the respective pods will not be applied. See the section Network Policy for more details.
+
+For a quick assessment of whether any pods are not managed by Cilium, the Cilium CLI will print the number of managed pods. If this prints that all of the pods are managed by Cilium, then there is no problem:
+
+```bash
+cilium status
+```
+
+```
+    /¯¯\
+ /¯¯\__/¯¯\    Cilium:         OK
+ \__/¯¯\__/    Operator:       OK
+ /¯¯\__/¯¯\    Hubble:         OK
+ \__/¯¯\__/    ClusterMesh:    disabled
+    \__/
+
+Deployment        cilium-operator    Desired: 2, Ready: 2/2, Available: 2/2
+Deployment        hubble-relay       Desired: 1, Ready: 1/1, Available: 1/1
+Deployment        hubble-ui          Desired: 1, Ready: 1/1, Available: 1/1
+DaemonSet         cilium             Desired: 2, Ready: 2/2, Available: 2/2
+Containers:       cilium-operator    Running: 2
+                  hubble-relay       Running: 1
+                  hubble-ui          Running: 1
+                  cilium             Running: 2
+Cluster Pods:     5/5 managed by Cilium
+``
+
+You can run the following script to list the pods which are not managed by Cilium:
+
+```bash
+curl -sLO https://raw.githubusercontent.com/cilium/cilium/master/contrib/k8s/k8s-unmanaged.sh
+chmod +x k8s-unmanaged.sh
+./k8s-unmanaged.sh
+```
+
+```
+kube-system/cilium-hqpk7
+kube-system/kube-addon-manager-minikube
+kube-system/kube-dns-54cccfbdf8-zmv2c
+kube-system/kubernetes-dashboard-77d8b98585-g52k5
+kube-system/storage-provisioner
+```

@@ -45,9 +45,9 @@ kubectl --context cluster2 apply -f cluster2.yaml
 Now you can execute from either cluster the following command (there are two x-wing pods, simply select one):
 
 ```bash
-XWINGPOD=<x-wing-podname>
+XWINGPOD=$(kubectl get pod -l name=x-wing -o jsonpath="{.items[0].metadata.name}")
 for i in {1..10}; do                                       
-  kubectl --context cluster1  exec -it $XWINGPOD -- curl -m 1rebel-base
+  kubectl --context cluster1  exec -it $XWINGPOD -- curl -m 1 rebel-base
 done
 ```
 

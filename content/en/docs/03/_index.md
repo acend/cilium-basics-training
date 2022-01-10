@@ -27,10 +27,13 @@ Deploy the app:
 kubectl create -f simple-app.yaml
 ```
 
-Verity with `kubectl get all` that everything is up and running:
+Verity with with the following command that everything is up and running:
+
+```bash
+kubectl get all
+```
 
 ```
-kubectl get all                                             
 NAME                                READY   STATUS              RESTARTS   AGE
 pod/backend-56787b4bd7-dmzdh        0/1     ContainerCreating   0          6s
 pod/frontend-7cbdcb86fd-gdb4q       0/1     ContainerCreating   0          6s
@@ -72,6 +75,14 @@ and then run:
 ```bash
 kubectl -n kube-system exec <podname> -- cilium endpoint list
 ```
+
+{{% alert title="Note" color="primary" %}}
+Or you can also use some jsonpath magic and execute the command in one line:
+
+```bash
+kubectl -n kube-system exec $(kubectl -n kube-system get pods -l k8s-app=cilium -o jsonpath='{.items[0].metadata.name}') -- cilium endpoint list
+```
+{{% /alert %}}
 
 Both ingress and egress policy enforcement is still disabled on all of these pods because no network policy has been imported yet which select any of the pods.
 

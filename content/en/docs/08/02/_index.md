@@ -27,9 +27,9 @@ kubectl --context cluster2 apply -f cnp.yaml
 Let us run our `curl` `for` loop again:
 
 ```bash
-XWINGPOD=<x-wing-podname>
+XWINGPOD=$(kubectl get pod -l name=x-wing -o jsonpath="{.items[0].metadata.name}")
 for i in {1..10}; do                                       
-  kubectl --context cluster1 exec -it $XWINGPOD -- curl -m 1rebel-base
+  kubectl --context cluster1 exec -it $XWINGPOD -- curl -m 1 rebel-base
 done
 ```
 

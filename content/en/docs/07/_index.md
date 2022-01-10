@@ -21,21 +21,27 @@ minikube -p cluster1 node add
 
 To see traffic between nodes we move the frontend pod from Chapter 3 to the newly created node:
 
-```yaml
-spec:
-  template:
-    spec:
-      nodeSelector:
-        kubernetes.io/hostname: cluster1-m02 
-```
+{{< highlight yaml >}}{{< readfile file="content/en/docs/07/patch.yaml" >}}{{< /highlight >}}
 
 ```bash
-kubectl patch deployments.apps frontend --type merge --patch "$(cat patch.yaml)"
+kubectl patch deployments.apps frontend --type merge --patch-file patch.yaml
 ```
-We should see the frontend now running on the new node
+We should see the frontend now running on the new node `cluster1-m02`:
 
 ```bash
 kubectl get pods -o wide
+```
+
+```
+NAME                           READY   STATUS        RESTARTS      AGE   IP           NODE           NOMINATED NODE   READINESS GATES
+backend-65f7c794cc-hh6pw       1/1     Running       0             22m   10.1.0.39    cluster1       <none>           <none>
+deathstar-6c94dcc57b-6chpk     1/1     Running       1 (10m ago)   11m   10.1.0.207   cluster1       <none>           <none>
+deathstar-6c94dcc57b-vtt8b     1/1     Running       0             11m   10.1.0.220   cluster1       <none>           <none>
+frontend-6db4b77ff6-kznfl      1/1     Running       0             35s   10.1.1.7     cluster1-m02   <none>           <none>
+not-frontend-8f467ccbd-4jl6z   1/1     Running       0             22m   10.1.0.115   cluster1       <none>           <none>
+tiefighter                     1/1     Running       0             11m   10.1.0.185   cluster1       <none>           <none>
+xwing                          1/1     Running       0             11m   10.1.0.205   cluster1       <none>           <none>
+
 ```
 
 
@@ -52,8 +58,14 @@ helm upgrade -i cilium cilium/cilium \
   --set encryption.type=wireguard \
   --set enryption.wireguard.userspaceFallback=true \
   --wait
+```
+
+and then restart the cilium Daemonset:
+
+```bash
 kubectl -n kube-system rollout restart ds cilium
 ```
+
 Currently L7 policy enforcement and visibility is [not supported](https://github.com/cilium/cilium/issues/15462) with WireGuard, this is why we have to disable it.
 
 
@@ -75,8 +87,9 @@ We can check if the traffic is really sent to the WireGuard tunnel device cilium
 
 ```bash
 CILIUM_AGENT=$(kubectl get pod -n kube-system -l k8s-app=cilium -o jsonpath="{.items[0].metadata.name}")
-kubectl debug -n kube-system -i ${CILIUM_AGENT} --image=nicolaka/netshoot -- tcpdump -ni cilium_wg0
+kubectl debug -n kube-system -i ${CILIUM_AGENT} --image=nicolaka/netshoot -- tcpdump -ni cilium_wg0 -X port 8080
 ```
+
 If you don't see any traffic, generate it yourself. Open a new terminal and call the backend service from our frontend pod.
 
 ```bash
@@ -85,8 +98,41 @@ kubectl exec -ti ${FRONTEND} -- curl -Is backend:8080
 ```
 You should now see traffic flowing through the WireGuard tunnel interface cilium_wg0.
 
+{{% alert title="Note" color="primary" %}}
+As we are sniffing in the WireGuard interface `cilium_wg0` you see the unencrypted traffic.
+{{% /alert %}}
+
 
 ## Legal
 
 “WireGuard” is a registered trademark of Jason A. Donenfeld.
 
+
+## Task {{% param sectionnumber %}}.4:  CleanUp
+
+To not mess up the next ClusterMesh Lab we are going to disable WireGuard encryption again:
+
+```bash
+helm upgrade -i cilium cilium/cilium \
+  --namespace kube-system \
+  --reuse-values \
+  --set l7Proxy=true \
+  --set encryption.enabled=false \
+  --wait
+```
+
+and then restart the cilium Daemonset:
+
+```bash
+kubectl -n kube-system rollout restart ds cilium
+```
+
+Verify that it is disabled again:
+
+```bash
+kubectl -n kube-system exec -ti ds/cilium -- cilium status | grep Encryption
+```
+
+```
+Encryption:                       Disabled
+```

@@ -1,0 +1,40 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-2
+  labels:
+    app: backend-2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend-2
+  template:
+    metadata:
+      labels:
+        app: backend-2
+    spec:
+      containers:
+      - name: backend-container
+        env:
+        - name: PORT
+          value: "8080"
+        ports:
+        - containerPort: 8080
+        image: docker.io/jmalloc/echo-server
+        imagePullPolicy: IfNotPresent
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-2
+  labels:
+    app: backend-2
+spec:
+  type: ClusterIP
+  selector:
+    app: backend-2
+  ports:
+  - name: http
+    port: 8080

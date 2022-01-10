@@ -37,30 +37,28 @@ minikube start --network-plugin=cni --cni=false --kubernetes-version=1.23.0 --ex
 
 ## Task {{% param sectionnumber %}}.1: Deploy Cilium and enable the Kube Proxy replacement
 
-Install Cilium with the following command:
+As the `cilium` and `cilium-operator` by default tries to communicate with the Kubernetes API using the default `kubernetes` service ip, they cannot do this with disabled `kube-proxy`. We therefore need to set the `KUBERNETES_SERVICE_HOST` and `KUBERNETES_SERVICE_PORT` environment variable to tell the two pods how to connect to the Kubernetes API.
 
-
-```bash
-cilium install --config cluster-pool-ipv4-cidr=10.3.0.0/16  --kube-proxy-replacement strict --cluster-name cluster3 --cluster-id 3 --wait false
-```
-
-{{% alert title="Note" color="primary" %}}
-
-As the `cilium` and `cilium-operator` by default tries to communicate with the Kubernetes API using the default `kubernetes` service ip, they cannot do this with disabled `kube-proxy`. We therefore need to set the `KUBERNETES_SERVICE_HOST` and `KUBERNETES_SERVICE_PORT` environment variable to tell the two pods how to connect to the Kubernetes API. Unfortunatly as of writing this, the `cilium` CLI does not do this when setting `--kube-proxy-replacement strict`.
-
-First, get the correct IP address with:
+To findthe correct IP address execute the following command:
 
 ```bash
 kubectl config view -o jsonpath='{.clusters[?(@.name == "cluster3")].cluster.server}'
 ```
 
-and then set these two environment variables with using the output from the previous command:
+Use the shown IP address and port in the next Helm command to install cilium:
 
 ```bash
-kubectl -n kube-system set env daemonset/cilium KUBERNETES_SERVICE_HOST=<API-IPADDRESS> KUBERNETES_SERVICE_PORT=<API-PORT>
-kubectl -n kube-system set env deployment/cilium-operator KUBERNETES_SERVICE_HOST=<API-IPADDRESS> KUBERNETES_SERVICE_PORT=<API-PORT>
+helm upgrade -i cilium cilium/cilium --version 1.11.0 \
+  --namespace kube-system \
+  --set ipam.operator.clusterPoolIPv4PodCIDR=10.3.0.0/16 \
+  --set cluster.name=cluster3 \
+  --set cluster.id=3 \
+  --set operator.replicas=1 \
+  --set ubeProxyReplacement=strict \
+  --set k8sServiceHost=REPLACE_WITH_API_SERVER_IP \
+  --set k8sServicePort=REPLACE_WITH_API_SERVER_PORT \
+  --wait
 ```
-{{% /alert %}}
 
 We can now compare the running pods on `cluster2` and `cluster3` in the `kube-system` namespace.
 

@@ -1,0 +1,42 @@
+---
+apiVersion: "cilium.io/v2"
+kind: CiliumNetworkPolicy
+metadata:
+  name: "rule1"
+spec:
+  description: "enable L7 without blocking"
+  endpointSelector:
+    matchLabels:
+      app: backend
+  ingress:
+  - fromEntities:
+    - "all"
+    toPorts:
+    - ports:
+      - port: "8080"
+        protocol: TCP
+      rules:
+        http:
+        - method: "GET"
+          path: "/private"
+---
+apiVersion: "cilium.io/v2"
+kind: CiliumNetworkPolicy
+metadata:
+  name: "rule2"
+spec:
+  description: "enable L7 without blocking"
+  endpointSelector:
+    matchLabels:
+      app: backend-2
+  ingress:
+  - fromEntities:
+    - "all"
+    toPorts:
+    - ports:
+      - port: "8080"
+        protocol: TCP
+      rules:
+        http:
+        - method: "GET"
+          path: "/private"
