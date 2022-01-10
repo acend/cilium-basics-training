@@ -131,5 +131,5 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           message: |
            PR Environments: 
-           * acend version <https://cilium-basics-training-pr-${{ github.event.pull_request.number }}.training.acend.ch>
+           * acend version <https://cilium-basics-pr-${{ github.event.pull_request.number }}.training.acend.ch>
            * puzzle version <https://cilium-basics-training-pr-${{ github.event.pull_request.number }}.k8s.puzzle.ch>
