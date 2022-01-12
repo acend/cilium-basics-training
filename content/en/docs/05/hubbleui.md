@@ -9,11 +9,26 @@ Not only does Hubble allow to inspect flows from the command line, it also allow
 
 ## Task {{% param sectionnumber %}}.1: Enable the Hubble UI component
 
-Enable the optional Hubble UI component with:
+Enable the optional Hubble UI component with Helm looks like this:
+
+```
+```bash
+helm repo add cilium https://helm.cilium.io/
+helm upgrade -i cilium cilium/cilium --version 1.11.0 \
+  --namespace kube-system \
+  --set ipam.operator.clusterPoolIPv4PodCIDR=10.1.0.0/16 \
+  --reuse-values \
+  --set hubble.ui.enabled=true \
+  --wait
+```
+
+{{% alert title="Note" color="primary" %}}
+When using the `cilium` CLI you can execute the following command to enable the Hubble UI:
 
 ```bash
 cilium hubble enable --ui
 ```
+{{% /alert %}}
 
 Take a look at the pods again to see what happened under the hood:
 

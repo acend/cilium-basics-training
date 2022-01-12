@@ -94,20 +94,15 @@ Use "hubble [command] --help" for more information about a command.
 
 When you install Cilium using Helm, then Hubble is already enabled. The value for this is `hubble.enabled` which is set to `true` in the `values.yaml` of the Cilium Helm Chart. But we also want to enable the Hubble Relay. With the following Helm command you can enable Hubble with the Hubble Relay:
 
-```
 ```bash
 helm repo add cilium https://helm.cilium.io/
 helm upgrade -i cilium cilium/cilium --version 1.11.0 \
   --namespace kube-system \
-  --set ipam.operator.clusterPoolIPv4PodCIDR=10.1.0.0/16 \
-  --set cluster.name=cluster1 \
-  --set cluster.id=1 \
-  --set operator.replicas=1 \
+  --reuse-values \
   --set hubble.enabled=true \
   --set hubble.relay.enabled=true \
   --wait
 ```
-
 
 If you have installed Cilium with the `cilium` cli then Hubble component is not enabled by default (nor is Hubble Relay), and you can enbale Hubble using the following `cilium` CLI command:
 
