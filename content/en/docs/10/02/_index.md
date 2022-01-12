@@ -4,6 +4,11 @@ weight: 102
 sectionnumber: 10.2
 ---
 
+
+{{% alert title="Note" color="primary" %}}
+This lab should be done on your `cluster1`, make sure to switch to `cluster1` with `minikube profile cluster1`
+{{% /alert %}}
+
 Cilium is also capable to act as an host firwall to enforce seucrity policies for Kubernetes nodes. In this lab we are going to show you briefly how this works.
 
 
