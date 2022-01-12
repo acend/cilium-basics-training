@@ -84,6 +84,10 @@ cilium image (stable): v1.10.5
 cilium image (running): unknown. Unable to obtain cilium version, no cilium pods found in namespace "kube-system"
 ```
 
+{{% alert title="Note" color="primary" %}}
+It's ok if your installation does not show the same version.
+{{% /alert %}}
+
 Them lets look at
 
 ```bash
@@ -115,7 +119,7 @@ Let's install cilium with helm:
 
 ```bash
 helm repo add cilium https://helm.cilium.io/
-helm upgrade -i cilium cilium/cilium --version 1.11.0 \
+helm upgrade -i cilium cilium/cilium --version 1.10.5 \
   --namespace kube-system \
   --set ipam.operator.clusterPoolIPv4PodCIDR=10.1.0.0/16 \
   --set cluster.name=cluster1 \
@@ -239,5 +243,5 @@ kubectl delete ns cilium-test --wait=false
 This is how the installation with the `cilium` cli would have looked like:
 
 ```bash
-cilium install --config cluster-pool-ipv4-cidr=10.1.0.0/16 --cluster-name cluster1 --cluster-id 1 
+cilium install --config cluster-pool-ipv4-cidr=10.1.0.0/16 --cluster-name cluster1 --cluster-id 1 --version v1.10.5
 ```
