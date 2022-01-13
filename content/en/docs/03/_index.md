@@ -314,26 +314,11 @@ hubble observe --verdict DROPPED
 
 ```
 hubble observe --to-pod backend
-Nov 23 14:54:27.091: default/frontend-7cbdcb86fd-gdb4q:58842 -> default/backend-56787b4bd7-dmzdh:8080 L3-Only FORWARDED (TCP Flags: SYN)
-Nov 23 14:54:27.091: default/frontend-7cbdcb86fd-gdb4q:58842 -> default/backend-56787b4bd7-dmzdh:8080 to-endpoint FORWARDED (TCP Flags: SYN)
-Nov 23 14:54:27.091: default/frontend-7cbdcb86fd-gdb4q:58842 -> default/backend-56787b4bd7-dmzdh:8080 to-endpoint FORWARDED (TCP Flags: ACK)
-Nov 23 14:54:27.091: default/frontend-7cbdcb86fd-gdb4q:58842 -> default/backend-56787b4bd7-dmzdh:8080 to-endpoint FORWARDED (TCP Flags: ACK, PSH)
-Nov 23 14:54:27.092: default/frontend-7cbdcb86fd-gdb4q:58842 -> default/backend-56787b4bd7-dmzdh:8080 to-endpoint FORWARDED (TCP Flags: ACK, FIN)
-Nov 23 14:54:27.092: default/frontend-7cbdcb86fd-gdb4q:58842 -> default/backend-56787b4bd7-dmzdh:8080 to-endpoint FORWARDED (TCP Flags: ACK)
-Nov 23 14:54:27.267: default/not-frontend-5cf6d96558-gj4np:53766 <> default/backend-56787b4bd7-dmzdh:8080 Policy denied DROPPED (TCP Flags: SYN)
-Nov 23 14:54:27.267: default/not-frontend-5cf6d96558-gj4np:53766 <> default/backend-56787b4bd7-dmzdh:8080 Policy denied DROPPED (TCP Flags: SYN)
-Nov 23 14:54:28.295: default/not-frontend-5cf6d96558-gj4np:53766 <> default/backend-56787b4bd7-dmzdh:8080 Policy denied DROPPED (TCP Flags: SYN)
-Nov 23 14:54:28.295: default/not-frontend-5cf6d96558-gj4np:53766 <> default/backend-56787b4bd7-dmzdh:8080 Policy denied DROPPED (TCP Flags: SYN)
-Nov 23 14:54:30.311: default/not-frontend-5cf6d96558-gj4np:53766 <> default/backend-56787b4bd7-dmzdh:8080 Policy denied DROPPED (TCP Flags: SYN)
-Nov 23 14:54:30.311: default/not-frontend-5cf6d96558-gj4np:53766 <> default/backend-56787b4bd7-dmzdh:8080 Policy denied DROPPED (TCP Flags: SYN)
-Nov 23 14:54:32.430: default/frontend-7cbdcb86fd-gdb4q:58894 -> default/backend-56787b4bd7-dmzdh:8080 L3-Only FORWARDED (TCP Flags: SYN)
-Nov 23 14:54:32.430: default/frontend-7cbdcb86fd-gdb4q:58894 -> default/backend-56787b4bd7-dmzdh:8080 to-endpoint FORWARDED (TCP Flags: SYN)
-Nov 23 14:54:32.430: default/frontend-7cbdcb86fd-gdb4q:58894 -> default/backend-56787b4bd7-dmzdh:8080 to-endpoint FORWARDED (TCP Flags: ACK)
-Nov 23 14:54:32.430: default/frontend-7cbdcb86fd-gdb4q:58894 -> default/backend-56787b4bd7-dmzdh:8080 to-endpoint FORWARDED (TCP Flags: ACK, PSH)
-Nov 23 14:54:32.431: default/frontend-7cbdcb86fd-gdb4q:58894 -> default/backend-56787b4bd7-dmzdh:8080 to-endpoint FORWARDED (TCP Flags: ACK, FIN)
-Nov 23 14:54:32.431: default/frontend-7cbdcb86fd-gdb4q:58894 -> default/backend-56787b4bd7-dmzdh:8080 to-endpoint FORWARDED (TCP Flags: ACK)
-Nov 23 14:54:32.603: default/not-frontend-5cf6d96558-gj4np:53820 <> default/backend-56787b4bd7-dmzdh:8080 Policy denied DROPPED (TCP Flags: SYN)
-Nov 23 14:54:32.603: default/not-frontend-5cf6d96558-gj4np:53820 <> default/backend-56787b4bd7-dmzdh:8080 Policy denied DROPPED (TCP Flags: SYN)
+Jan 13 14:59:29.536: default/frontend-76fbb99468-jx2ds:59630 -> default/backend-65f7c794cc-pj2tc:8080 to-endpoint FORWARDED (TCP Flags: SYN)
+Jan 13 14:59:29.536: default/frontend-76fbb99468-jx2ds:59630 -> default/backend-65f7c794cc-pj2tc:8080 to-endpoint FORWARDED (TCP Flags: ACK)
+Jan 13 14:59:29.537: default/frontend-76fbb99468-jx2ds:59630 -> default/backend-65f7c794cc-pj2tc:8080 to-endpoint FORWARDED (TCP Flags: ACK, PSH)
+Jan 13 14:59:29.547: default/frontend-76fbb99468-jx2ds:59630 -> default/backend-65f7c794cc-pj2tc:8080 to-endpoint FORWARDED (TCP Flags: ACK, FIN)
+Jan 13 14:59:29.548: default/frontend-76fbb99468-jx2ds:59630 -> default/backend-65f7c794cc-pj2tc:8080 to-endpoint FORWARDED (TCP Flags: ACK)
 ```
 
-Note that Hubble tells us the reason a packet was `DROPPED` (in our case, denied by the network policies applied above). This is really handy when developing / debugging network policies in the later chapters.
+Note that Hubble tells us the the Action, here `FORWARDED` but this could also be `DROPPED` as we see in later chapters.

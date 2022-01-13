@@ -13,7 +13,7 @@ If you are not yet familiar with Kubernetes Network Policies we suggest to go to
 {{% /alert %}}
 
 
-## Task {{% param sectionnumber %}}.2: Cilium Endpoint
+## Task {{% param sectionnumber %}}.1: Cilium Endpoint
 
 Each Pod from our simple application is represented in Cilium as an [Endpoint](https://docs.cilium.io/en/stable/concepts/terminology/#endpoint). We can use the `cilium` tool inside a Cilium pod to list them.
 
@@ -42,7 +42,7 @@ kubectl -n kube-system exec $(kubectl -n kube-system get pods -l k8s-app=cilium 
 {{% /alert %}}
 
 
-## Task {{% param sectionnumber %}}.3: Verify connectivity
+## Task {{% param sectionnumber %}}.2: Verify connectivity
 
 Make your your `FRONTEND` and `NOT_FRONTEND` environment variable are still set. Otherwise set them again:
 
@@ -97,7 +97,7 @@ and we see, both applications can connect to the `backend` application.
 Until now ingress and egress policy enforcement is still disabled on all of our pods because no network policy has been imported yet selecting any of the pods. Let us change this.
 
 
-## Task {{% param sectionnumber %}}.4: Disallow traffic with a Network Policy
+## Task {{% param sectionnumber %}}.3: Disallow traffic with a Network Policy
 
 We block traffic by applying the following network policy:
 
@@ -127,7 +127,7 @@ backend-ingress-deny   app=backend    2s
 ```
 
 
-## Task {{% param sectionnumber %}}.5: Verify connectivity again
+## Task {{% param sectionnumber %}}.4: Verify connectivity again
 
 We can now execute the connectivity check again:
 
@@ -164,7 +164,7 @@ In grafana browse to the dasboard `Hubble Metrics`. You should see now data in m
 Let's now selectively re-allow traffic again, but only from frontend to backend.
 
 
-## Task {{% param sectionnumber %}}.6: Allow traffic from frontend to backend
+## Task {{% param sectionnumber %}}.5: Allow traffic from frontend to backend
 
 We can do it by crafting a new network policy manually, but we can also use the Network Policy Editor to help us out:
 
@@ -245,6 +245,14 @@ Network policies are additive. Just like with firewalls, it is thus a good idea 
 
 We can verify our connection being blockend with hubble.
 
+Generate some traffic.
+
+```bash
+kubectl exec -ti ${NOT_FRONTEND} -- curl -I --connect-timeout 5 backend:8080
+```
+
+With hubble observe you can now check the packet beeing dropped along with the cause (Policy denied).
+
 {{% alert title="Note" color="primary" %}}
 Note: our earlier cilium hubble port-forward should still be running (can be checked by running jobs or `ps aux | grep "cilium hubble port-forward"`). If it does not, hubble status will fail and we have to run it again:
 
@@ -256,15 +264,10 @@ hubble status
 {{% /alert %}}
 
 ```bash
-hubble observe --from-label app=not-frontend -f
+hubble observe --from-label app=not-frontend
 ```
-Now in a second terminal generate some traffic:
 
-```bash
-kubectl exec -ti ${NOT_FRONTEND} -- curl -I --connect-timeout 5 backend:8080
-```
-You should see an output similiar to this showing the SYN packet being dropped.
-
+And the output should look like this:
 ```bash
 Jan 13 12:54:46.883: default/not-frontend-8f467ccbd-lh4w4:50802 -> kube-system/coredns-64897985d-7rjfv:53 to-endpoint FORWARDED (UDP)
 Jan 13 12:54:46.883: default/not-frontend-8f467ccbd-lh4w4:50802 -> kube-system/coredns-64897985d-7rjfv:53 to-endpoint FORWARDED (UDP)
@@ -276,10 +279,8 @@ Jan 13 12:54:49.922: default/not-frontend-8f467ccbd-lh4w4:37134 <> default/backe
 Jan 13 12:54:49.922: default/not-frontend-8f467ccbd-lh4w4:37134 <> default/backend-65f7c794cc-pj2tc:8080 Policy denied DROPPED (TCP Flags: SYN)
 ```
 
-You can close the second terminal. And stop hubble oberve with Ctrl+C.
 
-
-## Task {{% param sectionnumber %}}.7: Inspecting the cilium endpoints again
+## Task {{% param sectionnumber %}}.6: Inspecting the cilium endpoints again
 
 We can now check the cilium endpoints again.
 
