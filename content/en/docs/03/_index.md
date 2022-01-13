@@ -89,6 +89,7 @@ Use "hubble [command] --help" for more information about a command.
 
 ```
 
+
 ## Task {{% param sectionnumber %}}.2: Deploy simple application
 
 Before we enable Hubble in Cilium we want to make sure we have at least one application to observe.
@@ -141,7 +142,6 @@ echo ${FRONTEND}
 NOT_FRONTEND=$(kubectl get pods -l app=not-frontend -o jsonpath='{.items[0].metadata.name}')
 echo ${NOT_FRONTEND}
 ```
-
 
 
 ## Task {{% param sectionnumber %}}.3: Enable Hubble in Cilium
