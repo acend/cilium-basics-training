@@ -103,3 +103,7 @@ kubectl exec tiefighter -- curl -s -XPUT deathstar.default.svc.cluster.local/v1/
 ```
 Access denied
 ```
+
+{{% alert title="Note" color="primary" %}}
+You can now check the `Hubble Metrics` dashboard in grafana again. The graphs under HTTP should soon show some data as well.
+{{% alert %}}
