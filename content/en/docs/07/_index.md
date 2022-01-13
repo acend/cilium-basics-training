@@ -1,7 +1,7 @@
 ---
-title: "6. Troubleshooting"
-weight: 6
-sectionnumber: 6
+title: "7. Troubleshooting"
+weight: 7
+sectionnumber: 7
 ---
 
 

@@ -1,7 +1,7 @@
 ---
-title: "8.2 Network Policies"
-weight: 82
-sectionnumber: 8.2
+title: "9.2 Network Policies"
+weight: 92
+sectionnumber: 9.2
 ---
 
 ## Task {{% param sectionnumber %}}.1: Allowing Specific Communication Between Clusters
@@ -9,7 +9,7 @@ sectionnumber: 8.2
 
 The following policy illustrates how to allow particular pods to communicate between two clusters.
 
-{{< highlight yaml >}}{{< readfile file="content/en/docs/08/02/cnp.yaml" >}}{{< /highlight >}}
+{{< highlight yaml >}}{{< readfile file="content/en/docs/09/02/cnp.yaml" >}}{{< /highlight >}}
 
 {{% alert title="Note" color="primary" %}}
 For the Pods to resolve the `rebel-base` service name they still need connectivity to Kubernetes DNS Service. Therefore access to that is also allowed.

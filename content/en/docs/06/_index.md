@@ -1,7 +1,7 @@
 ---
-title: "4. Cilium Network Policies"
-weight: 4
-sectionnumber: 4
+title: "6. Cilium Network Policies"
+weight: 6
+sectionnumber: 6
 ---
 
 ## Cilium Network Policies

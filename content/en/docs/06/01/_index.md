@@ -1,7 +1,7 @@
 ---
-title: "4.1 DNS-aware Network Policy"
-weight: 41
-sectionnumber: 4.1
+title: "6.1 DNS-aware Network Policy"
+weight: 61
+sectionnumber: 6.1
 ---
 
 
@@ -34,7 +34,7 @@ Again, in Kubernetes, all traffic is allowed by default, and since we did not ap
 
 Lets have a look at the following `CiliumNetworkPolicy`:
 
-{{< highlight yaml >}}{{< readfile file="content/en/docs/04/01/backend-egress-allow-fqdn.yaml" >}}{{< /highlight >}}
+{{< highlight yaml >}}{{< readfile file="content/en/docs/06/01/backend-egress-allow-fqdn.yaml" >}}{{< /highlight >}}
 
 The policy will deny all egress traffic from pods labelled `app=backend` except when traffic is destined for `kubernetes.io` or is a DNS request (necessary for resolving `kubernetes.io` from coredns).
 
@@ -75,7 +75,7 @@ command terminated with exit code 28
 
 ```
 {{% alert title="Note" color="primary" %}}
-You can now check the `Hubble Metrics` dashboard in grafana again. The graphs under DNS should soon show some data as well.
+You can now check the `Hubble Metrics` dashboard in grafana again. The graphs under DNS should soon show some data as well. This is because with a Layer 7 Policy we have enabled the envoy in Cilium Agent.
 {{% alert %}}
 
 With the ingress and egress policies in place on `app=backend` pods, we have implemented a very simple zero-trust model to all traffic to and from our backend. In a real world scenario, cluster administrators may leverage network policies and overlay them at all levels and for all kinds of traffic in order to switch from the Kubernetes default of all traffic being allowed to only specific traffic being allowed.

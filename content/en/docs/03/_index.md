@@ -1,7 +1,7 @@
 ---
-title: "5. Hubble"
-weight: 5
-sectionnumber: 5
+title: "3. Hubble"
+weight: 3
+sectionnumber: 3
 ---
 
 Before we start with the CNI functionality of Cilium and its security components. We want to enable the optional Hubble component (which is disabled by default). So we can take full advantage of its eBFP observatility capabilities.

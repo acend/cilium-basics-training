@@ -1,7 +1,7 @@
 ---
-title: "7. Transparent Encryption"
-weight: 7
-sectionnumber: 7
+title: "8. Transparent Encryption"
+weight: 8
+sectionnumber: 8
 ---
 ## Host traffic/endpoint traffic encryption
 
@@ -21,7 +21,7 @@ minikube -p cluster1 node add
 
 To see traffic between nodes we move the frontend pod from Chapter 3 to the newly created node:
 
-{{< highlight yaml >}}{{< readfile file="content/en/docs/07/patch.yaml" >}}{{< /highlight >}}
+{{< highlight yaml >}}{{< readfile file="content/en/docs/08/patch.yaml" >}}{{< /highlight >}}
 
 ```bash
 kubectl patch deployments.apps frontend --type merge --patch-file patch.yaml

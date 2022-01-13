@@ -1,7 +1,7 @@
 ---
-title: "9. Metrics"
-weight: 9
-sectionnumber: 9
+title: "4. Metrics"
+weight: 4
+sectionnumber: 4
 ---
 
 Hubble and its UI did allow us to see traffic flow inside our cluster. Both Cilium and Hubble can be configured to serve Prometheus metrics independently of each other.
