@@ -1,207 +1,138 @@
 ---
-title: "8. Cluster Mesh"
+title: "8. Transparent Encryption"
 weight: 8
 sectionnumber: 8
 ---
+## Host traffic/endpoint traffic encryption
+
+To secure communication inside a kubernetes cluster Cilium supports transparent encryption of traffic between Cilium-managed endpoints either using IPsec or [WireGuard®](https://www.wireguard.com/).
 
 
-## Task {{% param sectionnumber %}}.1: Create a second Kubernetes Cluster
+## Task {{% param sectionnumber %}}.1: Increase cluster size
 
-In order to create a Cluster Mesh we need a second Kubernetes Cluster. For the Cluster Mesh to work, the PodCIDR ranges in all clusters and all nodes must be non-conflicting and unique IP addresses. The Nodes in all clusters must have IP connectivity between each other and the network between the clusters must allow the inter-cluster communication.
-
-{{% alert title="Note" color="primary" %}}
-The exact ports are documented in the [Firewall Rules](https://docs.cilium.io/en/v1.11/operations/system_requirements/#firewall-requirements) section.
-{{% /alert %}}
-
-To start a second cluster run the following command:
+By default minikube create single node clusters. Add a second node to the cluster:
 
 ```bash
-minikube start --network-plugin=cni --cni=false --kubernetes-version=1.23.0 -p cluster2
+minikube -p cluster1 node add
 ```
 
-{{% alert title="Note" color="primary" %}}
-As Minikube with the Docker driver uses separated Docker networks, we need to make sure that your system forwards traffic between the two networks. Execute `sudo iptables -I DOCKER-USER -j ACCEPT` to enable forwarding by default. TODO: Is there an other way?
-{{% /alert %}}
 
+## Task {{% param sectionnumber %}}.2: Move frontend app to different node
 
-Then install Cilium using again Helm. Remember, we need a different PodCIDR for the second cluster, therefore while installing Cilium, we have to change this config:
+To see traffic between nodes we move the frontend pod from Chapter 3 to the newly created node:
+
+{{< highlight yaml >}}{{< readfile file="content/en/docs/08/patch.yaml" >}}{{< /highlight >}}
 
 ```bash
-helm upgrade -i cilium cilium/cilium --version 1.11.0 \
+kubectl patch deployments.apps frontend --type merge --patch-file patch.yaml
+```
+We should see the frontend now running on the new node `cluster1-m02`:
+
+```bash
+kubectl get pods -o wide
+```
+
+```
+NAME                           READY   STATUS        RESTARTS      AGE   IP           NODE           NOMINATED NODE   READINESS GATES
+backend-65f7c794cc-hh6pw       1/1     Running       0             22m   10.1.0.39    cluster1       <none>           <none>
+deathstar-6c94dcc57b-6chpk     1/1     Running       1 (10m ago)   11m   10.1.0.207   cluster1       <none>           <none>
+deathstar-6c94dcc57b-vtt8b     1/1     Running       0             11m   10.1.0.220   cluster1       <none>           <none>
+frontend-6db4b77ff6-kznfl      1/1     Running       0             35s   10.1.1.7     cluster1-m02   <none>           <none>
+not-frontend-8f467ccbd-4jl6z   1/1     Running       0             22m   10.1.0.115   cluster1       <none>           <none>
+tiefighter                     1/1     Running       0             11m   10.1.0.185   cluster1       <none>           <none>
+xwing                          1/1     Running       0             11m   10.1.0.205   cluster1       <none>           <none>
+
+```
+
+
+## Task {{% param sectionnumber %}}.3:  Enable node traffic encryption with WireGuard
+
+Enabling WireGuard based encryption with helm is simple:
+
+```bash
+helm upgrade -i cilium cilium/cilium \
   --namespace kube-system \
-  --set ipam.operator.clusterPoolIPv4PodCIDR=10.2.0.0/16 \
-  --set cluster.name=cluster2 \
-  --set cluster.id=2 \
-  --set operator.replicas=1 \
+  --reuse-values \
+  --set l7Proxy=false \
+  --set encryption.enabled=true \
+  --set encryption.type=wireguard \
+  --set enryption.wireguard.userspaceFallback=true \
   --wait
 ```
 
-// TODO: cilium-ca for https://docs.cilium.io/en/stable/gettingstarted/clustermesh/clustermesh/#shared-certificate-authority
-
-Then wait until the Cluster and Cilium is ready.
-
-```
-cilium status                                               
-    /¯¯\
- /¯¯\__/¯¯\    Cilium:         OK
- \__/¯¯\__/    Operator:       OK
- /¯¯\__/¯¯\    Hubble:         disabled
- \__/¯¯\__/    ClusterMesh:    disabled
-    \__/
-
-DaemonSet         cilium             Desired: 1, Ready: 1/1, Available: 1/1
-Deployment        cilium-operator    Desired: 1, Ready: 1/1, Available: 1/1
-Containers:       cilium-operator    Running: 1
-                  cilium             Running: 1
-Cluster Pods:     1/1 managed by Cilium
-Image versions    cilium             quay.io/cilium/cilium:v1.11.0: 1
-                  cilium-operator    quay.io/cilium/operator-generic:v1.11.0: 1
-```
-
-You can verify the correct podCidr using:
+and then restart the cilium Daemonset:
 
 ```bash
-kubectl get pod -A -o wide                 
-
+kubectl -n kube-system rollout restart ds cilium
 ```
 
-Have a look at the `codedns-` Pod and verify that it's IP is from your defined `10.2.0.0/16` range.
+Currently L7 policy enforcement and visibility is [not supported](https://github.com/cilium/cilium/issues/15462) with WireGuard, this is why we have to disable it.
 
-```
-NAMESPACE     NAME                               READY   STATUS    RESTARTS   AGE   IP             NODE       NOMINATED NODE   READINESS GATES
-kube-system   cilium-operator-776958f5bb-m5hww   1/1     Running   0          29s   192.168.58.2   cluster2   <none>           <none>
-kube-system   cilium-qg9xj                       1/1     Running   0          29s   192.168.58.2   cluster2   <none>           <none>
-kube-system   coredns-558bd4d5db-z6cxh           1/1     Running   0          38s   10.2.0.240     cluster2   <none>           <none>
-kube-system   etcd-cluster2                      1/1     Running   0          44s   192.168.58.2   cluster2   <none>           <none>
-kube-system   kube-apiserver-cluster2            1/1     Running   0          44s   192.168.58.2   cluster2   <none>           <none>
-kube-system   kube-controller-manager-cluster2   1/1     Running   0          44s   192.168.58.2   cluster2   <none>           <none>
-kube-system   kube-proxy-bqk4r                   1/1     Running   0          38s   192.168.58.2   cluster2   <none>           <none>
-kube-system   kube-scheduler-cluster2            1/1     Running   0          44s   192.168.58.2   cluster2   <none>           <none>
-kube-system   storage-provisioner                1/1     Running   1          49s   192.168.58.2   cluster2   <none>           <none>
+
+### Verify encryption is working
+
+
+Verify the number of peers in encryption is correct (should be the sum of nodes - 1)
+```bash
+kubectl -n kube-system exec -ti ds/cilium -- cilium status | grep Encryption
 ```
 
-Great the second cluster and Cilium is ready to use.
+You should see something similiar to this (in this example we have a two node cluster):
 
+```bash
+Encryption:             Wireguard       [cilium_wg0 (Pubkey: XbTJd5Gnp7F8cG2Ymj6q11dBx8OtP1J5ZOAhswPiYAc=, Port: 51871, Peers: 1)]
+```
 
-## Task {{% param sectionnumber %}}.2: Enable Cluster Mesh on both Cluster
+We can check if the traffic is really sent to the WireGuard tunnel device cilium_wg0 (hit Ctrl+C to stop sniffing).
 
-Now lets enable the Cluster Mesh using the `cilium` CLI on both Cluster:
+```bash
+CILIUM_AGENT=$(kubectl get pod -n kube-system -l k8s-app=cilium -o jsonpath="{.items[0].metadata.name}")
+kubectl debug -n kube-system -i ${CILIUM_AGENT} --image=nicolaka/netshoot -- tcpdump -ni cilium_wg0 -X port 8080
+```
 
+If you don't see any traffic, generate it yourself. Open a new terminal and call the backend service from our frontend pod.
+
+```bash
+FRONTEND=$(kubectl get pods -l app=frontend -o jsonpath='{.items[0].metadata.name}')
+kubectl exec -ti ${FRONTEND} -- curl -Is backend:8080
+```
+You should now see traffic flowing through the WireGuard tunnel interface cilium_wg0.
 
 {{% alert title="Note" color="primary" %}}
-Altough so far we used Helm up install & update cilium, enabeling Cilium using Helm currently has some bugs, therefore we use the `cilium` CLI to achieve this task.
+As we are sniffing in the WireGuard interface `cilium_wg0` you see the unencrypted traffic.
 {{% /alert %}}
 
-```bash
-cilium clustermesh enable --context cluster1 --service-type NodePort
-cilium clustermesh enable --context cluster2 --service-type NodePort
-```
 
-You can now verify the clustermesh status using:
+## Legal
 
-```bash
-cilium clustermesh status --context cluster1 --wait
-```
+“WireGuard” is a registered trademark of Jason A. Donenfeld.
 
-```
-⚠️  Service type NodePort detected! Service may fail when nodes are removed from the cluster!
-✅ Cluster access information is available:
-  - 192.168.49.2:31839
-✅ Service "clustermesh-apiserver" of type "NodePort" found
-⌛ [cluster1] Waiting for deployment clustermesh-apiserver to become ready...
-🔌 Cluster Connections:
-🔀 Global services: [ min:0 / avg:0.0 / max:0 ]
-```
 
-In order to connect the two clusters, the following step needs to be done in one direction only. The connection will automatically be established in both directions:
+## Task {{% param sectionnumber %}}.4:  CleanUp
+
+To not mess up the next ClusterMesh Lab we are going to disable WireGuard encryption again:
 
 ```bash
-cilium clustermesh connect --context cluster1 --destination-context cluster2
+helm upgrade -i cilium cilium/cilium \
+  --namespace kube-system \
+  --reuse-values \
+  --set l7Proxy=true \
+  --set encryption.enabled=false \
+  --wait
 ```
 
-The output should look something like this:
-
-```
-✨ Extracting access information of cluster cluster2...
-🔑 Extracting secrets from cluster cluster2...
-⚠️  Service type NodePort detected! Service may fail when nodes are removed from the cluster!
-ℹ️  Found ClusterMesh service IPs: [192.168.58.2]
-✨ Extracting access information of cluster cluster1...
-🔑 Extracting secrets from cluster cluster1...
-⚠️  Service type NodePort detected! Service may fail when nodes are removed from the cluster!
-ℹ️  Found ClusterMesh service IPs: [192.168.49.2]
-✨ Connecting cluster cluster1 -> cluster2...
-🔑 Secret cilium-clustermesh does not exist yet, creating it...
-🔑 Patching existing secret cilium-clustermesh...
-✨ Patching DaemonSet with IP aliases cilium-clustermesh...
-✨ Connecting cluster cluster2 -> cluster1...
-🔑 Secret cilium-clustermesh does not exist yet, creating it...
-🔑 Patching existing secret ciliugm-clustermesh...
-✨ Patching DaemonSet with IP aliases cilium-clustermesh...
-✅ Connected cluster cluster1 and cluster2!
-```
-
-It may take a bit for the clusters to be connected. You can the following command to wait for the connection to be successful:
+and then restart the cilium Daemonset:
 
 ```bash
-cilium clustermesh status --context cluster1 --wait
+kubectl -n kube-system rollout restart ds cilium
 ```
 
-```
-⚠️  Service type NodePort detected! Service may fail when nodes are removed from the cluster!
-✅ Cluster access information is available:
-  - 192.168.58.2:32117
-✅ Service "clustermesh-apiserver" of type "NodePort" found
-⌛ [cluster2] Waiting for deployment clustermesh-apiserver to become ready...
-✅ All 1 nodes are connected to all clusters [min:1 / avg:1.0 / max:1]
-🔌 Cluster Connections:
-- cluster1: 1/1 configured, 1/1 connected
-🔀 Global services: [ min:3 / avg:3.0 / max:3 ]
-```
-
-The two clusters are now connected.
-
-
-## Cluster Mesh Troubleshooting
-
-Use the following list of steps to troubleshoot issues with ClusterMesh:
+Verify that it is disabled again:
 
 ```bash
-cilium status --context cluster1
+kubectl -n kube-system exec -ti ds/cilium -- cilium status | grep Encryption
 ```
 
-or
-
-```bash
-cilium status --context cluster2
 ```
-
-which gives you an output similar to this:
-
+Encryption:                       Disabled
 ```
-    /¯¯\
- /¯¯\__/¯¯\    Cilium:         OK
- \__/¯¯\__/    Operator:       OK
- /¯¯\__/¯¯\    Hubble:         OK
- \__/¯¯\__/    ClusterMesh:    OK
-    \__/
-
-DaemonSet         cilium                   Desired: 1, Ready: 1/1, Available: 1/1
-Deployment        cilium-operator          Desired: 1, Ready: 1/1, Available: 1/1
-Deployment        hubble-relay             Desired: 1, Ready: 1/1, Available: 1/1
-Deployment        clustermesh-apiserver    Desired: 1, Ready: 1/1, Available: 1/1
-Containers:       cilium                   Running: 1
-                  cilium-operator          Running: 1
-                  hubble-relay             Running: 1
-                  clustermesh-apiserver    Running: 1
-Cluster Pods:     6/6 managed by Cilium
-Image versions    cilium                   quay.io/cilium/cilium:v1.11.0: 1
-                  cilium-operator          quay.io/cilium/operator-generic:v1.11.0: 1
-                  hubble-relay             quay.io/cilium/hubble-relay:v1.11.0: 1
-                  clustermesh-apiserver    quay.io/coreos/etcd:v3.4.13: 1
-                  clustermesh-apiserver    quay.io/cilium/clustermesh-apiserver:v1.11.0: 1
-
-```
-
-
-If you cannot resolve the issue with the above commands, follow the steps in [Cilium's Cluster Mesh Troubleshooting Guide](https://docs.cilium.io/en/v1.11/operations/troubleshooting/#troubleshooting-clustermesh)

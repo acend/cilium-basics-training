@@ -1,7 +1,7 @@
 ---
-title: "4.2 HTTP-aware L7 Policy"
-weight: 42
-sectionnumber: 4.2
+title: "6.2 HTTP-aware L7 Policy"
+weight: 62
+sectionnumber: 6.2
 ---
 
 
@@ -11,7 +11,7 @@ In this Star Wars-inspired example, there are three microservices applications: 
 
 The file `sw-app.yaml` contains a Kubernetes Deployment for each of the three services. Each deployment is identified using the Kubernetes labels (org=empire, class=deathstar), (org=empire, class=tiefighter), and (org=alliance, class=xwing). It also includes a deathstar-service, which load-balances traffic to all pods with label (org=empire, class=deathstar).
 
-{{< highlight yaml >}}{{< readfile file="content/en/docs/04/02/sw-app.yaml" >}}{{< /highlight >}}
+{{< highlight yaml >}}{{< readfile file="content/en/docs/06/02/sw-app.yaml" >}}{{< /highlight >}}
 
 Apply the file with:
 
@@ -23,7 +23,7 @@ And as we have already some Network Policies in our Namespace the default ingres
 
 `cnp.yaml`:
 
-{{< highlight yaml >}}{{< readfile file="content/en/docs/04/02/cnp.yaml" >}}{{< /highlight >}}
+{{< highlight yaml >}}{{< readfile file="content/en/docs/06/02/cnp.yaml" >}}{{< /highlight >}}
 
 Apply the Cilium Network Policy with:
 
@@ -76,7 +76,7 @@ main.main()
 
 Cilium is capable of enforcing HTTP-layer (i.e., L7) policies to limit what URLs the tiefighter is allowed to reach. Here is an example policy file that extends our original policy by limiting tiefighter to making only a POST /v1/request-landing API call, but disallowing all other calls (including PUT /v1/exhaust-port).
 
-{{< highlight yaml >}}{{< readfile file="content/en/docs/04/02/cnp-l7.yaml" >}}{{< /highlight >}}
+{{< highlight yaml >}}{{< readfile file="content/en/docs/06/02/cnp-l7.yaml" >}}{{< /highlight >}}
 
 Update the existing rule to apply L7-aware policy to protect deathstar using:
 
@@ -103,3 +103,7 @@ kubectl exec tiefighter -- curl -s -XPUT deathstar.default.svc.cluster.local/v1/
 ```
 Access denied
 ```
+
+{{% alert title="Note" color="primary" %}}
+You can now check the `Hubble Metrics` dashboard in grafana again. The graphs under HTTP should soon show some data as well.
+{{% alert %}}

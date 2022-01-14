@@ -1,19 +1,98 @@
 ---
-title: "3. Network Policies"
+title: "3. Hubble"
 weight: 3
 sectionnumber: 3
 ---
 
-## Network Policies
-
-One of the most basic CNI functions is the ability to enforce network policies and implement an in-cluster zero-trust container strategy. Network policies are a default Kubernetes object for controlling network traffic, but a CNI such as Cilium is required to enforce them. Let's deploy a very simple application to demonstrate how it works.
-
-{{% alert title="Note" color="primary" %}}
-If you are not yet familiar with Kubernetes Network Policies we suggest to go to the [Kubernetes Documentation](https://kubernetes.io/docs/concepts/services-networking/network-policies/)
-{{% /alert %}}
+Before we start with the CNI functionality of Cilium and its security components. We want to enable the optional Hubble component (which is disabled by default). So we can take full advantage of its eBFP observatility capabilities.
 
 
-## Task {{% param sectionnumber %}}.1: Deploy simple application
+## Task {{% param sectionnumber %}}.1: Install the Hubble CLI
+
+Similiar to the `cilium` CLI, the `hubble` CLI interfaces with Hubble and allows observing network traffic within Kubernetes.
+
+So let us install the `hubble` CLI.
+
+
+### Linux Setup
+
+Execute the following command to download the `hubble` CLI:
+
+```bash
+export HUBBLE_VERSION=$(curl -s https://raw.githubusercontent.com/cilium/hubble/master/stable.txt)
+curl -L --remote-name-all https://github.com/cilium/hubble/releases/download/$HUBBLE_VERSION/hubble-linux-amd64.tar.gz{,.sha256sum}
+sha256sum --check hubble-linux-amd64.tar.gz.sha256sum
+sudo tar xzvfC hubble-linux-amd64.tar.gz /usr/local/bin
+rm hubble-linux-amd64.tar.gz{,.sha256sum}
+```
+
+
+### MacOS Setup
+
+Execute the following command to download the `hubble` CLI:
+
+```bash
+export HUBBLE_VERSION=$(curl -s https://raw.githubusercontent.com/cilium/hubble/master/stable.txt)
+curl -L --remote-name-all https://github.com/cilium/hubble/releases/download/$HUBBLE_VERSION/hubble-darwin-amd64.tar.gz{,.sha256sum}
+shasum -a 256 -c hubble-darwin-amd64.tar.gz.sha256sum
+sudo tar xzvfC hubble-darwin-amd64.tar.gz /usr/local/bin
+rm hubble-darwin-amd64.tar.gz{,.sha256sum}
+```
+
+
+### Windows Setup
+
+Get the Windows binary files from the [latest Release](https://github.com/cilium/hubble/releases/latest/)
+
+
+## Hubble CLI
+
+Now that we have the `hubble` CLI let's have a look at some commands:
+
+```bash
+hubble version
+```
+
+```
+hubble v0.8.2 compiled with go1.16.8 on linux/amd64
+```
+
+or
+
+```bash
+hubble help
+```
+
+```
+Hubble is a utility to observe and inspect recent Cilium routed traffic in a cluster.
+
+Usage:
+  hubble [command]
+
+Available Commands:
+  completion  Output shell completion code
+  config      Modify or view hubble config
+  help        Help about any command
+  list        List Hubble objects
+  observe     Observe flows of a Hubble server
+  status      Display status of Hubble server
+  version     Display detailed version information
+
+Global Flags:
+      --config string   Optional config file (default "/home/sebastian/.config/hubble/config.yaml")
+  -D, --debug           Enable debug messages
+
+Get help:
+  -h, --help    Help for any command or subcommand
+
+Use "hubble [command] --help" for more information about a command.
+
+```
+
+
+## Task {{% param sectionnumber %}}.2: Deploy simple application
+
+Before we enable Hubble in Cilium we want to make sure we have at least one application to observe.
 
 Let's have a look at the following resource definitions:
 
@@ -27,7 +106,7 @@ Deploy the app:
 kubectl create -f simple-app.yaml
 ```
 
-Verity with with the following command that everything is up and running:
+Verify with the following command that everything is up and running:
 
 ```bash
 kubectl get all
@@ -55,43 +134,7 @@ replicaset.apps/not-frontend-5cf6d96558   1         1         0       6s
 
 ```
 
-
-## Task {{% param sectionnumber %}}.2: Cilium Endpoint
-
-Each Pod from our application will be represendet in Cilium as an [Endpoint](https://docs.cilium.io/en/stable/concepts/terminology/#endpoint). We can use the `cilium` tool inside a Cilium pod to list them.
-
-First get all Cilium pods with:
-
-```bash
-kubectl -n kube-system get pods -l k8s-app=cilium
-```
-
-```NAME           READY   STATUS    RESTARTS        AGE
-cilium-mvh65   1/1     Running   1 (6h26m ago)   6h30m
-```
-
-and then run:
-
-```bash
-kubectl -n kube-system exec <podname> -- cilium endpoint list
-```
-
-{{% alert title="Note" color="primary" %}}
-Or you can also use some jsonpath magic and execute the command in one line:
-
-```bash
-kubectl -n kube-system exec $(kubectl -n kube-system get pods -l k8s-app=cilium -o jsonpath='{.items[0].metadata.name}') -- cilium endpoint list
-```
-{{% /alert %}}
-
-Both ingress and egress policy enforcement is still disabled on all of these pods because no network policy has been imported yet which select any of the pods.
-
-
-## Task {{% param sectionnumber %}}.3: Verify connectivity
-
-In Kubernetes, all traffic is allowed by default. So let's check connectivity between pods.
-
-Let's make life a bit easier by storing the Pod's name into an environment variable so we can reuse it later again:
+Let us make life a bit easier by storing the pods name into an environment variable so we can reuse it later again:
 
 ```bash
 FRONTEND=$(kubectl get pods -l app=frontend -o jsonpath='{.items[0].metadata.name}')
@@ -100,187 +143,182 @@ NOT_FRONTEND=$(kubectl get pods -l app=not-frontend -o jsonpath='{.items[0].meta
 echo ${NOT_FRONTEND}
 ```
 
-Then execute:
+
+## Task {{% param sectionnumber %}}.3: Enable Hubble in Cilium
+
+When you install Cilium using Helm, then Hubble is already enabled. The value for this is `hubble.enabled` which is set to `true` in the `values.yaml` of the Cilium Helm Chart. But we also want to enable the Hubble Relay. With the following Helm command you can enable Hubble with the Hubble Relay:
 
 ```bash
-kubectl exec -ti ${FRONTEND} -- curl -I --connect-timeout 5 backend:8080
-kubectl exec -ti ${NOT_FRONTEND} -- curl -I --connect-timeout 5 backend:8080
+helm repo add cilium https://helm.cilium.io/
+helm upgrade -i cilium cilium/cilium --version 1.11.0 \
+  --namespace kube-system \
+  --reuse-values \
+  --set hubble.enabled=true \
+  --set hubble.relay.enabled=true \
+  --wait
 ```
 
-This will execute a simple `curl` call from the `frontend` and `not-frondend` application to the `backend` application:
-
-```
-# Frontend
-HTTP/1.1 200 OK
-X-Powered-By: Express
-Vary: Origin, Accept-Encoding
-Access-Control-Allow-Credentials: true
-Accept-Ranges: bytes
-Cache-Control: public, max-age=0
-Last-Modified: Sat, 26 Oct 1985 08:15:00 GMT
-ETag: W/"83d-7438674ba0"
-Content-Type: text/html; charset=UTF-8
-Content-Length: 2109
-Date: Tue, 23 Nov 2021 12:50:44 GMT
-Connection: keep-alive
-
-# Not Frontend
-HTTP/1.1 200 OK
-X-Powered-By: Express
-Vary: Origin, Accept-Encoding
-Access-Control-Allow-Credentials: true
-Accept-Ranges: bytes
-Cache-Control: public, max-age=0
-Last-Modified: Sat, 26 Oct 1985 08:15:00 GMT
-ETag: W/"83d-7438674ba0"
-Content-Type: text/html; charset=UTF-8
-Content-Length: 2109
-Date: Tue, 23 Nov 2021 12:50:44 GMT
-Connection: keep-alive
-```
-
-and we see, both applications can connect to the `backend` application.
-
-
-## Task {{% param sectionnumber %}}.4: Disallow traffic with a Network Policy
-
-Let's disallow traffic by applying a network policy:
-
-{{< highlight yaml >}}{{< readfile file="content/en/docs/03/backend-ingress-deny.yaml" >}}{{< /highlight >}}
-
-The policy will deny all ingress traffic as it is of type Ingress but specifies no allow rule, and will be applied to all pods with the `app=backend` label thanks to the podSelector.
-
-Ok, then let's create the policy with:
+If you have installed Cilium with the `cilium` cli then Hubble component is not enabled by default (nor is Hubble Relay), and you can enbale Hubble using the following `cilium` CLI command:
 
 ```bash
-kubectl apply -f backend-ingress-deny.yaml
+cilium hubble enable
 ```
 
-and you can verify the created Network Policy with:
+and then wait until Hubble is enabled:
+
+```
+🔑 Found existing CA in secret cilium-ca
+✨ Patching ConfigMap cilium-config to enable Hubble...
+♻️  Restarted Cilium pods
+⌛ Waiting for Cilium to become ready before deploying other Hubble component(s)...
+🔑 Generating certificates for Relay...
+✨ Deploying Relay from quay.io/cilium/hubble-relay:v1.10.5...
+⌛ Waiting for Hubble to be installed...
+✅ Hubble was successfully enabled!
+```
+
+When you have a look at your running pods with `kubectl get pod -A` you should see a pod with a name starting with `hubble-relay`:
+
+```
+kubectl get pod -A                                                                         
+NAMESPACE     NAME                               READY   STATUS    RESTARTS   AGE
+default       backend-56787b4bd7-dmzdh           1/1     Running   0          114m
+default       frontend-7cbdcb86fd-gdb4q          1/1     Running   0          114m
+default       not-frontend-5cf6d96558-gj4np      1/1     Running   0          114m
+kube-system   cilium-28kmn                       1/1     Running   0          73s
+kube-system   cilium-operator-8dd4dc946-n9ght    1/1     Running   0          149m
+kube-system   coredns-558bd4d5db-xzvc9           1/1     Running   0          150m
+kube-system   etcd-minikube                      1/1     Running   0          150m
+kube-system   hubble-relay-f6d85866c-csthd       1/1     Running   0          41s
+kube-system   kube-apiserver-minikube            1/1     Running   0          150m
+kube-system   kube-controller-manager-minikube   1/1     Running   0          150m
+kube-system   kube-proxy-bqs4d                   1/1     Running   0          150m
+kube-system   kube-scheduler-minikube            1/1     Running   0          150m
+kube-system   storage-provisioner                1/1     Running   1          150m
+```
+
+Cilium agents are restarting, and a new Hubble Relay pod is now present. We can wait for Cilium and Hubble to be ready by running:
 
 ```bash
-kubectl get netpol
+cilium status --wait
 ```
 
-which gives you an output similar to this:
+which should give you an output similar to this:
 
 ```
-                                                    
-NAME                   POD-SELECTOR   AGE
-backend-ingress-deny   app=backend    2s
+    /¯¯\
+ /¯¯\__/¯¯\    Cilium:         OK
+ \__/¯¯\__/    Operator:       OK
+ /¯¯\__/¯¯\    Hubble:         OK
+ \__/¯¯\__/    ClusterMesh:    disabled
+    \__/
 
+DaemonSet         cilium             Desired: 1, Ready: 1/1, Available: 1/1
+Deployment        cilium-operator    Desired: 1, Ready: 1/1, Available: 1/1
+Deployment        hubble-relay       Desired: 1, Ready: 1/1, Available: 1/1
+Containers:       cilium             Running: 1
+                  cilium-operator    Running: 1
+                  hubble-relay       Running: 1
+Cluster Pods:     9/9 managed by Cilium
+Image versions    cilium             quay.io/cilium/cilium:v1.11.0@sha256:ea677508010800214b0b5497055f38ed3bff57963fa2399bcb1c69cf9476453a: 1
+                  cilium-operator    quay.io/cilium/operator-generic:v1.11.0@sha256:b522279577d0d5f1ad7cadaacb7321d1b172d8ae8c8bc816e503c897b420cfe3: 1
+                  hubble-relay       quay.io/cilium/hubble-relay:v1.11.0@sha256:306ce38354a0a892b0c175ae7013cf178a46b79f51c52adb5465d87f14df0838: 1
 ```
 
+So the Hubble component is now enabled.
 
-## Task {{% param sectionnumber %}}.5: Verify connectivity again
-
-We can now execute the connectivty check again:
+Once ready, we can locally port-forward to the Hubble pod:
 
 ```bash
-kubectl exec -ti ${FRONTEND} -- curl -I --connect-timeout 5 backend:8080
-kubectl exec -ti ${NOT_FRONTEND} -- curl -I --connect-timeout 5 backend:8080
+cilium hubble port-forward&
 ```
 
-but this time you see that the `frontend` and `not-frontend` application cannot connect anymore to the `backend`:
+{{% alert title="Note" color="primary" %}}
+Note the `&` after the command which puts the process in the background so we can continue working in the shell.
+{{% /alert %}}
 
-```
-# Frontend
-curl: (28) Connection timed out after 5001 milliseconds
-command terminated with exit code 28
-# Not Frontend
-curl: (28) Connection timed out after 5001 milliseconds
-command terminated with exit code 28
-```
-
-The network policy correctly switched the default ingress behavior from default allow to default deny. Let's now selectively re-allow traffic again, but only from frontend to backend.
-
-
-## Task {{% param sectionnumber %}}.6: Allow traffic from frontend to backend
-
-We can do it by crafting a new network policy manually, but we can also use the Network Policy Editor to help us out:
-
-* Go to https://networkpolicy.io/editor.
-* Upload our initial backend-ingress-deny policy.
-
-![Cilium editor with backend-ingress-deny Policy](cilium_editor_1.png)
-
-* Rename the network policy to backend-allow-ingress-frontend (using the Edit button in the center).
-
-![Cilium editor edit name](cilium_editor_edit_name.png)
-
-* On the ingress side, add `app=frontend` as podSelector for pods in the same namespace.
-
-![Cilium editor add rule](cilium_editor_add.png)
-
-* Inspect the ingress flow colors: the policy will deny all ingress traffic to pods labelled `app=backend`, except for traffic coming from pods labelled `app=frontend`.
-
-![Cilium editor backend allow rule](cilium_editor_backend-allow-ingress.png)
-
-
-* Download the policy YAML file.
-
-The file should look like this:
-
-{{< highlight yaml >}}{{< readfile file="content/en/docs/03/backend-allow-ingress-frontend.yaml" >}}{{< /highlight >}}
-
-Apply the new policy:
+And then check Hubble status via the Hubble CLI (which uses the port-forwarding just openend):
 
 ```bash
-kubectl create -f backend-allow-ingress-frontend.yaml
+hubble status
 ```
 
-and then execute the connectivity test again:
+```
+Healthcheck (via localhost:4245): Ok
+Current/Max Flows: 947/4095 (23.13%)
+Flows/s: 3.84
+Connected Nodes: 1/1
+```
+
+The Hubble CLI is now primed for observing network traffic within the cluster.
+
+
+## Task {{% param sectionnumber %}}.4: Observing flows with Hubble
+
+We now want to use the `hubble` cli to observe some network flows in out Kubernetes Cluster. Lets have a look at the following command:
 
 ```bash
-kubectl exec -ti ${FRONTEND} -- curl -I --connect-timeout 5 backend:8080
-kubectl exec -ti ${NOT_FRONTEND} -- curl -I --connect-timeout 5 backend:8080
+hubble observe
 ```
 
-This time, the `frontend` application is able to connect to the `backend` but the `not-frontend` application still cannot connect to the `backend`:
+which gives you a list on network flows:
 
 ```
-# Frontend
-HTTP/1.1 200 OK
-X-Powered-By: Express
-Vary: Origin, Accept-Encoding
-Access-Control-Allow-Credentials: true
-Accept-Ranges: bytes
-Cache-Control: public, max-age=0
-Last-Modified: Sat, 26 Oct 1985 08:15:00 GMT
-ETag: W/"83d-7438674ba0"
-Content-Type: text/html; charset=UTF-8
-Content-Length: 2109
-Date: Tue, 23 Nov 2021 13:08:27 GMT
-Connection: keep-alive
-
-# Not Frontend
-curl: (28) Connection timed out after 5001 milliseconds
-command terminated with exit code 28
+Nov 23 14:49:03.030: 10.0.0.113:46274 <- kube-system/hubble-relay-f6d85866c-csthd:4245 to-stack FORWARDED (TCP Flags: ACK, PSH)
+Nov 23 14:49:03.030: 10.0.0.113:46274 -> kube-system/hubble-relay-f6d85866c-csthd:4245 to-endpoint FORWARDED (TCP Flags: RST)
+Nov 23 14:49:04.011: 10.0.0.113:44840 <- 10.0.0.114:4240 to-stack FORWARDED (TCP Flags: ACK)
+Nov 23 14:49:04.011: 10.0.0.113:44840 -> 10.0.0.114:4240 to-endpoint FORWARDED (TCP Flags: ACK)
+Nov 23 14:49:04.226: 10.0.0.113:32898 -> kube-system/coredns-558bd4d5db-xzvc9:8080 to-endpoint FORWARDED (TCP Flags: SYN)
+Nov 23 14:49:04.226: 10.0.0.113:32898 <- kube-system/coredns-558bd4d5db-xzvc9:8080 to-stack FORWARDED (TCP Flags: SYN, ACK)
+Nov 23 14:49:04.227: 10.0.0.113:32898 -> kube-system/coredns-558bd4d5db-xzvc9:8080 to-endpoint FORWARDED (TCP Flags: ACK)
+Nov 23 14:49:04.227: 10.0.0.113:32898 -> kube-system/coredns-558bd4d5db-xzvc9:8080 to-endpoint FORWARDED (TCP Flags: ACK, PSH)
+Nov 23 14:49:04.227: 10.0.0.113:32898 <- kube-system/coredns-558bd4d5db-xzvc9:8080 to-stack FORWARDED (TCP Flags: ACK, PSH)
+Nov 23 14:49:04.227: 10.0.0.113:32898 -> kube-system/coredns-558bd4d5db-xzvc9:8080 to-endpoint FORWARDED (TCP Flags: ACK, FIN)
+Nov 23 14:49:04.227: 10.0.0.113:32898 <- kube-system/coredns-558bd4d5db-xzvc9:8080 to-stack FORWARDED (TCP Flags: ACK, FIN)
+Nov 23 14:49:04.227: 10.0.0.113:32898 -> kube-system/coredns-558bd4d5db-xzvc9:8080 to-endpoint FORWARDED (TCP Flags: ACK)
+Nov 23 14:49:04.842: 10.0.0.113:34716 -> kube-system/coredns-558bd4d5db-xzvc9:8181 to-endpoint FORWARDED (TCP Flags: SYN)
+Nov 23 14:49:04.842: 10.0.0.113:34716 <- kube-system/coredns-558bd4d5db-xzvc9:8181 to-stack FORWARDED (TCP Flags: SYN, ACK)
+Nov 23 14:49:04.842: 10.0.0.113:34716 -> kube-system/coredns-558bd4d5db-xzvc9:8181 to-endpoint FORWARDED (TCP Flags: ACK)
+Nov 23 14:49:04.842: 10.0.0.113:34716 -> kube-system/coredns-558bd4d5db-xzvc9:8181 to-endpoint FORWARDED (TCP Flags: ACK, PSH)
+Nov 23 14:49:04.842: 10.0.0.113:34716 <- kube-system/coredns-558bd4d5db-xzvc9:8181 to-stack FORWARDED (TCP Flags: ACK, PSH)
+Nov 23 14:49:04.843: 10.0.0.113:34716 <- kube-system/coredns-558bd4d5db-xzvc9:8181 to-stack FORWARDED (TCP Flags: ACK, FIN)
+Nov 23 14:49:04.843: 10.0.0.113:34716 -> kube-system/coredns-558bd4d5db-xzvc9:8181 to-endpoint FORWARDED (TCP Flags: ACK, FIN)
+Nov 23 14:49:05.971: kube-system/hubble-relay-f6d85866c-csthd:40844 -> 192.168.49.2:4244 to-stack FORWARDED (TCP Flags: ACK, PSH)
 
 ```
 
-Note that this is working despite the fact we did not delete the previous `backend-ingress-deny` policy:
+with
 
 ```bash
-kubectl get netpol
+hubble observe -f
 ```
 
-```
-NAME                             POD-SELECTOR   AGE
-backend-allow-ingress-frontend   app=backend    2m7s
-backend-ingress-deny             app=backend    12m
+you can observe and follow the current active flows in your Kubernetes Cluster. Stop the command with `CTRL+C`.
 
-```
-
-Network policies are additive. Just like with firewalls, it is thus a good idea to have default DENY policies and then add more specific ALLOW policies as needed.
-
-
-## Task {{% param sectionnumber %}}.7: Inspecting the cilium endpoints again
-
-We can now check the cilium endpoints again. First get all Cilium pods with:
+Let us produce some traffic:
 
 ```bash
-kubectl -n kube-system exec <podname> -- cilium endpoint list
+for i in {1..10}; do
+  kubectl exec -ti ${FRONTEND} -- curl -I --connect-timeout 5 backend:8080
+  kubectl exec -ti ${NOT_FRONTEND} -- curl -I --connect-timeout 5 backend:8080
+done
 ```
 
-And now we see that the pods with the label `app=backend` now have ingress policy enforcement enabled.
+We can now use the `hubble` cli to filter traffic we are interested in. Here are some examples to specifically retrieve the network activity between our frontends and backend:
+
+```bash
+hubble observe --to-pod backend
+hubble observe --namespace default --protocol tcp --port 8080
+hubble observe --verdict DROPPED
+```
+
+```
+hubble observe --to-pod backend
+Jan 13 14:59:29.536: default/frontend-76fbb99468-jx2ds:59630 -> default/backend-65f7c794cc-pj2tc:8080 to-endpoint FORWARDED (TCP Flags: SYN)
+Jan 13 14:59:29.536: default/frontend-76fbb99468-jx2ds:59630 -> default/backend-65f7c794cc-pj2tc:8080 to-endpoint FORWARDED (TCP Flags: ACK)
+Jan 13 14:59:29.537: default/frontend-76fbb99468-jx2ds:59630 -> default/backend-65f7c794cc-pj2tc:8080 to-endpoint FORWARDED (TCP Flags: ACK, PSH)
+Jan 13 14:59:29.547: default/frontend-76fbb99468-jx2ds:59630 -> default/backend-65f7c794cc-pj2tc:8080 to-endpoint FORWARDED (TCP Flags: ACK, FIN)
+Jan 13 14:59:29.548: default/frontend-76fbb99468-jx2ds:59630 -> default/backend-65f7c794cc-pj2tc:8080 to-endpoint FORWARDED (TCP Flags: ACK)
+```
+
+Note that Hubble tells us the the Action, here `FORWARDED` but this could also be `DROPPED` as we see in later chapters.

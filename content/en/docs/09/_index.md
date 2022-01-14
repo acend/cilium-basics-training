@@ -1,83 +1,207 @@
 ---
-title: "9. Metrics"
-weight: 9
-sectionnumber: 9
+title: "8. Cluster Mesh"
+weight: 8
+sectionnumber: 8
 ---
 
+
+## Task {{% param sectionnumber %}}.1: Create a second Kubernetes Cluster
+
+In order to create a Cluster Mesh we need a second Kubernetes Cluster. For the Cluster Mesh to work, the PodCIDR ranges in all clusters and all nodes must be non-conflicting and unique IP addresses. The Nodes in all clusters must have IP connectivity between each other and the network between the clusters must allow the inter-cluster communication.
+
 {{% alert title="Note" color="primary" %}}
-This lab should be done on your `cluster1`, make sure to switch to `cluster1` with `minikube profile cluster1`
+The exact ports are documented in the [Firewall Rules](https://docs.cilium.io/en/v1.11/operations/system_requirements/#firewall-requirements) section.
 {{% /alert %}}
 
-Cilium and Hubble can both be configured to serve Prometheus metrics independently of each other.
-
-Cilium metrics provide insights into the state of Cilium itself, namely of the cilium-agent, cilium-envoy, and cilium-operator processes.
-Hubble metrics provide insight into the services.
-
-
-## Task {{% param sectionnumber %}}.1:  Enable metrics
+To start a second cluster run the following command:
 
 ```bash
-helm upgrade -i cilium cilium/cilium \
-   --namespace kube-system \
-   --reuse-values \
-   --set prometheus.enabled=true \
-   --set operator.prometheus.enabled=true \
-   --set hubble.enabled=true \
-   --set hubble.metrics.enabled="{dns,drop,tcp,flow,port-distribution,icmp,http}"
+minikube start --network-plugin=cni --cni=false --kubernetes-version=1.23.0 -p cluster2
 ```
 
+{{% alert title="Note" color="primary" %}}
+As Minikube with the Docker driver uses separated Docker networks, we need to make sure that your system forwards traffic between the two networks. Execute `sudo iptables -I DOCKER-USER -j ACCEPT` to enable forwarding by default. TODO: Is there an other way?
+{{% /alert %}}
 
-### Verify cilium metrics
 
-We now see that the cilium agent has two different metric endpoints:
-
-* hubble port 6942
-* cilium port 9090
+Then install Cilium using again Helm. Remember, we need a different PodCIDR for the second cluster, therefore while installing Cilium, we have to change this config:
 
 ```bash
-CILIUM_AGENT_IP=$(kubectl get pod -n kube-system -l k8s-app=cilium -o jsonpath="{.items[0].status.hostIP}")
-kubectl run -n kube-system -it --env="CILIUM_AGENT_IP=${CILIUM_AGENT_IP}" --rm curl --image=curlimages/curl -- sh
-echo ${CILIUM_AGENT_IP}
-curl -s ${CILIUM_AGENT_IP}:6942/metrics
-curl -s ${CILIUM_AGENT_IP}:9090/metrics
-exit
+helm upgrade -i cilium cilium/cilium --version 1.11.0 \
+  --namespace kube-system \
+  --set ipam.operator.clusterPoolIPv4PodCIDR=10.2.0.0/16 \
+  --set cluster.name=cluster2 \
+  --set cluster.id=2 \
+  --set operator.replicas=1 \
+  --wait
 ```
 
+// TODO: cilium-ca for https://docs.cilium.io/en/stable/gettingstarted/clustermesh/clustermesh/#shared-certificate-authority
 
-## Task {{% param sectionnumber %}}.2:  Visualize metrics
+Then wait until the Cluster and Cilium is ready.
 
-Install grafana into cilium-monitoring namespace to visualize cilium and hubble metrics.
+```
+cilium status                                               
+    /¯¯\
+ /¯¯\__/¯¯\    Cilium:         OK
+ \__/¯¯\__/    Operator:       OK
+ /¯¯\__/¯¯\    Hubble:         disabled
+ \__/¯¯\__/    ClusterMesh:    disabled
+    \__/
+
+DaemonSet         cilium             Desired: 1, Ready: 1/1, Available: 1/1
+Deployment        cilium-operator    Desired: 1, Ready: 1/1, Available: 1/1
+Containers:       cilium-operator    Running: 1
+                  cilium             Running: 1
+Cluster Pods:     1/1 managed by Cilium
+Image versions    cilium             quay.io/cilium/cilium:v1.11.0: 1
+                  cilium-operator    quay.io/cilium/operator-generic:v1.11.0: 1
+```
+
+You can verify the correct podCidr using:
+
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/cilium/cilium/v1.11/examples/kubernetes/addons/prometheus/monitoring-example.yaml
+kubectl get pod -A -o wide                 
+
 ```
 
-Make sure grafana and prometheus pods are up and running befor continue with the next step.
+Have a look at the `codedns-` Pod and verify that it's IP is from your defined `10.2.0.0/16` range.
+
+```
+NAMESPACE     NAME                               READY   STATUS    RESTARTS   AGE   IP             NODE       NOMINATED NODE   READINESS GATES
+kube-system   cilium-operator-776958f5bb-m5hww   1/1     Running   0          29s   192.168.58.2   cluster2   <none>           <none>
+kube-system   cilium-qg9xj                       1/1     Running   0          29s   192.168.58.2   cluster2   <none>           <none>
+kube-system   coredns-558bd4d5db-z6cxh           1/1     Running   0          38s   10.2.0.240     cluster2   <none>           <none>
+kube-system   etcd-cluster2                      1/1     Running   0          44s   192.168.58.2   cluster2   <none>           <none>
+kube-system   kube-apiserver-cluster2            1/1     Running   0          44s   192.168.58.2   cluster2   <none>           <none>
+kube-system   kube-controller-manager-cluster2   1/1     Running   0          44s   192.168.58.2   cluster2   <none>           <none>
+kube-system   kube-proxy-bqk4r                   1/1     Running   0          38s   192.168.58.2   cluster2   <none>           <none>
+kube-system   kube-scheduler-cluster2            1/1     Running   0          44s   192.168.58.2   cluster2   <none>           <none>
+kube-system   storage-provisioner                1/1     Running   1          49s   192.168.58.2   cluster2   <none>           <none>
+```
+
+Great the second cluster and Cilium is ready to use.
+
+
+## Task {{% param sectionnumber %}}.2: Enable Cluster Mesh on both Cluster
+
+Now lets enable the Cluster Mesh using the `cilium` CLI on both Cluster:
+
+
+{{% alert title="Note" color="primary" %}}
+Altough so far we used Helm up install & update cilium, enabeling Cilium using Helm currently has some bugs, therefore we use the `cilium` CLI to achieve this task.
+{{% /alert %}}
 
 ```bash
-kubectl -n cilium-monitoring get pod
-```
-you should see both Pods in state `Running`:
-
-```
-NAME                          READY   STATUS    RESTARTS   AGE
-grafana-6c7d4c9fd8-2xdp2      1/1     Running   0          41s
-prometheus-55777f54d9-hkpkq   1/1     Running   0          41s
+cilium clustermesh enable --context cluster1 --service-type NodePort
+cilium clustermesh enable --context cluster2 --service-type NodePort
 ```
 
+You can now verify the clustermesh status using:
 
-Generate some traffic
 ```bash
-FRONTEND=$(kubectl get pods -l app=frontend -o jsonpath='{.items[0].metadata.name}')
-kubectl exec -ti ${FRONTEND} -- curl -Is backend:8080
+cilium clustermesh status --context cluster1 --wait
 ```
 
+```
+⚠️  Service type NodePort detected! Service may fail when nodes are removed from the cluster!
+✅ Cluster access information is available:
+  - 192.168.49.2:31839
+✅ Service "clustermesh-apiserver" of type "NodePort" found
+⌛ [cluster1] Waiting for deployment clustermesh-apiserver to become ready...
+🔌 Cluster Connections:
+🔀 Global services: [ min:0 / avg:0.0 / max:0 ]
+```
 
-Access Grafana with kubectl proxy-forward
+In order to connect the two clusters, the following step needs to be done in one direction only. The connection will automatically be established in both directions:
+
 ```bash
-kubectl -n cilium-monitoring port-forward service/grafana --address 0.0.0.0 --address :: 3000:3000 &
+cilium clustermesh connect --context cluster1 --destination-context cluster2
 ```
 
-Now open your browser and go to http://localhost:3000/dashboards. After you have finished you can stop port-forwarding with `kill %1`
+The output should look something like this:
+
+```
+✨ Extracting access information of cluster cluster2...
+🔑 Extracting secrets from cluster cluster2...
+⚠️  Service type NodePort detected! Service may fail when nodes are removed from the cluster!
+ℹ️  Found ClusterMesh service IPs: [192.168.58.2]
+✨ Extracting access information of cluster cluster1...
+🔑 Extracting secrets from cluster cluster1...
+⚠️  Service type NodePort detected! Service may fail when nodes are removed from the cluster!
+ℹ️  Found ClusterMesh service IPs: [192.168.49.2]
+✨ Connecting cluster cluster1 -> cluster2...
+🔑 Secret cilium-clustermesh does not exist yet, creating it...
+🔑 Patching existing secret cilium-clustermesh...
+✨ Patching DaemonSet with IP aliases cilium-clustermesh...
+✨ Connecting cluster cluster2 -> cluster1...
+🔑 Secret cilium-clustermesh does not exist yet, creating it...
+🔑 Patching existing secret ciliugm-clustermesh...
+✨ Patching DaemonSet with IP aliases cilium-clustermesh...
+✅ Connected cluster cluster1 and cluster2!
+```
+
+It may take a bit for the clusters to be connected. You can the following command to wait for the connection to be successful:
+
+```bash
+cilium clustermesh status --context cluster1 --wait
+```
+
+```
+⚠️  Service type NodePort detected! Service may fail when nodes are removed from the cluster!
+✅ Cluster access information is available:
+  - 192.168.58.2:32117
+✅ Service "clustermesh-apiserver" of type "NodePort" found
+⌛ [cluster2] Waiting for deployment clustermesh-apiserver to become ready...
+✅ All 1 nodes are connected to all clusters [min:1 / avg:1.0 / max:1]
+🔌 Cluster Connections:
+- cluster1: 1/1 configured, 1/1 connected
+🔀 Global services: [ min:3 / avg:3.0 / max:3 ]
+```
+
+The two clusters are now connected.
 
 
-// TODO: and now?
+## Cluster Mesh Troubleshooting
+
+Use the following list of steps to troubleshoot issues with ClusterMesh:
+
+```bash
+cilium status --context cluster1
+```
+
+or
+
+```bash
+cilium status --context cluster2
+```
+
+which gives you an output similar to this:
+
+```
+    /¯¯\
+ /¯¯\__/¯¯\    Cilium:         OK
+ \__/¯¯\__/    Operator:       OK
+ /¯¯\__/¯¯\    Hubble:         OK
+ \__/¯¯\__/    ClusterMesh:    OK
+    \__/
+
+DaemonSet         cilium                   Desired: 1, Ready: 1/1, Available: 1/1
+Deployment        cilium-operator          Desired: 1, Ready: 1/1, Available: 1/1
+Deployment        hubble-relay             Desired: 1, Ready: 1/1, Available: 1/1
+Deployment        clustermesh-apiserver    Desired: 1, Ready: 1/1, Available: 1/1
+Containers:       cilium                   Running: 1
+                  cilium-operator          Running: 1
+                  hubble-relay             Running: 1
+                  clustermesh-apiserver    Running: 1
+Cluster Pods:     6/6 managed by Cilium
+Image versions    cilium                   quay.io/cilium/cilium:v1.11.0: 1
+                  cilium-operator          quay.io/cilium/operator-generic:v1.11.0: 1
+                  hubble-relay             quay.io/cilium/hubble-relay:v1.11.0: 1
+                  clustermesh-apiserver    quay.io/coreos/etcd:v3.4.13: 1
+                  clustermesh-apiserver    quay.io/cilium/clustermesh-apiserver:v1.11.0: 1
+
+```
+
+
+If you cannot resolve the issue with the above commands, follow the steps in [Cilium's Cluster Mesh Troubleshooting Guide](https://docs.cilium.io/en/v1.11/operations/troubleshooting/#troubleshooting-clustermesh)

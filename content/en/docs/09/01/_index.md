@@ -1,7 +1,7 @@
 ---
-title: "8.1 Load-balancing with Global Services"
-weight: 81
-sectionnumber: 8.1
+title: "9.1 Load-balancing with Global Services"
+weight: 91
+sectionnumber: 9.1
 ---
 
 This lab will guide you to perform load-balancing and service discovery across multiple Kubernetes clusters.
@@ -15,7 +15,7 @@ We are going to deploy a global service and a sample application on both of our 
 
 First the Kubernetes service:
 
-{{< highlight yaml >}}{{< readfile file="content/en/docs/08/01/svc.yaml" >}}{{< /highlight >}}
+{{< highlight yaml >}}{{< readfile file="content/en/docs/09/01/svc.yaml" >}}{{< /highlight >}}
 
 Apply this with:
 
@@ -28,7 +28,7 @@ Then deploy our sample application on both clusters.
 
 `cluster1.yaml`:
 
-{{< highlight yaml >}}{{< readfile file="content/en/docs/08/01/cluster1.yaml" >}}{{< /highlight >}}
+{{< highlight yaml >}}{{< readfile file="content/en/docs/09/01/cluster1.yaml" >}}{{< /highlight >}}
 
 ```bash
 kubectl --context cluster1 apply -f cluster1.yaml
@@ -36,7 +36,7 @@ kubectl --context cluster1 apply -f cluster1.yaml
 
 `cluster2.yaml`:
 
-{{< highlight yaml >}}{{< readfile file="content/en/docs/08/01/cluster2.yaml" >}}{{< /highlight >}}
+{{< highlight yaml >}}{{< readfile file="content/en/docs/09/01/cluster2.yaml" >}}{{< /highlight >}}
 
 ```bash
 kubectl --context cluster2 apply -f cluster2.yaml
@@ -95,7 +95,7 @@ By default, a Global Service will load-balance across backends in multiple clust
 
 So lets change our `rebel-base` service on `cluster1` with the following updated service definition:
 
-{{< highlight yaml >}}{{< readfile file="content/en/docs/08/01/svc2.yaml" >}}{{< /highlight >}}
+{{< highlight yaml >}}{{< readfile file="content/en/docs/09/01/svc2.yaml" >}}{{< /highlight >}}
 
 Apply this with:
 
