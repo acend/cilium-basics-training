@@ -1,4 +1,19 @@
 ---
+apiVersion: v1
+data:
+  default.json: |
+    {
+      "private": [
+        { "id": 1, "body": "another secret information from a different backend" }
+      ],
+      "public": [
+        { "id": 1, "body": "another public information from a different backend" }
+      ]
+    }
+kind: ConfigMap
+metadata:
+  name: default-json
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -15,6 +30,10 @@ spec:
       labels:
         app: backend-2
     spec:
+      volumes:
+      - name: default-json
+        configMap:
+          name: default-json
       containers:
       - name: backend-container
         env:
@@ -22,8 +41,12 @@ spec:
           value: "8080"
         ports:
         - containerPort: 8080
-        image: docker.io/jmalloc/echo-server
+        image: docker.io/cilium/json-mock:1.2
         imagePullPolicy: IfNotPresent
+        volumeMounts:
+        - name: default-json
+          mountPath: /default.json
+          subPath: default.json
 ---
 apiVersion: v1
 kind: Service
