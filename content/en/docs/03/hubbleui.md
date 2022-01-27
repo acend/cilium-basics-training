@@ -95,7 +95,7 @@ hubble status
 ```
 
 {{% alert title="Note" color="primary" %}}
-Note: our earlier cilium hubble port-forward should still be running (can be checked by running jobs or `ps aux | grep "cilium hubble port-forward"`). If it does not, hubble status will fail and we have to run it again:
+Our earlier cilium hubble port-forward should still be running (can be checked by running jobs or `ps aux | grep "cilium hubble port-forward"`). If it does not, hubble status will fail and we have to run it again:
 
 ```bash
 cilium hubble port-forward&
@@ -113,13 +113,13 @@ cilium hubble ui
 
 The browser should automatically open http://localhost:12000/ (open it manually if not).
 
-We can then access the graphical service map by selecting our default namespace
+We can then access the graphical service map by selecting our default namespace:
 
 ![Hubble UI Choose Namespace](../cilium_choose_ns.png)
 
 Then you should see a spinning circle and the message "Waiting for service map data..."
 
-Lets generate some network activity again:
+Let's generate some network activity again:
 
 ```bash
 for i in {1..10}; do
@@ -132,7 +132,7 @@ and then you should see a service map in the hubble ui
 
 ![Hubble UI - Service Map](../hubble_ui_servicemap.png)
 
-and also a Table with the already familiar Flow output previously seen in the `hubble observe` command:
+and also a table with the already familiar flow output previously seen in the `hubble observe` command:
 
 ![Hubble UI - Service Map](../hubble_ui_flows.png)
 
