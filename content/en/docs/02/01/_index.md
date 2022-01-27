@@ -9,7 +9,7 @@ In the previous lab we intentionally installed version `v10.5.0` of Cilium. In t
 
 ## Task {{% param sectionnumber %}}.1: Running pre-flight check
 
-When rolling out an upgrade with Kubernetes, Kubernetes will first terminate the pod followed by pulling the new image version and then finally spin up the new image. In order to reduce the downtime of the agent and to prevent `ErrImagePull` errors during upgrade, the pre-flight check pre-pulls the new image version. If you are running in Kubernetes Without kube-proxy mode you must also pass on the Kubernetes API Server IP and / or the Kubernetes API Server Port when generating the cilium-preflight.yaml file.
+When rolling out an upgrade with Kubernetes, Kubernetes will first terminate the pod followed by pulling the new image version and then finally spin up the new image. In order to reduce the downtime of the agent and to prevent `ErrImagePull` errors during upgrade, the pre-flight check pre-pulls the new image version. If you are running in "Kubernetes Without kube-proxy" mode you must also pass on the Kubernetes API Server IP and / or the Kubernetes API Server Port when generating the cilium-preflight.yaml file.
 
 ```bash
 helm install cilium-preflight cilium/cilium --version 1.11.0 \
