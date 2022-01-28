@@ -237,6 +237,7 @@ Once done, clean up the connectivity test namespace:
 kubectl delete ns cilium-test --wait=false
 ```
 
+
 ## Explore your installation
 
 We have learned about the cilium components. Let us see some of them now
