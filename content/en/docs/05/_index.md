@@ -57,6 +57,9 @@ Now we generate some traffic as a baseline test.
 
 ```bash
 kubectl exec -ti ${FRONTEND} -- curl -I --connect-timeout 5 backend:8080
+```
+
+```bash
 kubectl exec -ti ${NOT_FRONTEND} -- curl -I --connect-timeout 5 backend:8080
 ```
 
@@ -103,6 +106,8 @@ We block traffic by applying the following network policy:
 
 {{< highlight yaml >}}{{< readfile file="content/en/docs/05/backend-ingress-deny.yaml" >}}{{< /highlight >}}
 
+Create a file `backend-ingress-deny.yaml` with the above content.
+
 The policy will deny all ingress traffic as it is of type Ingress but specifies no allow rule, and will be applied to all pods with the `app=backend` label thanks to the podSelector.
 
 Ok, then let's create the policy with:
@@ -133,6 +138,9 @@ We can now execute the connectivity check again:
 
 ```bash
 kubectl exec -ti ${FRONTEND} -- curl -I --connect-timeout 5 backend:8080
+```
+
+```bash
 kubectl exec -ti ${NOT_FRONTEND} -- curl -I --connect-timeout 5 backend:8080
 ```
 
@@ -202,6 +210,9 @@ and then execute the connectivity test again:
 
 ```bash
 kubectl exec -ti ${FRONTEND} -- curl -I --connect-timeout 5 backend:8080
+```
+
+```bash
 kubectl exec -ti ${NOT_FRONTEND} -- curl -I --connect-timeout 5 backend:8080
 ```
 
@@ -254,7 +265,7 @@ kubectl exec -ti ${NOT_FRONTEND} -- curl -I --connect-timeout 5 backend:8080
 With hubble observe you can now check the packet beeing dropped along with the cause (Policy denied).
 
 {{% alert title="Note" color="primary" %}}
-Note: our earlier cilium hubble port-forward should still be running (can be checked by running jobs or `ps aux | grep "cilium hubble port-forward"`). If it does not, hubble status will fail and we have to run it again:
+Our earlier cilium hubble port-forward should still be running (can be checked by running jobs or `ps aux | grep "cilium hubble port-forward"`). If it does not, hubble status will fail and we have to run it again:
 
 ```bash
 cilium hubble port-forward&
