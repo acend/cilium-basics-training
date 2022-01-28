@@ -9,7 +9,7 @@ In the previous lab we intentionally installed version `v10.5.0` of Cilium. In t
 
 ## Task {{% param sectionnumber %}}.1: Running pre-flight check
 
-When rolling out an upgrade with Kubernetes, Kubernetes will first terminate the pod followed by pulling the new image version and then finally spin up the new image. In order to reduce the downtime of the agent and to prevent `ErrImagePull` errors during upgrade, the pre-flight check pre-pulls the new image version. If you are running in Kubernetes Without kube-proxy mode you must also pass on the Kubernetes API Server IP and / or the Kubernetes API Server Port when generating the cilium-preflight.yaml file.
+When rolling out an upgrade with Kubernetes, Kubernetes will first terminate the pod followed by pulling the new image version and then finally spin up the new image. In order to reduce the downtime of the agent and to prevent `ErrImagePull` errors during upgrade, the pre-flight check pre-pulls the new image version. If you are running in "Kubernetes Without kube-proxy" mode you must also pass on the Kubernetes API Server IP and / or the Kubernetes API Server Port when generating the cilium-preflight.yaml file.
 
 ```bash
 helm install cilium-preflight cilium/cilium --version 1.11.0 \
@@ -19,16 +19,10 @@ helm install cilium-preflight cilium/cilium --version 1.11.0 \
   --set operator.enabled=false
 ```
 
-And then apply the `cilium-preflight.yaml` file with `kubectl`:
-
-```bash
-kubectl create -f cilium-preflight.yaml
-```
-
 
 ## Task {{% param sectionnumber %}}.2: Clean up pre-flight check
 
-Once the number of READY for the preflight DaemonSet is the same as the number of cilium pods running and the preflight Deployment is marked as READY 1/1 you can delete the cilium-preflight and proceed with the upgrade.
+Once the number of `READY` for the preflight DaemonSet is the same as the number of cilium pods running and the preflight Deployment is marked as `READY 1/1` you can delete the cilium-preflight and proceed with the upgrade.
 
 ```bash
 helm delete cilium-preflight --namespace=kube-system
@@ -41,9 +35,9 @@ During normal cluster operations, all Cilium components should run the same vers
 
 When upgrading from one minor release to another minor release, for example 1.x to 1.y, it is recommended to upgrade to the latest patch release for a Cilium release series first. The latest patch releases for each supported version of Cilium are here. Upgrading to the latest patch release ensures the most seamless experience if a rollback is required following the minor release upgrade. The upgrade guides for previous versions can be found for each minor version at the bottom left corner.
 
-Helm can be used to either upgrade Cilium directly or to generate a new set of YAML files that can be used to upgrade an existing deployment via kubectl. By default, Helm will generate the new templates using the default values files packaged with each new release. You still need to ensure that you are specifying the equivalent options as used for the initial deployment, either by specifying a them at the command line or by committing the values to a YAML file.
+Helm can be used to either upgrade Cilium directly or to generate a new set of YAML files that can be used to upgrade an existing deployment via kubectl. By default, Helm will generate the new templates using the default values files packaged with each new release. You still need to ensure that you are specifying the equivalent options as used for the initial deployment, either by specifying them at the command line or by committing the values to a YAML file.
 
-Too minimize datapath disruption during the upgrade, the upgradeCompatibility option should be set to the initial Cilium version which was installed in this cluster. Valid options are:
+To minimize datapath disruption during the upgrade, the `upgradeCompatibility` option should be set to the initial Cilium version which was installed in this cluster. Valid options are:
 
 ```
 helm upgrade -i cilium cilium/cilium --version 1.11.0 \

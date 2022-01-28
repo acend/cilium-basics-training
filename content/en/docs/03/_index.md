@@ -4,7 +4,7 @@ weight: 3
 sectionnumber: 3
 ---
 
-Before we start with the CNI functionality of Cilium and its security components. We want to enable the optional Hubble component (which is disabled by default). So we can take full advantage of its eBFP observatility capabilities.
+Before we start with the CNI functionality of Cilium and its security components we want to enable the optional Hubble component (which is disabled by default). So we can take full advantage of its eBFP observatility capabilities.
 
 
 ## Task {{% param sectionnumber %}}.1: Install the Hubble CLI
@@ -100,6 +100,8 @@ Let's have a look at the following resource definitions:
 
 The application consists of two client deployments (`frontend` and `not-frontend`) and one backend deployment (`backend`). We are going to send requests from the frontend and not-frontend pods to the backend pod.
 
+Create a file `simple-app.yaml` with the above content.
+
 Deploy the app:
 
 ```bash
@@ -158,7 +160,7 @@ helm upgrade -i cilium cilium/cilium --version 1.11.0 \
   --wait
 ```
 
-If you have installed Cilium with the `cilium` cli then Hubble component is not enabled by default (nor is Hubble Relay), and you can enbale Hubble using the following `cilium` CLI command:
+If you have installed Cilium with the `cilium` cli then Hubble component is not enabled by default (nor is Hubble Relay), and you can enable Hubble using the following `cilium` CLI command:
 
 ```bash
 cilium hubble enable
@@ -255,7 +257,7 @@ The Hubble CLI is now primed for observing network traffic within the cluster.
 
 ## Task {{% param sectionnumber %}}.4: Observing flows with Hubble
 
-We now want to use the `hubble` cli to observe some network flows in out Kubernetes Cluster. Lets have a look at the following command:
+We now want to use the `hubble` CLI to observe some network flows in out Kubernetes Cluster. Lets have a look at the following command:
 
 ```bash
 hubble observe
@@ -304,7 +306,7 @@ for i in {1..10}; do
 done
 ```
 
-We can now use the `hubble` cli to filter traffic we are interested in. Here are some examples to specifically retrieve the network activity between our frontends and backend:
+We can now use the `hubble` CLI to filter traffic we are interested in. Here are some examples to specifically retrieve the network activity between our frontends and backend:
 
 ```bash
 hubble observe --to-pod backend
@@ -321,4 +323,4 @@ Jan 13 14:59:29.547: default/frontend-76fbb99468-jx2ds:59630 -> default/backend-
 Jan 13 14:59:29.548: default/frontend-76fbb99468-jx2ds:59630 -> default/backend-65f7c794cc-pj2tc:8080 to-endpoint FORWARDED (TCP Flags: ACK)
 ```
 
-Note that Hubble tells us the the Action, here `FORWARDED` but this could also be `DROPPED` as we see in later chapters.
+Note that Hubble tells us the action, here `FORWARDED` but this could also be `DROPPED` as we see in later chapters.
