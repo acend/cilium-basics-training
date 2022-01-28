@@ -54,7 +54,7 @@ hubble version
 ```
 
 ```
-hubble v0.8.2 compiled with go1.16.8 on linux/amd64
+hubble v0.9.0 compiled with go1.17.3 on linux/amd64
 ```
 
 or
@@ -109,28 +109,39 @@ kubectl create -f simple-app.yaml
 Verify with the following command that everything is up and running:
 
 ```bash
-kubectl get all
+kubectl get all,cep,ciliumid
 ```
 
 ```
-NAME                                READY   STATUS              RESTARTS   AGE
-pod/backend-56787b4bd7-dmzdh        0/1     ContainerCreating   0          6s
-pod/frontend-7cbdcb86fd-gdb4q       0/1     ContainerCreating   0          6s
-pod/not-frontend-5cf6d96558-gj4np   0/1     ContainerCreating   0          6s
+NAME                               READY   STATUS    RESTARTS   AGE
+pod/backend-65f7c794cc-b9j66       1/1     Running   0          3m17s
+pod/frontend-76fbb99468-mbzcm      1/1     Running   0          3m17s
+pod/not-frontend-8f467ccbd-cbks8   1/1     Running   0          3m17s
 
-NAME                 TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE
-service/backend      ClusterIP   10.106.244.233   <none>        8080/TCP   6s
-service/kubernetes   ClusterIP   10.96.0.1        <none>        443/TCP    36m
+NAME                 TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)    AGE
+service/backend      ClusterIP   10.97.228.29   <none>        8080/TCP   3m17s
+service/kubernetes   ClusterIP   10.96.0.1      <none>        443/TCP    45m
 
 NAME                           READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.apps/backend        0/1     1            0           6s
-deployment.apps/frontend       0/1     1            0           6s
-deployment.apps/not-frontend   0/1     1            0           6s
+deployment.apps/backend        1/1     1            1           3m17s
+deployment.apps/frontend       1/1     1            1           3m17s
+deployment.apps/not-frontend   1/1     1            1           3m17s
 
-NAME                                      DESIRED   CURRENT   READY   AGE
-replicaset.apps/backend-56787b4bd7        1         1         0       6s
-replicaset.apps/frontend-7cbdcb86fd       1         1         0       6s
-replicaset.apps/not-frontend-5cf6d96558   1         1         0       6s
+NAME                                     DESIRED   CURRENT   READY   AGE
+replicaset.apps/backend-65f7c794cc       1         1         1       3m17s
+replicaset.apps/frontend-76fbb99468      1         1         1       3m17s
+replicaset.apps/not-frontend-8f467ccbd   1         1         1       3m17s
+
+NAME                                                    ENDPOINT ID   IDENTITY ID   INGRESS ENFORCEMENT   EGRESS ENFORCEMENT   VISIBILITY POLICY   ENDPOINT STATE   IPV4         IPV6
+ciliumendpoint.cilium.io/backend-65f7c794cc-b9j66       144           67823                                                                        ready            10.1.0.44    
+ciliumendpoint.cilium.io/frontend-76fbb99468-mbzcm      1898          76556                                                                        ready            10.1.0.161   
+ciliumendpoint.cilium.io/not-frontend-8f467ccbd-cbks8   208           127021                                                                       ready            10.1.0.128   
+
+NAME                              NAMESPACE     AGE
+ciliumidentity.cilium.io/127021   default       3m15s
+ciliumidentity.cilium.io/67688    kube-system   41m
+ciliumidentity.cilium.io/67823    default       3m15s
+ciliumidentity.cilium.io/76556    default       3m15s
 
 ```
 
@@ -158,7 +169,7 @@ helm upgrade -i cilium cilium/cilium --version 1.11.0 \
   --wait
 ```
 
-If you have installed Cilium with the `cilium` cli then Hubble component is not enabled by default (nor is Hubble Relay), and you can enbale Hubble using the following `cilium` CLI command:
+If you have installed Cilium with the `cilium` cli then Hubble component is not enabled by default (nor is Hubble Relay). You can enable Hubble using the following `cilium` CLI command:
 
 ```bash
 cilium hubble enable
@@ -321,4 +332,4 @@ Jan 13 14:59:29.547: default/frontend-76fbb99468-jx2ds:59630 -> default/backend-
 Jan 13 14:59:29.548: default/frontend-76fbb99468-jx2ds:59630 -> default/backend-65f7c794cc-pj2tc:8080 to-endpoint FORWARDED (TCP Flags: ACK)
 ```
 
-Note that Hubble tells us the the Action, here `FORWARDED` but this could also be `DROPPED` as we see in later chapters.
+Note that Hubble tells us the the action, here `FORWARDED` but this could also be `DROPPED` as we see in later chapters.
