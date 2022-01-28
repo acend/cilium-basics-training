@@ -20,6 +20,9 @@ and then let's check if we can reach `https://kubernetes.io` and `https://cilium
 
 ```bash
 kubectl exec -ti ${BACKEND} -- curl -Ik --connect-timeout 5 https://kubernetes.io | head -1
+```
+
+```bash
 kubectl exec -ti ${BACKEND} -- curl -Ik --connect-timeout 5 https://cilium.io | head -1
 ```
 
@@ -40,7 +43,7 @@ The policy will deny all egress traffic from pods labelled `app=backend` except 
 
 ![Cilium Editor - DNS-aware Network Policy](cilium_dns_policy.png)
 
-Apply the network policy:
+Create the file `backend-egress-allow-fqdn.yaml` with the above content and apply the network policy:
 
 ```bash
 kubectl apply -f backend-egress-allow-fqdn.yaml
@@ -63,6 +66,9 @@ And check that the traffic is now only authorized when destined for `kubernetes.
 
 ```bash
 kubectl exec -ti ${BACKEND} -- curl -Ik --connect-timeout 5 https://kubernetes.io | head -1
+```
+
+```bash
 kubectl exec -ti ${BACKEND} -- curl -Ik --connect-timeout 5 https://cilium.io | head -1
 ```
 
@@ -76,7 +82,7 @@ command terminated with exit code 28
 ```
 {{% alert title="Note" color="primary" %}}
 You can now check the `Hubble Metrics` dashboard in grafana again. The graphs under DNS should soon show some data as well. This is because with a Layer 7 Policy we have enabled the envoy in Cilium Agent.
-{{% alert %}}
+{{% /alert %}}
 
 With the ingress and egress policies in place on `app=backend` pods, we have implemented a very simple zero-trust model to all traffic to and from our backend. In a real world scenario, cluster administrators may leverage network policies and overlay them at all levels and for all kinds of traffic in order to switch from the Kubernetes default of all traffic being allowed to only specific traffic being allowed.
 
