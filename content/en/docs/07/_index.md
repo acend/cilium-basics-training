@@ -24,9 +24,9 @@ cilium-klj4b   1/1       Running   0          4d
 cilium-zmjj9   1/1       Running   0          4d
 ```
 
-If Cilium encounters a problem that it cannot recover from, it will automatically report the failure state via cilium status which is regularly queried by the Kubernetes liveness probe to automatically restart Cilium pods. If a Cilium pod is in state CrashLoopBackoff then this indicates a permanent failure scenario.
+If Cilium encounters a problem that it cannot recover from, it will automatically report the failure state via `cilium status` which is regularly queried by the Kubernetes liveness probe to automatically restart Cilium pods. If a Cilium pod is in state `CrashLoopBackoff` then this indicates a permanent failure scenario.
 
-If a particular Cilium pod is not in running state, the status and health of the agent on that node can be retrieved by running cilium status in the context of that pod:
+If a particular Cilium pod is not in running state, the status and health of the agent on that node can be retrieved by running `cilium status` in the context of that pod:
 
 ```bash
 kubectl -n kube-system exec <podname> -- cilium status
@@ -57,7 +57,7 @@ Cluster health:         1/1 reachable   (2022-01-10T12:29:11Z)
 
 ```
 
-Detailed information about the status of Cilium can be inspected with the cilium status --verbose command. Verbose output includes detailed IPAM state (allocated addresses), Cilium controller status, and details of the Proxy status.
+Detailed information about the status of Cilium can be inspected with the `cilium status --verbose` command. Verbose output includes detailed IPAM state (allocated addresses), Cilium controller status, and details of the Proxy status.
 
 
 ## Logs
@@ -68,13 +68,13 @@ To retrieve log files of a cilium pod, run:
 kubectl -n kube-system logs --timestamps <pod-name>
 ```
 
-The `<pod-name>` can be determined with the following command and selecting the name of one of the pods:
+The `<pod-name>` can be determined with the following command and by selecting the name of one of the pods:
 
 ```bash
 kubectl -n kube-system get pods -l k8s-app=cilium
 ```
 
-If the cilium pod was already restarted due to the liveness problem after encountering an issue, it can be useful to retrieve the logs of the pod before the last restart:
+If the Cilium pod was already restarted due to the liveness problem after encountering an issue, it can be useful to retrieve the logs of the pod previous to the last restart:
 
 ```bash
 kubectl -n kube-system logs --timestamps -p <pod-name>
@@ -88,7 +88,7 @@ A potential cause for policy enforcement not functioning as expected is that the
 * The pod is running in host networking and will use the host’s IP address directly. Such pods have full network connectivity but Cilium will not provide security policy enforcement for such pods.
 * The pod was started before Cilium was deployed. Cilium only manages pods that have been deployed after Cilium itself was started. Cilium will not provide security policy enforcement for such pods.
 
-If pod networking is not managed by Cilium. Ingress and egress policy rules selecting the respective pods will not be applied. See the section Network Policy for more details.
+If pod networking is not managed by Cilium. ingress and egress policy rules selecting the respective pods will not be applied. See the section Network Policy for more details.
 
 For a quick assessment of whether any pods are not managed by Cilium, the Cilium CLI will print the number of managed pods. If this prints that all of the pods are managed by Cilium, then there is no problem:
 
@@ -113,7 +113,7 @@ Containers:       cilium-operator    Running: 2
                   hubble-ui          Running: 1
                   cilium             Running: 2
 Cluster Pods:     5/5 managed by Cilium
-``
+```
 
 You can run the following script to list the pods which are not managed by Cilium:
 
@@ -136,7 +136,7 @@ kube-system/storage-provisioner
 
 Before you report a problem, make sure to retrieve the necessary information from your cluster before the failure state is lost.
 
-Execute `cilium sysdump` command to collect troubleshooting information from your Kubernetes cluster:
+Execute the `cilium sysdump` command to collect troubleshooting information from your Kubernetes cluster:
 
 ```bash
 cilium sysdump

@@ -26,5 +26,5 @@ Goals of these labs:
 * Minikube (>= 1.5.2): https://minikube.sigs.k8s.io/docs/start/
 
 {{% alert title="Note" color="primary" %}}
-while we strongly recommend using Minikube, the training may also be followed on any GKE, EKS, or AKS cluster, though you will not get support from the training staff in case of cluster-related issues during the event. See our documentation for more details on preparing a GKE, EKS, or AKS cluster for Cilium: https://docs.cilium.io/en/stable/gettingstarted/
+While we strongly recommend using Minikube, the training may also be followed on any GKE, EKS, or AKS cluster, though you will not get support from the training staff in case of cluster-related issues during the event. See our documentation for more details on preparing a GKE, EKS, or AKS cluster for Cilium: https://docs.cilium.io/en/stable/gettingstarted/
 {{% /alert %}}

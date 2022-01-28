@@ -88,7 +88,7 @@ cilium image (running): unknown. Unable to obtain cilium version, no cilium pods
 It's ok if your installation does not show the same version.
 {{% /alert %}}
 
-Them lets look at
+Then lets look at
 
 ```bash
 cilium status
