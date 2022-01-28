@@ -39,20 +39,20 @@ helm delete cilium-preflight --namespace=kube-system
 
 During normal cluster operations, all Cilium components should run the same version. Upgrading just one of them (e.g., upgrading the agent without upgrading the operator) could result in unexpected cluster behavior. The following steps will describe how to upgrade all of the components from one stable release to a later stable release.
 
-When upgrading from one minor release to another minor release, for example 1.x to 1.y, it is recommended to upgrade to the latest patch release for a Cilium release series first. The latest patch releases for each supported version of Cilium are here. Upgrading to the latest patch release ensures the most seamless experience if a rollback is required following the minor release upgrade. The upgrade guides for previous versions can be found for each minor version at the bottom left corner.
+When upgrading from one minor release to another minor release, for example 1.x to 1.y, it is recommended to upgrade to the latest patch release for a Cilium release series first. The latest patch releases for each supported version of Cilium are [here](https://github.com/cilium/cilium#stable-releases). Upgrading to the latest patch release ensures the most seamless experience if a rollback is required following the minor release upgrade. The upgrade guides for previous versions can be found for each minor version at the bottom left corner.
 
 Helm can be used to either upgrade Cilium directly or to generate a new set of YAML files that can be used to upgrade an existing deployment via kubectl. By default, Helm will generate the new templates using the default values files packaged with each new release. You still need to ensure that you are specifying the equivalent options as used for the initial deployment, either by specifying a them at the command line or by committing the values to a YAML file.
 
 Too minimize datapath disruption during the upgrade, the upgradeCompatibility option should be set to the initial Cilium version which was installed in this cluster. Valid options are:
 
-```
+```bash
 helm upgrade -i cilium cilium/cilium --version 1.11.0 \
   --namespace kube-system \
   --set ipam.operator.clusterPoolIPv4PodCIDR=10.1.0.0/16 \
   --set cluster.name=cluster1 \
   --set cluster.id=1 \
   --set operator.replicas=1 \
-  --set upgradeCompatibility=1.10
+  --set upgradeCompatibility=1.10 \
   --wait
 ```
 {{% alert title="Note" color="primary" %}}

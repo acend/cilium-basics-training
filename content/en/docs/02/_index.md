@@ -78,9 +78,9 @@ cilium version
 which should give you an output similar to this:
 
 ```
-cilium-cli: v0.9.3 compiled with go1.17.3 on linux/amd64
-cilium image (default): v1.10.5
-cilium image (stable): v1.10.5
+cilium-cli: v0.10.1 compiled with go1.17.6 on linux/amd64
+cilium image (default): v1.11.1
+cilium image (stable): v1.11.1
 cilium image (running): unknown. Unable to obtain cilium version, no cilium pods found in namespace "kube-system"
 ```
 
@@ -236,6 +236,47 @@ Once done, clean up the connectivity test namespace:
 ```bash
 kubectl delete ns cilium-test --wait=false
 ```
+
+## Explore your installation
+
+We have learned about the cilium components. Let us see some of them now
+
+```bash
+kubectl api-resources | grep cilium
+``````
+
+Which should output the installed CRDs:
+
+```bash
+ciliumclusterwidenetworkpolicies   ccnp           cilium.io/v2                           false        CiliumClusterwideNetworkPolicy
+ciliumegressnatpolicies                           cilium.io/v2alpha1                     false        CiliumEgressNATPolicy
+ciliumendpoints                    cep,ciliumep   cilium.io/v2                           true         CiliumEndpoint
+ciliumexternalworkloads            cew            cilium.io/v2                           false        CiliumExternalWorkload
+ciliumidentities                   ciliumid       cilium.io/v2                           false        CiliumIdentity
+ciliumlocalredirectpolicies        clrp           cilium.io/v2                           true         CiliumLocalRedirectPolicy
+ciliumnetworkpolicies              cnp,ciliumnp   cilium.io/v2                           true         CiliumNetworkPolicy
+ciliumnodes                        cn,ciliumn     cilium.io/v2                           false        CiliumNode
+``````
+
+And now we check all installed cilium CRDs
+```bash
+kubectl get ccnp,cep,cew,ciliumid,clrp,cnp,cn -A
+```
+
+We see 1 node, 1 identity and on endpoint:
+```bash
+NAMESPACE     NAME                                               ENDPOINT ID   IDENTITY ID   INGRESS ENFORCEMENT   EGRESS ENFORCEMENT   VISIBILITY POLICY   ENDPOINT STATE   IPV4         IPV6
+kube-system   ciliumendpoint.cilium.io/coredns-64897985d-7485t   465           67688                                                                        ready            10.1.0.215   
+
+NAMESPACE   NAME                             NAMESPACE     AGE
+            ciliumidentity.cilium.io/67688   kube-system   18m
+
+NAMESPACE   NAME                            AGE
+            ciliumnode.cilium.io/cluster1   18m
+```
+
+Can you guess why only the coredns pod is listed as an Endpoint and Identity?
+Is it possible to have more CiliumNodes then Nodes in a Kubernetes Cluster?
 
 
 ## Install Cilium with the `cilium` cli
