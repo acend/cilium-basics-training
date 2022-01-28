@@ -7,13 +7,13 @@ sectionnumber: 6.2
 
 ## Task {{% param sectionnumber %}}.1: Deploy a new Demo Application
 
-In this Star Wars-inspired example, there are three microservices applications: deathstar, tiefighter, and xwing. The deathstar runs an HTTP webservice on port 80, which is exposed as a Kubernetes Service to load-balance requests to deathstar across two pod replicas. The deathstar service provides landing services to the empire’s spaceships so that they can request a landing port. The tiefighter pod represents a landing-request client service on a typical empire ship and xwing represents a similar service on an alliance ship. They exist so that we can test different security policies for access control to deathstar landing services.
+In this Star Wars inspired example, there are three microservices applications: deathstar, tiefighter, and xwing. The deathstar runs an HTTP webservice on port 80, which is exposed as a Kubernetes Service to load balance requests to deathstar across two pod replicas. The deathstar service provides landing services to the empire’s spaceships so that they can request a landing port. The tiefighter pod represents a landing-request client service on a typical empire ship and xwing represents a similar service on an alliance ship. They exist so that we can test different security policies for access control to deathstar landing services.
 
-The file `sw-app.yaml` contains a Kubernetes Deployment for each of the three services. Each deployment is identified using the Kubernetes labels (org=empire, class=deathstar), (org=empire, class=tiefighter), and (org=alliance, class=xwing). It also includes a deathstar-service, which load-balances traffic to all pods with label (org=empire, class=deathstar).
+The file `sw-app.yaml` contains a Kubernetes Deployment for each of the three services. Each deployment is identified using the Kubernetes labels (org=empire, class=deathstar), (org=empire, class=tiefighter), and (org=alliance, class=xwing). It also includes a deathstar-service, which load balances traffic to all pods with label (org=empire, class=deathstar).
 
 {{< highlight yaml >}}{{< readfile file="content/en/docs/06/02/sw-app.yaml" >}}{{< /highlight >}}
 
-Apply the file with:
+Create and apply the file with:
 
 ```bash
 kubectl apply -f sw-app.yaml
@@ -41,7 +41,7 @@ kubectl exec tiefighter -- curl -m 2 -s -XPOST deathstar.default.svc.cluster.loc
 Ship landed
 ```
 
-but the `xwing` does not have:
+but the `xwing` does not have access:
 
 ```bash
 kubectl exec xwing -- curl -m 2 -s -XPOST deathstar.default.svc.cluster.local/v1/request-landing
@@ -106,4 +106,4 @@ Access denied
 
 {{% alert title="Note" color="primary" %}}
 You can now check the `Hubble Metrics` dashboard in grafana again. The graphs under HTTP should soon show some data as well.
-{{% alert %}}
+{{% /alert %}}
