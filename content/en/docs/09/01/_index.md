@@ -89,7 +89,7 @@ and then execute the `curl` `for` loop again, you still get answers, this time o
 ```
 
 
-## Task {{% param sectionnumber %}}.1: Load-balancing only to a Remote Cluster
+## Task {{% param sectionnumber %}}.2: Load-balancing only to a Remote Cluster
 
 By default, a Global Service will load-balance across backends in multiple clusters. This implicitly configures `io.cilium/shared-service: "true"`. To prevent service backends from being shared to other clusters, and to ensure that the service will only load-balance to backends in remote clusters, this option should be disabled.
 
