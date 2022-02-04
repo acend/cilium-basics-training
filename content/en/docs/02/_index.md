@@ -14,7 +14,7 @@ In this lab we are going to use [helm](https://helm.sh) since it has more option
 The [Cilium command line](https://github.com/cilium/cilium-cli/) tool is used (Cilium CLI) for verification and troubleshooting.
 
 
-## Install helm
+## Task {{% param sectionnumber %}}.1: Install helm
 
 For a complete overview refer to the helm installation [website](https://helm.sh/docs/intro/install/). If you have helm 3 already installed you can skip this step.
 
@@ -33,7 +33,7 @@ curl -s https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | ba
 Get the Windows binary files from the [latest Release](https://github.com/helm/helm/releases)
 
 
-## Install Cilium CLI
+## Task {{% param sectionnumber %}}.2: Install Cilium CLI
 
 The `cilium` CLI tool is a single binary file that can be downloaded from the project's release page. Follow the instructions depending on your operating system
 
@@ -113,7 +113,7 @@ Errors:          cilium    cilium    daemonsets.apps "cilium" not found
 We don't have yet installed cilium, therefore the error is perfectly fine.
 
 
-## Install Cilium
+## Task {{% param sectionnumber %}}.3: Install Cilium
 
 Let's install cilium with helm:
 
@@ -238,9 +238,9 @@ kubectl delete ns cilium-test --wait=false
 ```
 
 
-## Explore your installation
+## Task {{% param sectionnumber %}}.4: Explore your installation
 
-We have learned about the cilium components. Let us see some of them now
+We have learned about the cilium components. Let us check out the installed CRDs now:
 
 ```bash
 kubectl api-resources | grep cilium
@@ -264,7 +264,7 @@ And now we check all installed cilium CRDs
 kubectl get ccnp,cep,cew,ciliumid,clrp,cnp,cn -A
 ```
 
-We see 1 node, 1 identity and on endpoint:
+We see 1 node, 1 identity and 1 endpoint:
 ```bash
 NAMESPACE     NAME                                               ENDPOINT ID   IDENTITY ID   INGRESS ENFORCEMENT   EGRESS ENFORCEMENT   VISIBILITY POLICY   ENDPOINT STATE   IPV4         IPV6
 kube-system   ciliumendpoint.cilium.io/coredns-64897985d-7485t   465           67688                                                                        ready            10.1.0.215   
@@ -277,7 +277,50 @@ NAMESPACE   NAME                            AGE
 ```
 
 Can you guess why only the coredns pod is listed as an Endpoint and Identity?
-Is it possible to have more CiliumNodes then Nodes in a Kubernetes Cluster?
+<details>
+  <summary>Answer</summary>
+This pod is the only one which is NOT on the Host Network.
+</details>
+
+Is it possible to have more CiliumNodes than nodes in a Kubernetes Cluster?
+<details>
+  <summary>Answer</summary>
+A CiliumNode is a host with cilium-agent installed. So this could also be VM outside Kubernetes.
+</details>
+
+
+We have discussed CNI plugin installations, let us check out the cilium installation on the Node.
+
+We can either start debug debug container on the Node and chroot its /.
+
+```bash
+kubectl debug node/cluster1 -it --image=busybox
+chroot /host
+```
+
+Or we use docker to access the node:
+```bash
+docker exec -it cluster1 bash
+```
+
+
+Now we have a shell with access to the node. We will check out the cilium installation:
+
+```bash
+ls -l /etc/cni/net.d/
+cat /etc/cni/net.d/05-cilium.conf
+/opt/cni/bin/cilium-cni --help
+ip a
+ls /sys/fs/bpf/tc/globals/
+exit #exit twice if you used kubectl debug
+```
+We make a few oberservations:
+
+* Kubernetes uses the configuration file with the lowest number so it takes cilium with the prefix 05.
+* The configuration file is written as a  [CNI spec](https://github.com/containernetworking/cni/blob/master/SPEC.md#configuration-format).
+* The cilium binary was installed to /opt/cni/bin.
+* Cilium created two virtual network interfaces `cilium_net`,`cilium_host` (host traffic) and the vxlan overlay interface `cilium_vxlan`
+* We see that cilium created eBPF Maps on the Node in /sys/fs/bpf/tc/globals/.
 
 
 ## Install Cilium with the `cilium` cli

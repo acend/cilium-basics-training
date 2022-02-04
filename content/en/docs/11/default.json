@@ -1,0 +1,10 @@
+
+  
+{
+	  "private": [
+		      { "id": 1, "body": "another secret information" }
+		        ],
+			  "public": [
+				      { "id": 1, "body": " another public information" }
+				        ]
+}

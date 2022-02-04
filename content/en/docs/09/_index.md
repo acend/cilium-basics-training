@@ -1,7 +1,7 @@
 ---
-title: "8. Cluster Mesh"
-weight: 8
-sectionnumber: 8
+title: "9. Cluster Mesh"
+weight: 9
+sectionnumber: 9
 ---
 
 
@@ -162,7 +162,7 @@ cilium clustermesh status --context cluster1 --wait
 The two clusters are now connected.
 
 
-## Cluster Mesh Troubleshooting
+## Task {{% param sectionnumber %}}.3: Cluster Mesh Troubleshooting
 
 Use the following list of steps to troubleshoot issues with ClusterMesh:
 
