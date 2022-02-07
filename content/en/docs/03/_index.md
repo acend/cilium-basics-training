@@ -4,12 +4,12 @@ weight: 3
 sectionnumber: 3
 ---
 
-Before we start with the CNI functionality of Cilium and its security components we want to enable the optional Hubble component (which is disabled by default). So we can take full advantage of its eBFP observatility capabilities.
+Before we start with the CNI functionality of Cilium and its security components we want to enable the optional Hubble component (which is disabled by default). So we can take full advantage of its eBFP observability capabilities.
 
 
 ## Task {{% param sectionnumber %}}.1: Install the Hubble CLI
 
-Similiar to the `cilium` CLI, the `hubble` CLI interfaces with Hubble and allows observing network traffic within Kubernetes.
+Similar to the `cilium` CLI, the `hubble` CLI interfaces with Hubble and allows observing network traffic within Kubernetes.
 
 So let us install the `hubble` CLI.
 
@@ -27,7 +27,7 @@ rm hubble-linux-amd64.tar.gz{,.sha256sum}
 ```
 
 
-### MacOS Setup
+### macOS Setup
 
 Execute the following command to download the `hubble` CLI:
 
@@ -38,11 +38,6 @@ shasum -a 256 -c hubble-darwin-amd64.tar.gz.sha256sum
 sudo tar xzvfC hubble-darwin-amd64.tar.gz /usr/local/bin
 rm hubble-darwin-amd64.tar.gz{,.sha256sum}
 ```
-
-
-### Windows Setup
-
-Get the Windows binary files from the [latest Release](https://github.com/cilium/hubble/releases/latest/)
 
 
 ## Hubble CLI
@@ -90,7 +85,7 @@ Use "hubble [command] --help" for more information about a command.
 ```
 
 
-## Task {{% param sectionnumber %}}.2: Deploy simple application
+## Task {{% param sectionnumber %}}.2: Deploy a simple application
 
 Before we enable Hubble in Cilium we want to make sure we have at least one application to observe.
 
@@ -171,7 +166,7 @@ helm upgrade -i cilium cilium/cilium --version 1.11.0 \
   --wait
 ```
 
-If you have installed Cilium with the `cilium` cli then Hubble component is not enabled by default (nor is Hubble Relay). You can enable Hubble using the following `cilium` CLI command:
+If you have installed Cilium with the `cilium` CLI then Hubble component is not enabled by default (nor is Hubble Relay). You can enable Hubble using the following `cilium` CLI command:
 
 
 ```bash
@@ -251,7 +246,7 @@ cilium hubble port-forward&
 Note the `&` after the command which puts the process in the background so we can continue working in the shell.
 {{% /alert %}}
 
-And then check Hubble status via the Hubble CLI (which uses the port-forwarding just openend):
+And then check Hubble status via the Hubble CLI (which uses the port-forwarding just opened):
 
 ```bash
 hubble status
@@ -269,13 +264,13 @@ The Hubble CLI is now primed for observing network traffic within the cluster.
 
 ## Task {{% param sectionnumber %}}.4: Observing flows with Hubble
 
-We now want to use the `hubble` CLI to observe some network flows in out Kubernetes Cluster. Lets have a look at the following command:
+We now want to use the `hubble` CLI to observe some network flows in our Kubernetes Cluster. Let us have a look at the following command:
 
 ```bash
 hubble observe
 ```
 
-which gives you a list on network flows:
+which gives you a list of network flows:
 
 ```
 Nov 23 14:49:03.030: 10.0.0.113:46274 <- kube-system/hubble-relay-f6d85866c-csthd:4245 to-stack FORWARDED (TCP Flags: ACK, PSH)
@@ -307,7 +302,7 @@ with
 hubble observe -f
 ```
 
-you can observe and follow the current active flows in your Kubernetes Cluster. Stop the command with `CTRL+C`.
+you can observe and follow the currently active flows in your Kubernetes Cluster. Stop the command with `CTRL+C`.
 
 Let us produce some traffic:
 

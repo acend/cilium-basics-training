@@ -13,7 +13,7 @@ If you are not yet familiar with Kubernetes Network Policies we suggest to go to
 {{% /alert %}}
 
 
-## Task {{% param sectionnumber %}}.1: Cilium Endpoint
+## Task {{% param sectionnumber %}}.1: Cilium Endpoints and Identities
 
 Each Pod from our simple application is represented in Cilium as an [Endpoint](https://docs.cilium.io/en/stable/concepts/terminology/#endpoint). We can use the `cilium` tool inside a Cilium pod to list them.
 
@@ -34,17 +34,29 @@ kubectl -n kube-system exec <podname> -- cilium endpoint list
 ```
 
 {{% alert title="Note" color="primary" %}}
-Or you can also use some jsonpath magic and execute the command in one line:
+Or we just execute the first pod of the daemonset:
 
 ```bash
-kubectl -n kube-system exec $(kubectl -n kube-system get pods -l k8s-app=cilium -o jsonpath='{.items[0].metadata.name}') -- cilium endpoint list
+kubectl -n kube-system exec ds/cilium -- cilium endpoint list
 ```
 {{% /alert %}}
 
+Cilium will match these endpoints with labels and generate identities as a result. The identity is what is used to enforce basic connectivity between endpoints. We can see this change of identity:
+
+```bash
+kubectl run test-identity --image=nginx
+sleep 5 # just wait for the pod to get ready
+kubectl -n kube-system exec daemonset/cilium -- cilium endpoint list
+kubectl label pod test-identity this=that
+kubectl -n kube-system exec daemonset/cilium -- cilium endpoint list
+kubectl delete pod test-identity
+```
+
+We see that the number for this pod in the column IDENTITY has changed after we added another label. If you run `endpoint list` right after pod-labeling you can also sett `waiting-for-identity` as the status of the endpoint.
 
 ## Task {{% param sectionnumber %}}.2: Verify connectivity
 
-Make your your `FRONTEND` and `NOT_FRONTEND` environment variable are still set. Otherwise set them again:
+Make sure your `FRONTEND` and `NOT_FRONTEND` environment variable are still set. Otherwise set them again:
 
 ```bash
 FRONTEND=$(kubectl get pods -l app=frontend -o jsonpath='{.items[0].metadata.name}')
