@@ -54,6 +54,7 @@ kubectl delete pod test-identity
 
 We see that the number for this pod in the column IDENTITY has changed after we added another label. If you run `endpoint list` right after pod-labeling you can also sett `waiting-for-identity` as the status of the endpoint.
 
+
 ## Task {{% param sectionnumber %}}.2: Verify connectivity
 
 Make sure your `FRONTEND` and `NOT_FRONTEND` environment variable are still set. Otherwise set them again:
