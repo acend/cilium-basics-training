@@ -12,10 +12,8 @@ Not only does Hubble allow us to inspect flows from the command line, but it als
 Enabling the optional Hubble UI component with Helm looks like this:
 
 ```bash
-helm repo add cilium https://helm.cilium.io/
 helm upgrade -i cilium cilium/cilium --version 1.11.0 \
   --namespace kube-system \
-  --set ipam.operator.clusterPoolIPv4PodCIDR=10.1.0.0/16 \
   --reuse-values \
   --set hubble.ui.enabled=true \
   --wait
@@ -107,10 +105,14 @@ hubble status
 To start Hubble UI execute
 
 ```bash
-cilium hubble ui
+cilium hubble ui &
 ```
 
 The browser should automatically open http://localhost:12000/ (open it manually if not).
+
+{{% alert title="Note" color="primary" %}}
+If you work in our Webshell environment, the browser won't open and you can't access http://localhost:12000/ directly. Instead use the public IP address of your vm instead of localhost: http://<ipaddress>:12000
+{{% /alert %}}
 
 We can then access the graphical service map by selecting our default namespace:
 

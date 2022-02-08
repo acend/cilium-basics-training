@@ -154,10 +154,15 @@ We don't have yet installed cilium, therefore the error is perfectly fine.
 
 ## Task {{% param sectionnumber %}}.3: Install Cilium
 
-Let's install cilium with helm:
+Let's install cilium with helm. First we need to add the Cilium Helm Repository:
 
 ```bash
 helm repo add cilium https://helm.cilium.io/
+```
+
+and then we can install Cilium:
+
+```bash
 helm upgrade -i cilium cilium/cilium --version 1.10.5 \
   --namespace kube-system \
   --set ipam.operator.clusterPoolIPv4PodCIDR=10.1.0.0/16 \

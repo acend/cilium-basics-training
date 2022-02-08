@@ -53,7 +53,7 @@ It is not yet possible to get metrics from Cilium envoy (port 9095). Envoy only 
 {{% /alert %}}
 
 You should see now an output like this.
-```bash
+```
 If you don't see a command prompt, try pressing enter.
 echo ${CILIUM_AGENT_IP}
 192.168.49.2
@@ -105,6 +105,10 @@ kubectl -n cilium-monitoring port-forward service/grafana --address 0.0.0.0 --ad
 ```
 
 Now open your browser and go to http://localhost:3000/dashboards. Open the Hubble Dashboard and browse through its graphs. For a better view, you can change the timespan to the last 5 minutes. Verify that you see the generated traffic under Network, Forwarded vs Dropped Traffic.
+
+{{% alert title="Note" color="primary" %}}
+Again, if you work in our Webshell environment, the browser won't open and you can't access http://localhost:3000/dashboards directly. Instead use the public IP address of your vm instead of localhost: http://<ipaddress>:3000/dashboards
+{{% /alert %}}
 
 Not all graphs have data available. This is because we have not yet used network policies or any layer 7 components. This will be done in the later chapters.
 

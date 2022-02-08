@@ -216,7 +216,7 @@ The file should look like this:
 Apply the new policy:
 
 ```bash
-kubectl create -f backend-allow-ingress-frontend.yaml
+kubectl apply -f backend-allow-ingress-frontend.yaml
 ```
 
 and then execute the connectivity test again:
