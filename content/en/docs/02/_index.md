@@ -316,7 +316,7 @@ NAMESPACE   NAME                            AGE
 ```
 
 {{% alert title="Note" color="primary" %}}
-It might be possible that, you still see identites created by `cilium connectivity test`. They will be deleted automatically after a while.
+It might be possible that, you still see identites created by `cilium connectivity test`. They will be deleted by `cilium-operator` after max. 15 minutes.
 {{% /alert %}}
 
 
