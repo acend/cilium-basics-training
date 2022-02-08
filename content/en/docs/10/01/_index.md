@@ -153,3 +153,8 @@ Content-Length: 2109
 Date: Tue, 14 Dec 2021 10:01:16 GMT
 Connection: keep-alive
 ```
+
+
+## Task {{% param sectionnumber %}}.3: Cleanup
+
+We don't need `cluster3` anymore. You can stop `cluster3` with `minikube stop -p cluster3` & `minikube stop -p cluster3` to free up resources and speed up things.
