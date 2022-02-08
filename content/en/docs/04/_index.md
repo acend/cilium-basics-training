@@ -5,7 +5,7 @@ sectionnumber: 4
 ---
 
 Hubble and its UI did allow us to see traffic flow inside our cluster. Both Cilium and Hubble can be configured to serve Prometheus metrics independently of each other.
-With metrics displayed in grafana or another UI we can get a quick overview about our cluster state and its traffic.
+With metrics displayed in grafana or another UI, we can get a quick overview of our cluster state and its traffic.
 
 Cilium metrics show us the state of Cilium itself, namely of the cilium-agent, cilium-envoy, and cilium-operator processes.
 Hubble metrics give us information about the traffic of our applications.
@@ -41,7 +41,7 @@ curl -s ${CILIUM_AGENT_IP}:9091/metrics | grep hubble_tcp_flags_total # show tot
 exit
 ```
 {{% alert title="Note" color="primary" %}}
-The Cilium agent pods run as daemonset on the HostNetwork. If you have curl installed you can also directl call a node.
+The Cilium agent pods run as daemonset on the HostNetwork. If you have curl installed you can also directly call a node.
 ```bash
 NODE=$(kubectl get nodes --selector=kubernetes.io/role!=master -o jsonpath={.items[*].status.addresses[?\(@.type==\"InternalIP\"\)].address})
 curl -s $NODE:9090/metrics | grep cilium_nodes_all_num
@@ -78,7 +78,7 @@ Install prometheus grafana into cilium-monitoring namespace to store and visuali
 kubectl apply -f https://raw.githubusercontent.com/cilium/cilium/v1.11/examples/kubernetes/addons/prometheus/monitoring-example.yaml
 ```
 
-Make sure grafana and prometheus pods are up and running befor continue with the next step.
+Make sure grafana and prometheus pods are up and running before continuing with the next step.
 
 ```bash
 kubectl -n cilium-monitoring get pod
@@ -104,7 +104,7 @@ In a second terminal access Grafana with kubectl proxy-forward
 kubectl -n cilium-monitoring port-forward service/grafana --address 0.0.0.0 --address :: 3000:3000 &
 ```
 
-Now open your browser and go to http://localhost:3000/dashboards. Open the Hubble Dashboard and browse through its graphs. For a better view you can change the timespan to the last 5 minutes. Verify that you see the generated traffic under Network, Forwarded vs Dropped Traffic.
+Now open your browser and go to http://localhost:3000/dashboards. Open the Hubble Dashboard and browse through its graphs. For a better view, you can change the timespan to the last 5 minutes. Verify that you see the generated traffic under Network, Forwarded vs Dropped Traffic.
 
 Not all graphs have data available. This is because we have not yet used network policies or any layer 7 components. This will be done in the later chapters.
 

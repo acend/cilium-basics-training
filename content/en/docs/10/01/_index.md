@@ -4,7 +4,7 @@ weight: 101
 sectionnumber: 10.1
 ---
 
-In this lab we are going to provision a new Kubernetes cluster without `kube-proxy` to use Cilium as a fully replacement for it.
+In this lab, we are going to provision a new Kubernetes cluster without `kube-proxy` to use Cilium as a full replacement for it.
 
 
 ## Task {{% param sectionnumber %}}.1: Deploy a new Kubernetes Cluster without `kube-proxy`
@@ -37,7 +37,7 @@ minikube start --network-plugin=cni --cni=false --kubernetes-version=1.23.0 --ex
 
 ## Task {{% param sectionnumber %}}.1: Deploy Cilium and enable the Kube Proxy replacement
 
-As the `cilium` and `cilium-operator` by default tries to communicate with the Kubernetes API using the default `kubernetes` service ip, they cannot do this with disabled `kube-proxy`. We therefore need to set the `KUBERNETES_SERVICE_HOST` and `KUBERNETES_SERVICE_PORT` environment variable to tell the two pods how to connect to the Kubernetes API.
+As the `cilium` and `cilium-operator` by default try to communicate with the Kubernetes API using the default `kubernetes` service IP, they cannot do this with disabled `kube-proxy`. We, therefore, need to set the `KUBERNETES_SERVICE_HOST` and `KUBERNETES_SERVICE_PORT` environment variables to tell the two pods how to connect to the Kubernetes API.
 
 To findthe correct IP address execute the following command:
 
@@ -99,7 +99,7 @@ storage-provisioner                1/1     Running   13 (17m ago)   59m
 ```
 
 
-## Task {{% param sectionnumber %}}.2: Deploy our sample-app again to the new cluster
+## Task {{% param sectionnumber %}}.2: Deploy our simple app again to the new cluster
 
 As this is a new cluster we want to deploy our `simple-app.yaml` from lab 03 again to run some experiments. Run the following command using the `simple-app.yaml` from lab 03:
 
@@ -107,7 +107,7 @@ As this is a new cluster we want to deploy our `simple-app.yaml` from lab 03 aga
 kubectl create -f simple-app.yaml
 ```
 
-Now lets redo the task from lab 03.
+Now let us redo the task from lab 03.
 
 Let's make life again a bit easier by storing the Pod's name into an environment variable so we can reuse it later again:
 

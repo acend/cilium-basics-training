@@ -9,7 +9,7 @@ This lab will guide you to perform load-balancing and service discovery across m
 
 ## Task {{% param sectionnumber %}}.1: Load-balancing with Global Services
 
-Establishing load-balancing between clusters is achieved by defining a Kubernetes service with identical name and namespace in each cluster and adding the `annotation io.cilium/global-service: "true"` to declare it global. Cilium will automatically perform load-balancing to pods in both clusters.
+Establishing load-balancing between clusters is achieved by defining a Kubernetes service with an identical name and namespace in each cluster and adding the `annotation io.cilium/global-service: "true"` to declare it global. Cilium will automatically perform load-balancing to pods in both clusters.
 
 We are going to deploy a global service and a sample application on both of our connected clusters.
 
@@ -93,7 +93,7 @@ and then execute the `curl` `for` loop again, you still get answers, this time o
 
 By default, a Global Service will load-balance across backends in multiple clusters. This implicitly configures `io.cilium/shared-service: "true"`. To prevent service backends from being shared to other clusters, and to ensure that the service will only load-balance to backends in remote clusters, this option should be disabled.
 
-So lets change our `rebel-base` service on `cluster1` with the following updated service definition:
+So let us change our `rebel-base` service on `cluster1` with the following updated service definition:
 
 {{< highlight yaml >}}{{< readfile file="content/en/docs/09/01/svc2.yaml" >}}{{< /highlight >}}
 

@@ -4,33 +4,77 @@ weight: 2
 sectionnumber: 2
 ---
 
-
 Cilium can be installed using multiple ways:
 
 * Cilium CLI
 * Using Helm
 
-In this lab we are going to use [helm](https://helm.sh) since it has more options.
-The [Cilium command line](https://github.com/cilium/cilium-cli/) tool is used (Cilium CLI) for verification and troubleshooting.
+In this lab, we are going to use [helm](https://helm.sh) which is recommended for production use.
+The [Cilium command-line](https://github.com/cilium/cilium-cli/) tool is used (Cilium CLI) for verification and troubleshooting.
 
 
-## Task {{% param sectionnumber %}}.1: Install helm
+## Task {{% param sectionnumber %}}.1: Install a Kubernetes Cluster
 
-For a complete overview refer to the helm installation [website](https://helm.sh/docs/intro/install/). If you have helm 3 already installed you can skip this step.
+We are going to spin up a new Kubernetes cluster with the following command:
 
-
-### Linux and MacOs Setup
-
-Use your package manager (`apt`, `yum`, `brew` etc), download the [latest Release](https://github.com/helm/helm/releases) or use the following command to install [helm](https://helm.sh/docs/intro/install/) helm:
+{{% alert title="Note" color="primary" %}}
+To start from a clean Kubernetes Cluster, make sure `cluster1` is not yet available. You can verify this with `minikube profile list`. If you already have a `cluster1` you can delete the cluster with `minikube delete -p cluster1`.
+{{% /alert %}}
 
 ```bash
-curl -s https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+minikube start --network-plugin=cni --cni=false --kubernetes-version=1.23.0 -p cluster1 
+```
+
+{{% alert title="Note" color="primary" %}}
+During this training, you will create multiple clusters. For this, we use a feature in minikube called profile which you see with the `-p cluster1` option. You can list all your profiles with `minikube profile list` and you can change to another cluster with `minikube profile <profilename>`, this will also set your current context for `kubectl` to the specified profile/cluster.
+{{% /alert %}}
+
+This will install a new Kubernetes Cluster without any Container Network Interface (CNI). The CNI will be installed in the next task.
+
+Minikube added a new context into your Kubernetes config file and set this as your default context. Check it with the following command:
+
+```bash
+kubectl config current-context
+```
+
+This should show 'cluster1'. Now check that everything is up and running using the following command:
+
+```bash
+kubectl get node           
+```
+
+This should produce an output similar to the following:
+
+```
+NAME       STATUS   ROLES                  AGE   VERSION
+cluster1   Ready    control-plane,master   86s   v1.23.0
+```
+Depending on your minikube version and environment your node might stay NotReady because no CNI exists. It will become ready after the cilium installation.
+
+Check if all pods are running with
+
+```bash
+kubectl get pod -A
+```
+
+which produces the following output
+
+```
+NAMESPACE     NAME                               READY   STATUS              RESTARTS   AGE
+kube-system   coredns-558bd4d5db-wdlrh           0/1     ContainerCreating   0          3m1s
+kube-system   etcd-minikube                      1/1     Running             0          3m7s
+kube-system   kube-apiserver-cluster1            1/1     Running             0          3m16s
+kube-system   kube-controller-manager-cluster1   1/1     Running             0          3m7s
+kube-system   kube-proxy-9bjbq                   1/1     Running             0          3m1s
+kube-system   kube-scheduler-cluster1            1/1     Running             0          3m7s
+kube-system   storage-provisioner                1/1     Running             0          3m11s
 ```
 
 
-### Windows Setup
-
-Get the Windows binary files from the [latest Release](https://github.com/helm/helm/releases)
+{{% alert title="Note" color="primary" %}}
+Depending on your minikube version, coredns might start or not which is ok.
+But you should not see any CNI related pods!
+{{% /alert %}}
 
 
 ## Task {{% param sectionnumber %}}.2: Install Cilium CLI
@@ -50,7 +94,7 @@ rm cilium-linux-amd64.tar.gz{,.sha256sum}
 ```
 
 
-### MacOS Setup
+### macOS Setup
 
 Execute the following command to download the `cilium` CLI:
 
@@ -60,11 +104,6 @@ shasum -a 256 -c cilium-darwin-amd64.tar.gz.sha256sum
 sudo tar xzvfC cilium-darwin-amd64.tar.gz /usr/local/bin
 rm cilium-darwin-amd64.tar.gz{,.sha256sum}
 ```
-
-
-### Windows Setup
-
-Get the Windows binary files from the [latest Release](https://github.com/cilium/cilium-cli/releases/latest/)
 
 
 ## Cilium CLI
@@ -88,7 +127,7 @@ cilium image (running): unknown. Unable to obtain cilium version, no cilium pods
 It's ok if your installation does not show the same version.
 {{% /alert %}}
 
-Then lets look at
+Then let us look at
 
 ```bash
 cilium status
@@ -178,7 +217,7 @@ Alright, Cilium is up and running, lets make some tests. The `cilium` CLI allows
 cilium connectivity test
 ```
 
-This will run fore some minutes, let's wait.
+This will run for some minutes, let's wait.
 
 ```
 ℹ️  Single-node environment detected, enabling single-node connectivity test
@@ -276,29 +315,29 @@ NAMESPACE   NAME                            AGE
             ciliumnode.cilium.io/cluster1   18m
 ```
 
-Can you guess why only the coredns pod is listed as an Endpoint and Identity?
+
 <details>
-  <summary>Answer</summary>
+  <summary>Can you guess why only the coredns pod is listed as an Endpoint and Identity?</summary>
 This pod is the only one which is NOT on the Host Network.
 </details>
-
-Is it possible to have more CiliumNodes than nodes in a Kubernetes Cluster?
+ &nbsp;
 <details>
-  <summary>Answer</summary>
+  <summary>Is it possible to have more CiliumNodes than nodes in a Kubernetes Cluster?</summary>
 A CiliumNode is a host with cilium-agent installed. So this could also be VM outside Kubernetes.
 </details>
 
+&nbsp;
 
 We have discussed CNI plugin installations, let us check out the cilium installation on the Node.
 
-We can either start debug debug container on the Node and chroot its /.
+We can either start a debug container on the node and chroot its /
 
 ```bash
 kubectl debug node/cluster1 -it --image=busybox
 chroot /host
 ```
 
-Or we use docker to access the node:
+or we use docker to access the node:
 ```bash
 docker exec -it cluster1 bash
 ```
@@ -325,8 +364,11 @@ We make a few oberservations:
 
 ## Install Cilium with the `cilium` cli
 
-This is how the installation with the `cilium` cli would have looked like:
+This is what the installation with the `cilium` cli would have looked like:
 
 ```bash
 cilium install --config cluster-pool-ipv4-cidr=10.1.0.0/16 --cluster-name cluster1 --cluster-id 1 --version v1.10.5
 ```
+Be careful to never use CLI and Helm together to install, this can break an already running cilium installation.
+
+After this initial installation, we can proceed by upgrading to a newer version in the next lab.

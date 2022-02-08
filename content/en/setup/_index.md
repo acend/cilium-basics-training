@@ -7,72 +7,47 @@ menu:
     weight: 1
 ---
 
+This training can be done in two ways:
+
+* on a local machine (proceed with [Local Machine Setup](#local-setup))
+* on a provided virtual machine using the webshell (proceed with [Webshell access](#webshell-access))
+
+
+## Local machine setup
+
+
+### Technical prerequisites
+
+To run this training on your local machine please make sure the following requirements are met:
+
+* Operating System: Linux with Kernel >= 4.9.17 or MacOS
+* Docker [installed](https://docs.docker.com/get-docker/)
+* kubectl >= 1.22 [installed](https://kubernetes.io/docs/tasks/tools/#kubectl)
+* Minikube installed
+* Helm installed
+* Minimum 8GB RAM
+
+A note on Windows with WSL2: As of February 2022 the default kernel in WSL is missing some Netfilter modules. You can compile it [yourself](https://github.com/cilium/cilium/issues/17745#issuecomment-1004299480), but the training staff cannot give you any support with cluster related issues.
+
+
 ## Install Minikube
 
-This training uses [Minikube](https://minikube.sigs.k8s.io/docs/) to provide a Kubernetes Cluster on your local machine.
+This training uses [Minikube](https://minikube.sigs.k8s.io/docs/) to provide a Kubernetes Cluster.
 
-Check the [Minikube start Guide](https://minikube.sigs.k8s.io/docs/start/) for instructions on how to install minikube on your system.
+Check the [Minikube start Guide](https://minikube.sigs.k8s.io/docs/start/) for instructions on how to install minikube on your system. If you are using the provided virtual machine minikube is already installed.
 
 
-## Install a Kubernetes Cluster
+## Install helm
 
-We are going to spin up a new Kubernetes cluster with the following command:
+For a complete overview refer to the helm installation [website](https://helm.sh/docs/intro/install/). If you have helm 3 already installed you can skip this step.
 
-{{% alert title="Note" color="primary" %}}
-To start from a clean Kubernetes Cluster, make sure `cluster1` is not yet available. You can verify this with `minikube profile list`. If you already have a `cluster1` you can delete the cluster with `minikube delete -p cluster1`.
-{{% /alert %}}
+Use your package manager (`apt`, `yum`, `brew` etc), download the [latest Release](https://github.com/helm/helm/releases) or use the following command to install [helm](https://helm.sh/docs/intro/install/) helm:
 
 ```bash
-minikube start --network-plugin=cni --cni=false --kubernetes-version=1.23.0 -p cluster1 
-```
-
-{{% alert title="Note" color="primary" %}}
-During this training you will create multiple clusters. For this we use a feature in minikube called profile which you see with the `-p cluster1` option. You can list all your profiles with `minikube profile list` and you can change to a other cluster with `minikube profile <profilename>`, this will also set your current context for `kubectl` to the specified profile/cluster.
-{{% /alert %}}
-
-This will install a new Kubernetes Cluster without any Container Network Interface (CNI). The CNI will be installed later in the labs.
-
-Minikube added a new context into your Kubernetes config file and set this as your default context. Check it with the following command:
-
-```bash
-kubectl config current-context
-```
-
-This should show 'minikube'. Now check that everything is up and running using the following command:
-
-```bash
-kubectl get node           
-```
-
-This should produce an output similar to the following:
-
-```
-NAME       STATUS   ROLES                  AGE   VERSION
-minikube   Ready    control-plane,master   86s   v1.23.0
-```
-Depending on your minikube version and environment your node might stay NotReady because no CNI exists. It will become ready after the cilium installation.
-
-Check if all pods are running with
-
-```bash
-kubectl get pod -A
-```
-
-which produces the following output
-
-```
-NAMESPACE     NAME                               READY   STATUS              RESTARTS   AGE
-kube-system   coredns-558bd4d5db-wdlrh           0/1     ContainerCreating   0          3m1s
-kube-system   etcd-minikube                      1/1     Running             0          3m7s
-kube-system   kube-apiserver-minikube            1/1     Running             0          3m16s
-kube-system   kube-controller-manager-minikube   1/1     Running             0          3m7s
-kube-system   kube-proxy-9bjbq                   1/1     Running             0          3m1s
-kube-system   kube-scheduler-minikube            1/1     Running             0          3m7s
-kube-system   storage-provisioner                1/1     Running             0          3m11s
+curl -s https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 ```
 
 
-{{% alert title="Note" color="primary" %}}
-Depending on your minikube version coredns might start or not. In both cases we can proceed.
-You should not see any CNI related pods!
-{{% /alert %}}
+## Webshell access
+
+//TODO

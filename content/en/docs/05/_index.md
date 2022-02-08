@@ -5,7 +5,7 @@ sectionnumber: 5
 ---
 
 
-For more details on Troubleshooting, have a look into the [Cilium's Troubleshooting Documentation](https://docs.cilium.io/en/stable/operations/troubleshooting/).
+For more details on Troubleshooting, have a look into [Cilium's Troubleshooting Documentation](https://docs.cilium.io/en/stable/operations/troubleshooting/).
 
 
 ## Component & Cluster Health
@@ -26,13 +26,13 @@ cilium-zmjj9   1/1       Running   0          4d
 
 If Cilium encounters a problem that it cannot recover from, it will automatically report the failure state via `cilium status` which is regularly queried by the Kubernetes liveness probe to automatically restart Cilium pods. If a Cilium pod is in state `CrashLoopBackoff` then this indicates a permanent failure scenario.
 
-If a particular Cilium pod is not in running state, the status and health of the agent on that node can be retrieved by running `cilium status` in the context of that pod:
+If a particular Cilium pod is not in a running state, the status and health of the agent on that node can be retrieved by running `cilium status` in the context of that pod:
 
 ```bash
 kubectl -n kube-system exec <podname> -- cilium status
 ```
 
-The output looks similar like this:
+The output looks similar to this:
 
 ```
 Defaulted container "cilium-agent" out of: cilium-agent, mount-cgroup (init), clean-cilium-state (init)
@@ -142,7 +142,7 @@ Execute the `cilium sysdump` command to collect troubleshooting information from
 cilium sysdump
 ```
 
-Note that by default `cilium sysdump` will attempt to collect as much logs as possible and for all the nodes in the cluster. If your cluster size is above 20 nodes, consider setting the following options to limit the size of the sysdump. This is not required, but useful for those who have a constraint on bandwidth or upload size.
+Note that by default `cilium sysdump` will attempt to collect as many logs as possible for all the nodes in the cluster. If your cluster size is above 20 nodes, consider setting the following options to limit the size of the sysdump. This is not required, but is useful for those who have a constraint on bandwidth or upload size.
 
 * set the `--node-list` option to pick only a few nodes in case the cluster has many of them.
 * set the `--logs-since-time` option to go back in time to when the issues started.

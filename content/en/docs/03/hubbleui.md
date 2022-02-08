@@ -4,14 +4,13 @@ weight: 31
 sectionnumber: 3.1
 ---
 
-Not only does Hubble allow to inspect flows from the command line, it also allows us to see them in real time on a graphical service map via Hubble UI. Again, this also is an optional component that is disabled by default.
+Not only does Hubble allow us to inspect flows from the command line, but it also allows us to see them in real-time on a graphical service map via Hubble UI. Again, this also is an optional component that is disabled by default.
 
 
 ## Task {{% param sectionnumber %}}.1: Enable the Hubble UI component
 
-Enable the optional Hubble UI component with Helm looks like this:
+Enabling the optional Hubble UI component with Helm looks like this:
 
-```
 ```bash
 helm repo add cilium https://helm.cilium.io/
 helm upgrade -i cilium cilium/cilium --version 1.11.0 \
@@ -95,7 +94,7 @@ hubble status
 ```
 
 {{% alert title="Note" color="primary" %}}
-Our earlier cilium hubble port-forward should still be running (can be checked by running jobs or `ps aux | grep "cilium hubble port-forward"`). If it does not, hubble status will fail and we have to run it again:
+Our earlier command cilium hubble port-forward should still be running (can be checked by running jobs or `ps aux | grep "cilium hubble port-forward"`). If it does not, Hubble status will fail and we have to run it again:
 
 ```bash
 cilium hubble port-forward&
@@ -128,7 +127,7 @@ for i in {1..10}; do
 done
 ```
 
-and then you should see a service map in the hubble ui
+and then you should see a service map in the Hubble UI
 
 ![Hubble UI - Service Map](../hubble_ui_servicemap.png)
 
@@ -136,7 +135,7 @@ and also a table with the already familiar flow output previously seen in the `h
 
 ![Hubble UI - Service Map](../hubble_ui_flows.png)
 
-Hubble flows are displayed in real time at the bottom, with a visualization of the namespace objects in the center. Click on any flow, and click on any property from the right side panel: notice that the filters at the top of the UI have been updated accordingly.
+Hubble flows are displayed in real-time at the bottom, with a visualization of the namespace objects in the center. Click on any flow, and click on any property from the right-side panel: notice that the filters at the top of the UI have been updated accordingly.
 
 Let's run a connectivity test again and see what happens in Hubble UI in the cilium-test namespace
 
@@ -144,6 +143,6 @@ Let's run a connectivity test again and see what happens in Hubble UI in the cil
 cilium connectivity test
 ```
 
-We can see that Hubble UI is not only capable of displaying flows within a namespace, it also helps visualizing flows going in or out.
+We can see that Hubble UI is not only capable of displaying flows within a namespace, it also helps visualize flows going in or out.
 
 ![Hubble UI - Connectivity Test](../cilium_hubble_connectivity_test.png)

@@ -17,14 +17,3 @@ Goals of these labs:
 ## Additional Docs
 
 * [Cilium documentation](https://docs.cilium.io/en/v1.10/)
-
-
-## Technical prerequisites
-
-* Familiarity with Kubernetes
-* A Linux or Intel-based Mac machine with kubectl installed: https://kubernetes.io/docs/tasks/tools/#kubectl
-* Minikube (>= 1.5.2): https://minikube.sigs.k8s.io/docs/start/
-
-{{% alert title="Note" color="primary" %}}
-While we strongly recommend using Minikube, the training may also be followed on any GKE, EKS, or AKS cluster, though you will not get support from the training staff in case of cluster-related issues during the event. See our documentation for more details on preparing a GKE, EKS, or AKS cluster for Cilium: https://docs.cilium.io/en/stable/gettingstarted/
-{{% /alert %}}
