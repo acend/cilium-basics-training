@@ -3,15 +3,15 @@ title: "11. Cilium Service Mesh"
 weight: 11
 sectionnumber: 11
 ---
-Cilium Service Mesh enables functions like Ingress or Layer 7 Loadbalancing, Let us test it out.
+Cilium Service Mesh enables functions like Ingress or Layer 7 Loadbalancing.
 
 
 ## Task {{% param sectionnumber %}}.1: Installation
 
-Cilium Service Mesh is still in Beta, if you want more information about the current statut you can find it [here](https://github.com/cilium/cilium-service-mesh-beta). The Beta version uses specific images, because of that we will use a dedicated cluster and install Cilium with the CLI.
+Cilium Service Mesh is still in Beta, if you want more information about the current status you can find it [here](https://github.com/cilium/cilium-service-mesh-beta). The Beta version uses specific images, because of that we will use a dedicated cluster and install Cilium with the CLI.
 
 {{% alert title="Note" color="primary" %}}
-You can stop cluster1 with `minkube stop -p cluster1` to free up resources and speed up things.
+You can stop cluster1 with `minikube stop -p cluster1` to free up resources and speed up things.
 {{% /alert %}}
 
 
@@ -61,9 +61,9 @@ Check the ingress and the service:
 kubectl describe ingress
 kubectl get svc cilium-ingress-backend
 ```
-We have successfully created an Ingress service. Unfortunately minikube has no loadbalancer deployer and we will not get a public IP for our service (status is pending)
+We have successfully created an Ingress service. Unfortunately, minikube has no loadbalancer deployed and we will not get a public IP for our service (status stays pending)
 
-As a workaround we can test the service from inside kubernetes.
+As a workaround, we can test the service from inside kubernetes.
 
 ```bash
 SERVICE_IP=$(kubectl get svc cilium-ingress-backend -ojsonpath={.spec.clusterIP})
@@ -81,13 +81,13 @@ And you get the following output:
 ]pod "curl" deleted
 ```
 {{% alert title="Note" color="primary" %}}
-We can also use `minkube tunnel -p servicemesh` and then curl the Cluster-IP directly from our browser.
+We can also use `minikube tunnel -p servicemesh` and then curl the Cluster-IP directly from our browser.
 {{% /alert %}}
 
 
 ## Task {{% param sectionnumber %}}.3: Layer 7 Loadbalancing
 
-Ingress is not really a Service Mesh feature. Let us test out a traffic control example by loadbalancing a service inside the proxy.
+Ingress alone is not really a Service Mesh feature. Let us test out a traffic control example by loadbalancing a service inside the proxy.
 
 
 Start by creating the second service:
@@ -103,7 +103,7 @@ Call it
 ```bash
 kubectl run --rm=true -it --restart=Never --image=curlimages/curl -- curl --connect-timeout 3 http://backend-2:8080/public
 ```
-We see an output very similiar to our simple application backend, but with a changed text.
+We see output very similiar to our simple application backend, but with a changed text.
 
 Layer 7 loadbalancing will need to be routed through the proxy, we will enable this for our backend pods using a Cilium Network Policy with HTTP rules. We will block access to /public and allow requests to /private:
 
@@ -115,7 +115,7 @@ Apply the CiliumNetwork Policy with:
 kubectl apply -f cnp-l7.yaml
 ```
 
-Until now only backend service is repling to Ingress traffic. Now we configure envoy to loadbalance the traffic 50/50 between backend and backend-2 with retries.
+Until now only backend service is replying to Ingress traffic. Now we configure envoy to loadbalance the traffic 50/50 between backend and backend-2 with retries.
 We are using a CustomResource called `CiliumEnvoyConfig` for this:
 
 {{< highlight yaml >}}{{< readfile file="content/en/docs/11/envoyconfig.yaml" >}}{{< /highlight >}}

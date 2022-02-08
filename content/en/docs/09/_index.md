@@ -7,7 +7,7 @@ sectionnumber: 9
 
 ## Task {{% param sectionnumber %}}.1: Create a second Kubernetes Cluster
 
-In order to create a Cluster Mesh we need a second Kubernetes Cluster. For the Cluster Mesh to work, the PodCIDR ranges in all clusters and all nodes must be non-conflicting and unique IP addresses. The Nodes in all clusters must have IP connectivity between each other and the network between the clusters must allow the inter-cluster communication.
+To create a Cluster Mesh, we need a second Kubernetes Cluster. For the Cluster Mesh to work, the PodCIDR ranges in all clusters and nodes must be non-conflicting and have unique IP addresses. The Nodes in all clusters must have IP connectivity between each other and the network between the clusters must allow inter-cluster communication.
 
 {{% alert title="Note" color="primary" %}}
 The exact ports are documented in the [Firewall Rules](https://docs.cilium.io/en/v1.11/operations/system_requirements/#firewall-requirements) section.
@@ -85,11 +85,11 @@ Great the second cluster and Cilium is ready to use.
 
 ## Task {{% param sectionnumber %}}.2: Enable Cluster Mesh on both Cluster
 
-Now lets enable the Cluster Mesh using the `cilium` CLI on both Cluster:
+Now let us enable the Cluster Mesh using the `cilium` CLI on both clusters:
 
 
 {{% alert title="Note" color="primary" %}}
-Altough so far we used Helm up install & update cilium, enabeling Cilium using Helm currently has some bugs, therefore we use the `cilium` CLI to achieve this task.
+Although so far we used Helm to install and update Cilium, enabling Cilium using Helm currently has some bugs, therefore we use the `cilium` CLI to achieve this task. TODO: Clarify which bugs?
 {{% /alert %}}
 
 ```bash
@@ -113,7 +113,7 @@ cilium clustermesh status --context cluster1 --wait
 🔀 Global services: [ min:0 / avg:0.0 / max:0 ]
 ```
 
-In order to connect the two clusters, the following step needs to be done in one direction only. The connection will automatically be established in both directions:
+To connect the two clusters, the following step needs to be done in one direction only. The connection will automatically be established in both directions:
 
 ```bash
 cilium clustermesh connect --context cluster1 --destination-context cluster2

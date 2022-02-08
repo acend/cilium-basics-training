@@ -9,7 +9,7 @@ sectionnumber: 10.2
 This lab should be done on your `cluster1`, make sure to switch to `cluster1` with `minikube profile cluster1`
 {{% /alert %}}
 
-Cilium is also capable to act as an host firwall to enforce seucrity policies for Kubernetes nodes. In this lab we are going to show you briefly how this works.
+Cilium is also capable to act as a host firewall to enforce security policies for Kubernetes nodes. In this lab, we are going to show you briefly how this works.
 
 
 ## Task {{% param sectionnumber %}}.1: Enable the Host Firewall in Cilium
@@ -80,7 +80,7 @@ You can apply this `CiliumClusterwideNetworkPolicy` with:
 kubectl apply -f ccwnp.yaml
 ```
 
-The host is represented as a special endpoint, with label `reserved:host`, in the output of command `cilium endpoint list`. You can therefore inspect the status of the policy using that command.
+The host is represented as a special endpoint, with label `reserved:host`, in the output of the command `cilium endpoint list`. You can therefore inspect the status of the policy using that command.
 
 ```bash
 kubectl -n kube-system exec $(kubectl -n kube-system get pods -l k8s-app=cilium -o jsonpath='{.items[0].metadata.name}') -- cilium endpoint list
@@ -95,10 +95,10 @@ kubectl -n kube-system exec $(kubectl -n kube-system get pods -l k8s-app=cilium 
 
 ## Task {{% param sectionnumber %}}.4: Clean Up
 
-Once you are confident all required communication to the host from outside the cluster are allowed, you can disable policy audit mode to enforce the host policy.
+Once you are confident all required communication to the host from outside the cluster is allowed, you can disable policy audit mode to enforce the host policy.
 
 {{% alert title="Note" color="primary" %}}
-When enforce the host policy, make sure that none of the communications required to access the cluster or for the cluster to work properly are denied. They should appear as `action allow`.
+When enforcing the host policy, make sure that none of the communications required to access the cluster or for the cluster to work properly are denied. They should appear as `action allow`.
 {{% /alert %}}
 
 We are not going to do this extended task (as it would require some more rules for the cluster to continue working). But the command to disable the audit mode looks like this:

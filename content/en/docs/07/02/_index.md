@@ -9,7 +9,7 @@ sectionnumber: 7.2
 
 In this Star Wars inspired example, there are three microservices applications: deathstar, tiefighter, and xwing. The deathstar runs an HTTP webservice on port 80, which is exposed as a Kubernetes Service to load balance requests to deathstar across two pod replicas. The deathstar service provides landing services to the empire’s spaceships so that they can request a landing port. The tiefighter pod represents a landing-request client service on a typical empire ship and xwing represents a similar service on an alliance ship. They exist so that we can test different security policies for access control to deathstar landing services.
 
-The file `sw-app.yaml` contains a Kubernetes Deployment for each of the three services. Each deployment is identified using the Kubernetes labels (org=empire, class=deathstar), (org=empire, class=tiefighter), and (org=alliance, class=xwing). It also includes a deathstar-service, which load balances traffic to all pods with label (org=empire, class=deathstar).
+The file `sw-app.yaml` contains a Kubernetes Deployment for each of the three services. Each deployment is identified using the Kubernetes labels (org=empire, class=deathstar), (org=empire, class=tiefighter), and (org=alliance, class=xwing). It also includes a deathstar-service, which load balances traffic to all pods with labels org=empire and class=deathstar.
 
 {{< highlight yaml >}}{{< readfile file="content/en/docs/07/02/sw-app.yaml" >}}{{< /highlight >}}
 
@@ -31,7 +31,7 @@ Apply the Cilium Network Policy with:
 kubectl apply -f cnp.yaml
 ```
 
-With this policy our `tiefighter` has access to the `deathstar` application. You can verify this with:
+With this policy, our `tiefighter` has access to the `deathstar` application. You can verify this with:
 
 ```bash
 kubectl exec tiefighter -- curl -m 2 -s -XPOST deathstar.default.svc.cluster.local/v1/request-landing
@@ -56,7 +56,7 @@ command terminated with exit code 28
 
 In the simple scenario above, it was sufficient to either give tiefighter / xwing full access to deathstar’s API or no access at all. But to provide the strongest security (i.e., enforce least-privilege isolation) between microservices, each service that calls deathstar’s API should be limited to making only the set of HTTP requests it requires for legitimate operation.
 
-For example, consider that the deathstar service exposes some maintenance APIs which should not be called by random empire ships. To see this run:
+For example, consider that the deathstar service exposes some maintenance APIs that should not be called by random empire ships. To see this run:
 
 ```bash
 kubectl exec tiefighter -- curl -s -XPUT deathstar.default.svc.cluster.local/v1/exhaust-port

@@ -5,19 +5,19 @@ sectionnumber: 8
 ---
 ## Host traffic/endpoint traffic encryption
 
-To secure communication inside a kubernetes cluster Cilium supports transparent encryption of traffic between Cilium-managed endpoints either using IPsec or [WireGuard®](https://www.wireguard.com/).
+To secure communication inside a Kubernetes cluster Cilium supports transparent encryption of traffic between Cilium-managed endpoints either using IPsec or [WireGuard®](https://www.wireguard.com/).
 
 
 ## Task {{% param sectionnumber %}}.1: Increase cluster size
 
-By default minikube create single node clusters. Add a second node to the cluster:
+By default minikube create single-node clusters. Add a second node to the cluster:
 
 ```bash
 minikube -p cluster1 node add
 ```
 
 
-## Task {{% param sectionnumber %}}.2: Move frontend app to different node
+## Task {{% param sectionnumber %}}.2: Move frontend app to a different node
 
 To see traffic between nodes we move the frontend pod from Chapter 3 to the newly created node:
 
@@ -66,7 +66,7 @@ and then restart the cilium Daemonset:
 kubectl -n kube-system rollout restart ds cilium
 ```
 
-Currently L7 policy enforcement and visibility is [not supported](https://github.com/cilium/cilium/issues/15462) with WireGuard, this is why we have to disable it.
+Currently, L7 policy enforcement and visibility is [not supported](https://github.com/cilium/cilium/issues/15462) with WireGuard, this is why we have to disable it.
 
 
 ### Verify encryption is working
@@ -77,7 +77,7 @@ Verify the number of peers in encryption is correct (should be the sum of nodes 
 kubectl -n kube-system exec -ti ds/cilium -- cilium status | grep Encryption
 ```
 
-You should see something similiar to this (in this example we have a two node cluster):
+You should see something similar to this (in this example we have a two-node cluster):
 
 ```bash
 Encryption:             Wireguard       [cilium_wg0 (Pubkey: XbTJd5Gnp7F8cG2Ymj6q11dBx8OtP1J5ZOAhswPiYAc=, Port: 51871, Peers: 1)]
