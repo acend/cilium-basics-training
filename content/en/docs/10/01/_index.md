@@ -12,7 +12,7 @@ In this lab, we are going to provision a new Kubernetes cluster without `kube-pr
 
 Create a new Kubernetes Cluster using the `minikube`. As `minikube` uses `kubeadm` we can skip the phase where `kubeadm` installs the `kube-proxy` addon. Execute the following command to create a third cluster:
 
-```
+```bash
 minikube start --network-plugin=cni --cni=false --kubernetes-version=1.23.0 --extra-config=kubeadm.skip-phases=addon/kube-proxy -p cluster3
 ```
 

@@ -9,7 +9,7 @@ sectionnumber: 9.2
 
 The following policy illustrates how to allow particular pods to communicate between two clusters.
 
-{{< highlight yaml >}}{{< readfile file="content/en/docs/09/02/cnp.yaml" >}}{{< /highlight >}}
+{{< highlight yaml >}}{{< readfile file="content/en/docs/09/02/cnp-cm.yaml" >}}{{< /highlight >}}
 
 {{% alert title="Note" color="primary" %}}
 For the Pods to resolve the `rebel-base` service name they still need connectivity to Kubernetes DNS Service. Therefore access to that is also allowed.
@@ -20,14 +20,14 @@ Kubernetes security policies are not automatically distributed across clusters, 
 So let us apply the above `CiliumNetworkPolicy` to both clusters:
 
 ```bash
-kubectl --context cluster1 apply -f cnp.yaml
-kubectl --context cluster2 apply -f cnp.yaml
+kubectl --context cluster1 apply -f cnp-cm.yaml
+kubectl --context cluster2 apply -f cnp-cm.yaml
 ```
 
 Let us run our `curl` `for` loop again:
 
 ```bash
-XWINGPOD=$(kubectl get pod -l name=x-wing -o jsonpath="{.items[0].metadata.name}")
+XWINGPOD=$(kubectl --context cluster1 get pod -l name=x-wing -o jsonpath="{.items[0].metadata.name}")
 for i in {1..10}; do                                       
   kubectl --context cluster1 exec -it $XWINGPOD -- curl -m 1 rebel-base
 done

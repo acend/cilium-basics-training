@@ -100,7 +100,7 @@ Create a file `simple-app.yaml` with the above content.
 Deploy the app:
 
 ```bash
-kubectl create -f simple-app.yaml
+kubectl apply -f simple-app.yaml
 ```
 
 Verify with the following command that everything is up and running:
@@ -157,7 +157,6 @@ echo ${NOT_FRONTEND}
 When you install Cilium using Helm, then Hubble is already enabled. The value for this is `hubble.enabled` which is set to `true` in the `values.yaml` of the Cilium Helm Chart. But we also want to enable the Hubble Relay. With the following Helm command you can enable Hubble with the Hubble Relay:
 
 ```bash
-helm repo add cilium https://helm.cilium.io/
 helm upgrade -i cilium cilium/cilium --version 1.11.0 \
   --namespace kube-system \
   --reuse-values \

@@ -40,8 +40,11 @@ helm upgrade -i cilium cilium/cilium --version 1.11.0 \
 
 Then wait until the Cluster and Cilium is ready.
 
+```bash
+cilium status
 ```
-cilium status                                               
+
+```
     /¯¯\
  /¯¯\__/¯¯\    Cilium:         OK
  \__/¯¯\__/    Operator:       OK
