@@ -42,7 +42,7 @@ We deploy [the sample app from chapter 3](https://cilium-basics.training.acend.c
 Apply this with:
 
 ```bash
-kubectl create -f simple-app.yaml
+kubectl apply -f simple-app.yaml
 ```
 
 Now we add an Ingress resource:
@@ -107,12 +107,12 @@ We see output very similiar to our simple application backend, but with a change
 
 Layer 7 loadbalancing will need to be routed through the proxy, we will enable this for our backend pods using a Cilium Network Policy with HTTP rules. We will block access to /public and allow requests to /private:
 
-{{< highlight yaml >}}{{< readfile file="content/en/docs/11/cnp-l7.yaml" >}}{{< /highlight >}}
+{{< highlight yaml >}}{{< readfile file="content/en/docs/11/cnp-l7-sm.yaml" >}}{{< /highlight >}}
 
 Apply the CiliumNetwork Policy with:
 
 ```bash
-kubectl apply -f cnp-l7.yaml
+kubectl apply -f cnp-l7-sm.yaml
 ```
 
 Until now only backend service is replying to Ingress traffic. Now we configure envoy to loadbalance the traffic 50/50 between backend and backend-2 with retries.
@@ -162,6 +162,6 @@ This basic traffic control example shows only one function of Cilium Service Mes
 You can delete the service mesh cluster now.
 
 ```bash
-minkube delete -p servicemesh
+minikube delete -p servicemesh
 ```
 
