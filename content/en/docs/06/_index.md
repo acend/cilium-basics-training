@@ -9,7 +9,7 @@ sectionnumber: 6
 One of the most basic CNI functions is the ability to enforce network policies and implement an in-cluster zero-trust container strategy. Network policies are a default Kubernetes object for controlling network traffic, but a CNI such as Cilium is required to enforce them. We will demonstrate traffic blocking with our simple app.
 
 {{% alert title="Note" color="primary" %}}
-If you are not yet familiar with Kubernetes Network Policies we suggest to go to the [Kubernetes Documentation](https://kubernetes.io/docs/concepts/services-networking/network-policies/)
+If you are not yet familiar with Kubernetes Network Policies we suggest going to the [Kubernetes Documentation](https://kubernetes.io/docs/concepts/services-networking/network-policies/)
 {{% /alert %}}
 
 
@@ -52,7 +52,7 @@ kubectl -n kube-system exec daemonset/cilium -- cilium endpoint list
 kubectl delete pod test-identity
 ```
 
-We see that the number for this pod in the column IDENTITY has changed after we added another label. If you run `endpoint list` right after pod-labeling you can also sett `waiting-for-identity` as the status of the endpoint.
+We see that the number for this pod in the column IDENTITY has changed after we added another label. If you run `endpoint list` right after pod-labeling you can also set `waiting-for-identity` as the status of the endpoint.
 
 
 ## Task {{% param sectionnumber %}}.2: Verify connectivity
@@ -110,7 +110,7 @@ Connection: keep-alive
 
 and we see, both applications can connect to the `backend` application.
 
-Until now ingress and egress policy enforcement is still disabled on all of our pods because no network policy has been imported yet selecting any of the pods. Let us change this.
+Until now ingress and egress policy enforcement are still disabled on all of our pods because no network policy has been imported yet selecting any of the pods. Let us change this.
 
 
 ## Task {{% param sectionnumber %}}.3: Disallow traffic with a Network Policy
@@ -180,7 +180,7 @@ kubectl -n cilium-monitoring port-forward service/grafana --address 0.0.0.0 --ad
 {{% /alert %}}
 
 
-In grafana browse to the dasboard `Hubble Metrics`. You should see now data in more graphs. Check the graphs `Drop Reason`, `Forwarded vs Dropped` and `Top 10 Source Pods with Denied Packets`. You should find the pods from our simple application there.
+In grafana browse to the dashboard `Hubble Metrics`. You should see now data in more graphs. Check the graphs `Drop Reason`, `Forwarded vs Dropped` and `Top 10 Source Pods with Denied Packets`. You should find the pods from our simple application there.
 
 Let's now selectively re-allow traffic again, but only from frontend to backend.
 
@@ -202,7 +202,7 @@ We can do it by crafting a new network policy manually, but we can also use the 
 
 ![Cilium editor add rule](cilium_editor_add.png)
 
-* Inspect the ingress flow colors: the policy will deny all ingress traffic to pods labelled `app=backend`, except for traffic coming from pods labelled `app=frontend`.
+* Inspect the ingress flow colors: the policy will deny all ingress traffic to pods labeled `app=backend`, except for traffic coming from pods labeled `app=frontend`.
 
 ![Cilium editor backend allow rule](cilium_editor_backend-allow-ingress.png)
 
@@ -267,7 +267,7 @@ backend-ingress-deny             app=backend    12m
 
 Network policies are additive. Just like with firewalls, it is thus a good idea to have default DENY policies and then add more specific ALLOW policies as needed.
 
-We can verify our connection being blockend with hubble.
+We can verify our connection being blocked with Hubble.
 
 Generate some traffic.
 
@@ -275,10 +275,10 @@ Generate some traffic.
 kubectl exec -ti ${NOT_FRONTEND} -- curl -I --connect-timeout 5 backend:8080
 ```
 
-With hubble observe you can now check the packet beeing dropped along with the cause (Policy denied).
+With `hubble observe` you can now check the packet being dropped as well as the reason why (Policy denied).
 
 {{% alert title="Note" color="primary" %}}
-Our earlier cilium hubble port-forward should still be running (can be checked by running jobs or `ps aux | grep "cilium hubble port-forward"`). If it does not, hubble status will fail and we have to run it again:
+Our earlier `cilium hubble port-forward` should still be running (can be checked by running jobs or `ps aux | grep "cilium hubble port-forward"`). If it does not, Hubble status will fail and we have to run it again:
 
 ```bash
 cilium hubble port-forward&
