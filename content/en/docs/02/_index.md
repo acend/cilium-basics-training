@@ -320,6 +320,10 @@ NAMESPACE   NAME                            AGE
             ciliumnode.cilium.io/cluster1   18m
 ```
 
+{{% alert title="Note" color="primary" %}}
+It might be possible that, you still see identites created by `cilium connectivity test`. They will be deleted by `cilium-operator` after max. 15 minutes.
+{{% /alert %}}
+
 
 <details>
   <summary>Can you guess why only the coredns pod is listed as an Endpoint and Identity?</summary>
@@ -355,7 +359,6 @@ ls -l /etc/cni/net.d/
 cat /etc/cni/net.d/05-cilium.conf
 /opt/cni/bin/cilium-cni --help
 ip a
-ls /sys/fs/bpf/tc/globals/
 exit #exit twice if you used kubectl debug
 ```
 We make a few oberservations:
@@ -364,7 +367,6 @@ We make a few oberservations:
 * The configuration file is written as a  [CNI spec](https://github.com/containernetworking/cni/blob/master/SPEC.md#configuration-format).
 * The cilium binary was installed to /opt/cni/bin.
 * Cilium created two virtual network interfaces `cilium_net`,`cilium_host` (host traffic) and the vxlan overlay interface `cilium_vxlan`
-* We see that cilium created eBPF Maps on the Node in /sys/fs/bpf/tc/globals/.
 
 
 ## Install Cilium with the `cilium` cli
