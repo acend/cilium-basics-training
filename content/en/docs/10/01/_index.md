@@ -13,7 +13,7 @@ In this lab, we are going to provision a new Kubernetes cluster without `kube-pr
 Create a new Kubernetes Cluster using the `minikube`. As `minikube` uses `kubeadm` we can skip the phase where `kubeadm` installs the `kube-proxy` addon. Execute the following command to create a third cluster:
 
 ```bash
-minikube start --network-plugin=cni --cni=false --kubernetes-version=1.23.0 --extra-config=kubeadm.skip-phases=addon/kube-proxy -p cluster3
+minikube start --network-plugin=cni --cni=false --kubernetes-version=1.23.0 --extra-config=kubeadm.skip-phases=addon/kube-proxy -p kubeless
 ```
 
 ```
@@ -42,7 +42,7 @@ As the `cilium` and `cilium-operator` by default try to communicate with the Kub
 To findthe correct IP address execute the following command:
 
 ```bash
-kubectl config view -o jsonpath='{.clusters[?(@.name == "cluster3")].cluster.server}'
+kubectl config view -o jsonpath='{.clusters[?(@.name == "kubeless")].cluster.server}'
 ```
 
 Use the shown IP address and port in the next Helm command to install cilium:
@@ -51,7 +51,7 @@ Use the shown IP address and port in the next Helm command to install cilium:
 helm upgrade -i cilium cilium/cilium --version 1.11.0 \
   --namespace kube-system \
   --set ipam.operator.clusterPoolIPv4PodCIDR=10.3.0.0/16 \
-  --set cluster.name=cluster3 \
+  --set cluster.name=kubeless \
   --set cluster.id=3 \
   --set operator.replicas=1 \
   --set kubeProxyReplacement=strict \
@@ -60,7 +60,7 @@ helm upgrade -i cilium cilium/cilium --version 1.11.0 \
   --wait
 ```
 
-We can now compare the running pods on `cluster2` and `cluster3` in the `kube-system` namespace.
+We can now compare the running pods on `cluster2` and `kubeless` in the `kube-system` namespace.
 
 ```bash
 kubectl --context cluster2 -n kube-system get pod
@@ -84,7 +84,11 @@ storage-provisioner                     1/1     Running   4 (100m ago)   21h
 
 ```
 
-while on `cluster3` there is no `kube-proxy` pod anymore:
+while on `kubeless` there is no `kube-proxy` pod anymore:
+
+```bash
+kubectl --context kubeless -n kube-system get pod
+```
 
 ```
 NAME                               READY   STATUS    RESTARTS       AGE
@@ -157,4 +161,4 @@ Connection: keep-alive
 
 ## Task {{% param sectionnumber %}}.3: Cleanup
 
-We don't need `cluster3` anymore. You can stop `cluster3` with `minikube stop -p cluster3` & `minikube stop -p cluster3` to free up resources and speed up things.
+We don't need `kubeless` anymore. You can stop `kubeless` with `minikube stop -p kubeless` & `minikube delete -p kubeless` to free up resources and speed up things.

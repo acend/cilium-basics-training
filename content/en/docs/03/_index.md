@@ -187,8 +187,11 @@ and then wait until Hubble is enabled:
 
 When you have a look at your running pods with `kubectl get pod -A` you should see a pod with a name starting with `hubble-relay`:
 
+```bash
+kubectl get pod -A
 ```
-kubectl get pod -A                                                                         
+
+```
 NAMESPACE     NAME                               READY   STATUS    RESTARTS   AGE
 default       backend-56787b4bd7-dmzdh           1/1     Running   0          114m
 default       frontend-7cbdcb86fd-gdb4q          1/1     Running   0          114m
@@ -320,8 +323,11 @@ hubble observe --namespace default --protocol tcp --port 8080
 hubble observe --verdict DROPPED
 ```
 
-```
+```bash
 hubble observe --to-pod backend
+```
+
+```
 Jan 13 14:59:29.536: default/frontend-76fbb99468-jx2ds:59630 -> default/backend-65f7c794cc-pj2tc:8080 to-endpoint FORWARDED (TCP Flags: SYN)
 Jan 13 14:59:29.536: default/frontend-76fbb99468-jx2ds:59630 -> default/backend-65f7c794cc-pj2tc:8080 to-endpoint FORWARDED (TCP Flags: ACK)
 Jan 13 14:59:29.537: default/frontend-76fbb99468-jx2ds:59630 -> default/backend-65f7c794cc-pj2tc:8080 to-endpoint FORWARDED (TCP Flags: ACK, PSH)

@@ -36,8 +36,6 @@ helm upgrade -i cilium cilium/cilium --version 1.11.0 \
   --wait
 ```
 
-// TODO: cilium-ca for https://docs.cilium.io/en/stable/gettingstarted/clustermesh/clustermesh/#shared-certificate-authority
-
 Then wait until the Cluster and Cilium is ready.
 
 ```bash
@@ -64,8 +62,7 @@ Image versions    cilium             quay.io/cilium/cilium:v1.11.0: 1
 You can verify the correct podCidr using:
 
 ```bash
-kubectl get pod -A -o wide                 
-
+kubectl get pod -A -o wide
 ```
 
 Have a look at the `codedns-` Pod and verify that it's IP is from your defined `10.2.0.0/16` range.

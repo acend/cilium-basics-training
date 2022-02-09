@@ -21,7 +21,7 @@ We need to enable the host firewall in the cilium config. This can be done using
 helm upgrade -i cilium cilium/cilium \
   --namespace kube-system \
   --reuse-values \
-  --set hostFirewall.enabled=true          \
+  --set hostFirewall.enabled=true \
   --set devices='{eth0}'
   --wait
 ```
@@ -47,17 +47,15 @@ kubectl label node cluster1 node-access=ssh
 To avoid such issues, we can switch the host firewall in audit mode, to validate the impact of host policies before enforcing them. When Policy Audit Mode is enabled, no network policy is enforced so this setting is not recommended for production deployment.
 
 ```bash
-CILIUM_NAMESPACE=kube-system
-NODE_NAME=cluster1
-CILIUM_POD_NAME=$(kubectl -n $CILIUM_NAMESPACE get pods -l "k8s-app=cilium" -o jsonpath="{.items[?(@.spec.nodeName=='$NODE_NAME')].metadata.name}")
-HOST_EP_ID=$(kubectl -n $CILIUM_NAMESPACE exec $CILIUM_POD_NAME -- cilium endpoint list -o jsonpath='{[?(@.status.identity.id==1)].id}')
-kubectl -n $CILIUM_NAMESPACE exec $CILIUM_POD_NAME -- cilium endpoint config $HOST_EP_ID PolicyAuditMode=Enabled
+CILIUM_POD_NAME=$(kubectl -n kube-system get pods -l "k8s-app=cilium" -o jsonpath="{.items[?(@.spec.nodeName=='cluster1')].metadata.name}")
+HOST_EP_ID=$(kubectl -n kube-system exec $CILIUM_POD_NAME -- cilium endpoint list -o jsonpath='{[?(@.status.identity.id==1)].id}')
+kubectl -n kube-system exec $CILIUM_POD_NAME -- cilium endpoint config $HOST_EP_ID PolicyAuditMode=Enabled
 ```
 
 and then verify with:
 
 ```bash
-kubectl -n $CILIUM_NAMESPACE exec $CILIUM_POD_NAME -- cilium endpoint config $HOST_EP_ID | grep PolicyAuditMode
+kubectl -n kube-system exec $CILIUM_POD_NAME -- cilium endpoint config $HOST_EP_ID | grep PolicyAuditMode
 ```
 
 which should give you:
@@ -105,12 +103,12 @@ When enforcing the host policy, make sure that none of the communications requir
 We are not going to do this extended task (as it would require some more rules for the cluster to continue working). But the command to disable the audit mode looks like this:
 
 ```bash
-kubectl -n $CILIUM_NAMESPACE exec $CILIUM_POD_NAME -- cilium endpoint config $HOST_EP_ID PolicyAuditMode=Enabled
+kubectl -n kube-system  exec $CILIUM_POD_NAME -- cilium endpoint config $HOST_EP_ID PolicyAuditMode=Disabled
 ```
 
 Simply cleanup and continue:
 
 ```bash
 kubectl delete ccnp demo-host-policy
-kubectl label node $NODE_NAME node-access-
+kubectl label node cluster1 node-access-
 ```
