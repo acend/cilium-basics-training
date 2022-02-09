@@ -364,7 +364,6 @@ We make a few oberservations:
 * Cilium created two virtual network interfaces `cilium_net`,`cilium_host` (host traffic) and the vxlan overlay interface `cilium_vxlan`
 
 
-
 ## Install Cilium with the `cilium` cli
 
 This is what the installation with the `cilium` cli would have looked like:
