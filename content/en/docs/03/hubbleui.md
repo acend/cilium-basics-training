@@ -148,3 +148,7 @@ cilium connectivity test
 We can see that Hubble UI is not only capable of displaying flows within a namespace, it also helps visualize flows going in or out.
 
 ![Hubble UI - Connectivity Test](../cilium_hubble_connectivity_test.png)
+
+And there are also several visual options in the Hubble UI:
+
+![Hubble UI - Connectivity Test](../hubble_ui_visual_options)

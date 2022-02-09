@@ -88,6 +88,12 @@ and then execute the `curl` `for` loop again, you still get answers, this time o
 
 ```
 
+Scale your `rebel-base` Deployment back to one replica:
+
+```bash
+kubectl --context cluster1 scale deployment rebel-base --replicas=1
+```
+
 
 ## Task {{% param sectionnumber %}}.2: Load-balancing only to a Remote Cluster
 

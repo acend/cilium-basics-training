@@ -40,7 +40,7 @@ kubectl config current-context
 This should show 'cluster1'. Now check that everything is up and running using the following command:
 
 ```bash
-kubectl get node           
+kubectl get node
 ```
 
 This should produce an output similar to the following:
@@ -51,7 +51,7 @@ cluster1   Ready    control-plane,master   86s   v1.23.0
 ```
 Depending on your minikube version and environment your node might stay NotReady because no CNI exists. It will become ready after the cilium installation.
 
-Check if all pods are running with
+Check if all pods are running with:
 
 ```bash
 kubectl get pod -A
@@ -192,6 +192,11 @@ Image versions    cilium             quay.io/cilium/cilium:v1.10.5: 1
                   cilium-operator    quay.io/cilium/operator-generic:v1.10.5: 1
 
 ```
+
+{{% alert title="Note" color="primary" %}}
+If the output is not the same, make sure all cilium container are up and in a ready state.
+{{% /alert %}}
+
 
 Take a look at the pods again to see what happened under the hood:
 
