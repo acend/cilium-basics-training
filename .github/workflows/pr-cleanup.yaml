@@ -52,8 +52,7 @@ jobs:
           REPOSITORY: '${{ github.repository }}'
         run: |
           curl -X DELETE -H "Authorization: Bearer ${QUAYIO_API_TOKEN}" https://quay.io/api/v1/repository/${REPOSITORY}/tag/pr-${PR_NUMBER}{,-puzzle}
-
-      - 
+      -
         name: Delete PR Tag on ghcr.io
         env:
           PR_NUMBER: '${{ github.event.pull_request.number }}'
@@ -66,8 +65,7 @@ jobs:
               echo "Delete package with id ${PACKAGE_VERSION_ID}"
               curl -X DELETE -H "Authorization: Bearer ${{ secrets.GH_PAT_DELETE_PACKAGES }}" https://api.github.com/orgs/${ORG}/packages/container/${REPO}/versions/${PACKAGE_VERSION_ID}
           done
-
-      - 
+      -
         name: Delete untagged on ghcr.io
         env:
           PR_NUMBER: '${{ github.event.pull_request.number }}'

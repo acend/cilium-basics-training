@@ -28,7 +28,6 @@ LABEL org.opencontainers.image.authors acend.ch
 LABEL org.opencontainers.image.authors https://github.com/acend/cilium-basics-training/
 LABEL org.opencontainers.image.licenses CC-BY-SA-4.0
 
-
 EXPOSE 8080
 
 COPY --from=builder /src/public /usr/share/nginx/html

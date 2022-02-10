@@ -9,6 +9,7 @@
 #   - QUAYIO_USERNAME and QUAYIO_TOKEN must be set accordingly to your registry, existing users must have access to the repos
 #   - KUBECONFIG_TEST content of the Kubeconfig File, Account must have access to the k8s namespace. It's used in the helm steps
 name: Build Training and Publish
+
 on:
   pull_request:
 
@@ -42,8 +43,7 @@ jobs:
           registry: quay.io
           username: ${{ secrets.QUAYIO_USERNAME }}
           password: ${{ secrets.QUAYIO_TOKEN }}
-
-      - 
+      -
         name: Log in to the ghcr.io Container registry
         uses: docker/login-action@17f28ab24d0d2832d5ff23a1409bbfc373ebcb96
         with:
