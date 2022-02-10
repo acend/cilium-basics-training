@@ -166,7 +166,7 @@ command terminated with exit code 28
 The network policy correctly switched the default ingress behavior from default allow to default deny. We can also check this in grafana.
 
 {{% alert title="Note" color="primary" %}}
-Note: our earlier grafana port-forward should still be running (can be checked by running jobs or `ps aux | grep "cilium-monitoring"`). If it does not open the URL from the command output below or http://localhost:3000/dashboards with a local setup)
+Note: our earlier grafana port-forward should still be running (can be checked by running jobs or `ps aux | grep "cilium-monitoring"`). If it does not open the URL from the command output below (or http://localhost:3000/dashboards with a local setup).
 
 ```bash
 kubectl -n cilium-monitoring port-forward service/grafana --address 0.0.0.0 --address :: 3000:3000 &
@@ -175,7 +175,7 @@ echo "http://$(curl -s ifconfig.me):3000/dashboards"
 {{% /alert %}}
 
 
-In Grafana browse to the dashboard `Hubble`. You should see now data in more graphs. Check the graphs `Drop Reason`, `Forwarded vs Dropped`. In  `Top 10 Source Pods with Denied Packets`. you should find the name of the pods from our simple application.
+In Grafana browse to the dashboard `Hubble`. You should see now data in more graphs. Check the graphs `Drop Reason`, `Forwarded vs Dropped`. In  `Top 10 Source Pods with Denied Packets` you should find the name of the pods from our simple application.
 
 Let's now selectively re-allow traffic again, but only from frontend to backend.
 
@@ -186,7 +186,7 @@ We can do it by crafting a new network policy manually, but we can also use the 
 
 ![Cilium editor with backend-ingress-deny Policy](cilium_editor_1.png)
 
-Here you see our original policy, we create an new one with the editor now.
+Above you see our original policy, we create an new one with the editor now.
 
 * Go to https://networkpolicy.io/editor.
 * Name the network policy to backend-allow-ingress-frontend (using the Edit button in the center).

@@ -85,7 +85,7 @@ You should see something similar to this (in this example we have a two-node clu
 Encryption:             Wireguard       [cilium_wg0 (Pubkey: XbTJd5Gnp7F8cG2Ymj6q11dBx8OtP1J5ZOAhswPiYAc=, Port: 51871, Peers: 1)]
 ```
 
-Before we proceed we start a terminal multiplexer named tmux to split our terminal:
+Before we proceed we start a terminal multiplexer named `tmux` to split our terminal:
 
 ```bash
 tmux
@@ -99,7 +99,7 @@ CILIUM_AGENT=$(kubectl get pod -n kube-system -l k8s-app=cilium -o jsonpath="{.i
 kubectl debug -n kube-system -i ${CILIUM_AGENT} --image=nicolaka/netshoot -- tcpdump -ni cilium_wg0 -X port 8080
 ```
 
-If you don't see any traffic, you can generate it yourself int the second terminal use `Ctrl+b` followed by Arrow key up. There call the backend service from our frontend pod.
+If you don't see any traffic, you can generate it yourself in the second terminal. Press `Ctrl+b` followed by Arrow key up to switch terminals. Now call the backend service from our frontend pod.
 
 ```bash
 FRONTEND=$(kubectl get pods -l app=frontend -o jsonpath='{.items[0].metadata.name}')
