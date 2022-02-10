@@ -329,18 +329,13 @@ NAMESPACE   NAME                            AGE
 It might be possible that you still see identites created by `cilium connectivity test`. They will be deleted by `cilium-operator` after max. 15 minutes.
 {{% /alert %}}
 
-
-<details>
-  <summary>Can you guess why only the coredns pod is listed as an Endpoint and Identity?</summary>
+{{% details title="Can you guess why only the coredns pod is listed as an Endpoint and Identity?" %}}
 This pod is the only one which is NOT on the Host Network.
-</details>
- &nbsp;
-<details>
-  <summary>Is it possible to have more CiliumNodes than nodes in a Kubernetes Cluster?</summary>
-A CiliumNode is a host with cilium-agent installed. So this could also be VM outside Kubernetes.
-</details>
+{{% /details %}}
 
-&nbsp;
+{{% details title="Is it possible to have more CiliumNodes than nodes in a Kubernetes Cluster?" %}}
+A CiliumNode is a host with cilium-agent installed. So this could also be VM outside Kubernetes.
+{{% /details %}}
 
 We have discussed CNI plugin installations, let us check out the Cilium installation on the node.
 
