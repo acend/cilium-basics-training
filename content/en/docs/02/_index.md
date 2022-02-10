@@ -29,27 +29,27 @@ minikube start --network-plugin=cni --cni=false --kubernetes-version=1.23.0 -p c
 During this training, you will create multiple clusters. For this, we use a feature in minikube called profile which you see with the `-p cluster1` option. You can list all your profiles with `minikube profile list` and you can change to another cluster with `minikube profile <profilename>`, this will also set your current context for `kubectl` to the specified profile/cluster.
 {{% /alert %}}
 
-This will install a new Kubernetes Cluster without any Container Network Interface (CNI). The CNI will be installed in the next task.
+Minikube installed a new Kubernetes cluster without any Container Network Interface (CNI). CNI installation happens in the next task.
 
-Minikube added a new context into your Kubernetes config file and set this as your default context. Check it with the following command:
+Minikube added a new context to your Kubernetes config file and set this as default. Verify this with the following command:
 
 ```bash
 kubectl config current-context
 ```
 
-This should show 'cluster1'. Now check that everything is up and running using the following command:
+This should show `cluster1`. Now check that everything is up and running:
 
 ```bash
 kubectl get node
 ```
 
-This should produce an output similar to the following:
+This should produce a similar output:
 
 ```
 NAME       STATUS   ROLES                  AGE   VERSION
 cluster1   Ready    control-plane,master   86s   v1.23.0
 ```
-Depending on your minikube version and environment your node might stay NotReady because no CNI exists. It will become ready after the cilium installation.
+Depending on your Minikube version and environment your node might stay NotReady because no CNI is installed. After we installed Cilium it will become ready.
 
 Check if all pods are running with:
 
@@ -72,7 +72,7 @@ kube-system   storage-provisioner                1/1     Running             0  
 
 
 {{% alert title="Note" color="primary" %}}
-Depending on your minikube version, coredns might start or not which is ok.
+Depending on your Minikube version, coredns might start or not which is ok.
 But you should not see any CNI related pods!
 {{% /alert %}}
 
@@ -149,12 +149,12 @@ Errors:          cilium    cilium    daemonsets.apps "cilium" not found
 
 ```
 
-We don't have yet installed cilium, therefore the error is perfectly fine.
+We don't have yet installed Cilium, therefore the error is perfectly fine.
 
 
 ## Task {{% param sectionnumber %}}.3: Install Cilium
 
-Let's install cilium with helm. First we need to add the Cilium Helm Repository:
+Let's install Cilium with helm. First we need to add the Cilium Helm Repository:
 
 ```bash
 helm repo add cilium https://helm.cilium.io/
@@ -172,7 +172,7 @@ helm upgrade -i cilium cilium/cilium --version 1.10.5 \
   --wait
 ```
 
-and now run again the `cilium status` command:
+and now run again the `cilium status --wait` command:
 
 ```
 cilium status 
@@ -221,7 +221,7 @@ kube-system   storage-provisioner                1/1     Running   1          2m
 
 ```
 
-Alright, Cilium is up and running, lets make some tests. The `cilium` CLI allows you to run a connectivity test:
+Alright, Cilium is up and running, let us make some tests. The `cilium` CLI allows you to run a connectivity test:
 
 ```bash
 cilium connectivity test
@@ -289,13 +289,13 @@ kubectl delete ns cilium-test --wait=false
 
 ## Task {{% param sectionnumber %}}.4: Explore your installation
 
-We have learned about the cilium components. Let us check out the installed CRDs now:
+We have learned about the Cilium components. Let us check out the installed CRDs now:
 
 ```bash
 kubectl api-resources | grep cilium
 ``````
 
-Which should output the installed CRDs:
+Which shows CRDs installed by Cilium:
 
 ```bash
 ciliumclusterwidenetworkpolicies   ccnp           cilium.io/v2                           false        CiliumClusterwideNetworkPolicy
@@ -308,7 +308,7 @@ ciliumnetworkpolicies              cnp,ciliumnp   cilium.io/v2                  
 ciliumnodes                        cn,ciliumn     cilium.io/v2                           false        CiliumNode
 ``````
 
-And now we check all installed cilium CRDs
+And now we check all installed Cilium CRDs
 ```bash
 kubectl get ccnp,cep,cew,ciliumid,clrp,cnp,cn -A
 ```
@@ -326,7 +326,7 @@ NAMESPACE   NAME                            AGE
 ```
 
 {{% alert title="Note" color="primary" %}}
-It might be possible that, you still see identites created by `cilium connectivity test`. They will be deleted by `cilium-operator` after max. 15 minutes.
+It might be possible that you still see identites created by `cilium connectivity test`. They will be deleted by `cilium-operator` after max. 15 minutes.
 {{% /alert %}}
 
 
@@ -342,7 +342,7 @@ A CiliumNode is a host with cilium-agent installed. So this could also be VM out
 
 &nbsp;
 
-We have discussed CNI plugin installations, let us check out the cilium installation on the Node.
+We have discussed CNI plugin installations, let us check out the Cilium installation on the node.
 
 We can either start a debug container on the node and chroot its /
 
@@ -370,7 +370,7 @@ We make a few oberservations:
 
 * Kubernetes uses the configuration file with the lowest number so it takes cilium with the prefix 05.
 * The configuration file is written as a  [CNI spec](https://github.com/containernetworking/cni/blob/master/SPEC.md#configuration-format).
-* The cilium binary was installed to /opt/cni/bin.
+* The `cilium` binary was installed to /opt/cni/bin.
 * Cilium created two virtual network interfaces `cilium_net`,`cilium_host` (host traffic) and the vxlan overlay interface `cilium_vxlan`
 
 

@@ -2,6 +2,7 @@ baseurl = "/"
 title = "Cilium Basics Training"
 
 enableGitInfo = true
+enableEmoji = true
 
 theme = ["docsy-acend", "docsy-plus", "docsy"]
 

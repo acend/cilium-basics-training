@@ -33,13 +33,13 @@ HTTP/2 200
 HTTP/2 200 
 ```
 
-Again, in Kubernetes, all traffic is allowed by default, and since we did not apply any Egress network policy for now, the backend can reach out anywhere.
+Again, in Kubernetes, all traffic is allowed by default, and since we did not apply any Egress network policy for now, connections from the backend pods are not blocked.
 
 Let us have a look at the following `CiliumNetworkPolicy`:
 
 {{< highlight yaml >}}{{< readfile file="content/en/docs/07/01/backend-egress-allow-fqdn.yaml" >}}{{< /highlight >}}
 
-The policy will deny all egress traffic from pods labeled `app=backend` except when traffic is destined for `kubernetes.io` or is a DNS request (necessary for resolving `kubernetes.io` from coredns).
+The policy will deny all egress traffic from pods labeled `app=backend` except when traffic is destined for `kubernetes.io` or is a DNS request (necessary for resolving `kubernetes.io` from coredns). In the policy editor this looks like this:
 
 ![Cilium Editor - DNS-aware Network Policy](cilium_dns_policy.png)
 
@@ -84,7 +84,7 @@ command terminated with exit code 28
 You can now check the `Hubble Metrics` dashboard in grafana again. The graphs under DNS should soon show some data as well. This is because with a Layer 7 Policy we have enabled the envoy in Cilium Agent.
 {{% /alert %}}
 
-With the ingress and egress policies in place on `app=backend` pods, we have implemented a very simple zero-trust model to all traffic to and from our backend. In a real-world scenario, cluster administrators may leverage network policies and overlay them at all levels and for all kinds of traffic.
+With the ingress and egress policies in place on `app=backend` pods, we have implemented a simple zero-trust model to all traffic to and from our backend. In a real-world scenario, cluster administrators may leverage network policies and overlay them at all levels and for all kinds of traffic.
 
 
 ## Task {{% param sectionnumber %}}.2: Cleanup

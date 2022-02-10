@@ -19,12 +19,13 @@ To start a second cluster run the following command:
 minikube start --network-plugin=cni --cni=false --kubernetes-version=1.23.0 -p cluster2
 ```
 
-{{% alert title="Note" color="primary" %}}
-As Minikube with the Docker driver uses separated Docker networks, we need to make sure that your system forwards traffic between the two networks. Execute `sudo iptables -I DOCKER-USER -j ACCEPT` to enable forwarding by default. TODO: Is there an other way?
-{{% /alert %}}
+As Minikube with the Docker driver uses separated Docker networks, we need to make sure that your system forwards traffic between the two networks. To enable forwarding by default execute
+```bash
+sudo iptables -I DOCKER-USER -j ACCEPT
+```
 
 
-Then install Cilium using again Helm. Remember, we need a different PodCIDR for the second cluster, therefore while installing Cilium, we have to change this config:
+Then install Cilium using Helm. Remember, we need a different PodCIDR for the second cluster, therefore while installing Cilium, we have to change this config:
 
 ```bash
 helm upgrade -i cilium cilium/cilium --version 1.11.0 \
@@ -39,7 +40,7 @@ helm upgrade -i cilium cilium/cilium --version 1.11.0 \
 Then wait until the Cluster and Cilium is ready.
 
 ```bash
-cilium status
+cilium status --wait
 ```
 
 ```
@@ -89,7 +90,7 @@ Now let us enable the Cluster Mesh using the `cilium` CLI on both clusters:
 
 
 {{% alert title="Note" color="primary" %}}
-Although so far we used Helm to install and update Cilium, enabling Cilium using Helm currently has some bugs, therefore we use the `cilium` CLI to achieve this task. TODO: Clarify which bugs?
+Although so far we used Helm to install and update Cilium, enabling Cilium using Helm currently [unsupported](https://github.com/cilium/cilium/pull/17851). We have to make an exception from the rule to never mix Helm and CLI installations and do it with the CLI.
 {{% /alert %}}
 
 ```bash
@@ -141,11 +142,12 @@ The output should look something like this:
 ✅ Connected cluster cluster1 and cluster2!
 ```
 
-It may take a bit for the clusters to be connected. You can the following command to wait for the connection to be successful:
+It may take a bit for the clusters to be connected. You can execute the following command
 
 ```bash
 cilium clustermesh status --context cluster1 --wait
 ```
+to wait for the connection to be successful. The output should be:
 
 ```
 ⚠️  Service type NodePort detected! Service may fail when nodes are removed from the cluster!

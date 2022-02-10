@@ -22,7 +22,7 @@ helm upgrade -i cilium cilium/cilium \
   --namespace kube-system \
   --reuse-values \
   --set hostFirewall.enabled=true \
-  --set devices='{eth0}'
+  --set devices='{eth0}' \
   --wait
 ```
 

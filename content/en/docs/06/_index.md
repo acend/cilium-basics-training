@@ -6,7 +6,7 @@ sectionnumber: 6
 
 ## Network Policies
 
-One of the most basic CNI functions is the ability to enforce network policies and implement an in-cluster zero-trust container strategy. Network policies are a default Kubernetes object for controlling network traffic, but a CNI such as Cilium is required to enforce them. We will demonstrate traffic blocking with our simple app.
+One CNI function is the ability to enforce network policies and implement an in-cluster zero-trust container strategy. Network policies are a default Kubernetes object for controlling network traffic, but a CNI such as Cilium is required to enforce them. We will demonstrate traffic blocking with our simple app.
 
 {{% alert title="Note" color="primary" %}}
 If you are not yet familiar with Kubernetes Network Policies we suggest going to the [Kubernetes Documentation](https://kubernetes.io/docs/concepts/services-networking/network-policies/)
@@ -46,13 +46,14 @@ Cilium will match these endpoints with labels and generate identities as a resul
 ```bash
 kubectl run test-identity --image=nginx
 sleep 5 # just wait for the pod to get ready
-kubectl -n kube-system exec daemonset/cilium -- cilium endpoint list
+kubectl -n kube-system exec daemonset/cilium -- cilium endpoint list | grep -E -B4  'IDENTITY|run'
 kubectl label pod test-identity this=that
-kubectl -n kube-system exec daemonset/cilium -- cilium endpoint list
+sleep 5 # give some time to process
+kubectl -n kube-system exec daemonset/cilium -- cilium endpoint list | grep -E -B4  'IDENTITY|run'
 kubectl delete pod test-identity
 ```
 
-We see that the number for this pod in the column IDENTITY has changed after we added another label. If you run `endpoint list` right after pod-labeling you can also set `waiting-for-identity` as the status of the endpoint.
+We see that the number for this pod in the column IDENTITY has changed after we added another label. If you run `endpoint list` right after pod-labeling you might also see `waiting-for-identity` as the status of the endpoint.
 
 
 ## Task {{% param sectionnumber %}}.2: Verify connectivity
@@ -70,9 +71,6 @@ Now we generate some traffic as a baseline test.
 
 ```bash
 kubectl exec -ti ${FRONTEND} -- curl -I --connect-timeout 5 backend:8080
-```
-
-```bash
 kubectl exec -ti ${NOT_FRONTEND} -- curl -I --connect-timeout 5 backend:8080
 ```
 
@@ -113,7 +111,7 @@ and we see, both applications can connect to the `backend` application.
 Until now ingress and egress policy enforcement are still disabled on all of our pods because no network policy has been imported yet selecting any of the pods. Let us change this.
 
 
-## Task {{% param sectionnumber %}}.3: Disallow traffic with a Network Policy
+## Task {{% param sectionnumber %}}.3: Deny traffic with a Network Policy
 
 We block traffic by applying the following network policy:
 
@@ -151,9 +149,6 @@ We can now execute the connectivity check again:
 
 ```bash
 kubectl exec -ti ${FRONTEND} -- curl -I --connect-timeout 5 backend:8080
-```
-
-```bash
 kubectl exec -ti ${NOT_FRONTEND} -- curl -I --connect-timeout 5 backend:8080
 ```
 
@@ -171,16 +166,16 @@ command terminated with exit code 28
 The network policy correctly switched the default ingress behavior from default allow to default deny. We can also check this in grafana.
 
 {{% alert title="Note" color="primary" %}}
-Note: our earlier grafana port-forward should still be running (can be checked by running jobs or `ps aux | grep "cilium-monitoring"`). If it does not, the website http://localhost:3000/ will not be available.
+Note: our earlier grafana port-forward should still be running (can be checked by running jobs or `ps aux | grep "cilium-monitoring"`). If it does not open the URL from the command output below or http://localhost:3000/dashboards with a local setup)
 
 ```bash
 kubectl -n cilium-monitoring port-forward service/grafana --address 0.0.0.0 --address :: 3000:3000 &
+echo "http://$(curl -s ifconfig.me):3000/dashboards"
 ```
-
 {{% /alert %}}
 
 
-In grafana browse to the dashboard `Hubble Metrics`. You should see now data in more graphs. Check the graphs `Drop Reason`, `Forwarded vs Dropped` and `Top 10 Source Pods with Denied Packets`. You should find the pods from our simple application there.
+In Grafana browse to the dashboard `Hubble`. You should see now data in more graphs. Check the graphs `Drop Reason`, `Forwarded vs Dropped`. In  `Top 10 Source Pods with Denied Packets`. you should find the name of the pods from our simple application.
 
 Let's now selectively re-allow traffic again, but only from frontend to backend.
 
@@ -189,12 +184,14 @@ Let's now selectively re-allow traffic again, but only from frontend to backend.
 
 We can do it by crafting a new network policy manually, but we can also use the Network Policy Editor to help us out:
 
-* Go to https://networkpolicy.io/editor.
-* Upload our initial backend-ingress-deny policy.
-
 ![Cilium editor with backend-ingress-deny Policy](cilium_editor_1.png)
 
-* Rename the network policy to backend-allow-ingress-frontend (using the Edit button in the center).
+Here you see our original policy, we create an new one with the editor now.
+
+* Go to https://networkpolicy.io/editor.
+* Name the network policy to backend-allow-ingress-frontend (using the Edit button in the center).
+* add app=backend as Pod Selector
+* Set Ingress to default deny
 
 ![Cilium editor edit name](cilium_editor_edit_name.png)
 
@@ -207,7 +204,7 @@ We can do it by crafting a new network policy manually, but we can also use the 
 ![Cilium editor backend allow rule](cilium_editor_backend-allow-ingress.png)
 
 
-* Download the policy YAML file.
+* Copy the policy YAML into a file named backend-allow-ingress-frontend.yaml.
 
 The file should look like this:
 
