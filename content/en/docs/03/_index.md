@@ -48,16 +48,17 @@ Now that we have the `hubble` CLI let's have a look at some commands:
 hubble version
 ```
 
+should show
+
 ```
 hubble v0.9.0 compiled with go1.17.3 on linux/amd64
 ```
 
 or
-
 ```bash
 hubble help
 ```
-
+should show
 ```
 Hubble is a utility to observe and inspect recent Cilium routed traffic in a cluster.
 
@@ -145,16 +146,16 @@ ciliumidentity.cilium.io/76556    default       3m15s
 Let us make life a bit easier by storing the pods name into an environment variable so we can reuse it later again:
 
 ```bash
-FRONTEND=$(kubectl get pods -l app=frontend -o jsonpath='{.items[0].metadata.name}')
+export FRONTEND=$(kubectl get pods -l app=frontend -o jsonpath='{.items[0].metadata.name}')
 echo ${FRONTEND}
-NOT_FRONTEND=$(kubectl get pods -l app=not-frontend -o jsonpath='{.items[0].metadata.name}')
+export NOT_FRONTEND=$(kubectl get pods -l app=not-frontend -o jsonpath='{.items[0].metadata.name}')
 echo ${NOT_FRONTEND}
 ```
 
 
 ## Task {{% param sectionnumber %}}.3: Enable Hubble in Cilium
 
-When you install Cilium using Helm, then Hubble is already enabled. The value for this is `hubble.enabled` which is set to `true` in the `values.yaml` of the Cilium Helm Chart. But we also want to enable the Hubble Relay. With the following Helm command you can enable Hubble with the Hubble Relay:
+When you install Cilium using Helm, then Hubble is already enabled. The value for this is `hubble.enabled` which is set to `true` in the `values.yaml` of the Cilium Helm Chart. But we also want to enable Hubble Relay. With the following Helm command you can enable Hubble with Hubble Relay:
 
 ```bash
 helm upgrade -i cilium cilium/cilium --version 1.11.0 \
@@ -236,9 +237,7 @@ Image versions    cilium             quay.io/cilium/cilium:v1.11.0@sha256:ea6775
                   hubble-relay       quay.io/cilium/hubble-relay:v1.11.0@sha256:306ce38354a0a892b0c175ae7013cf178a46b79f51c52adb5465d87f14df0838: 1
 ```
 
-So the Hubble component is now enabled.
-
-Once ready, we can locally port-forward to the Hubble pod:
+Hubble is now enabled. We can now locally port-forward to the Hubble pod:
 
 ```bash
 cilium hubble port-forward&
@@ -320,19 +319,11 @@ We can now use the `hubble` CLI to filter traffic we are interested in. Here are
 ```bash
 hubble observe --to-pod backend
 hubble observe --namespace default --protocol tcp --port 8080
-hubble observe --verdict DROPPED
 ```
+
+Note that Hubble tells us the action, here `FORWARDED`, but it could also be `DROPPED`. If you only want to see `DROPPED` traffic. You can execute
 
 ```bash
-hubble observe --to-pod backend
+hubble observe --verdict DROPPED
 ```
-
-```
-Jan 13 14:59:29.536: default/frontend-76fbb99468-jx2ds:59630 -> default/backend-65f7c794cc-pj2tc:8080 to-endpoint FORWARDED (TCP Flags: SYN)
-Jan 13 14:59:29.536: default/frontend-76fbb99468-jx2ds:59630 -> default/backend-65f7c794cc-pj2tc:8080 to-endpoint FORWARDED (TCP Flags: ACK)
-Jan 13 14:59:29.537: default/frontend-76fbb99468-jx2ds:59630 -> default/backend-65f7c794cc-pj2tc:8080 to-endpoint FORWARDED (TCP Flags: ACK, PSH)
-Jan 13 14:59:29.547: default/frontend-76fbb99468-jx2ds:59630 -> default/backend-65f7c794cc-pj2tc:8080 to-endpoint FORWARDED (TCP Flags: ACK, FIN)
-Jan 13 14:59:29.548: default/frontend-76fbb99468-jx2ds:59630 -> default/backend-65f7c794cc-pj2tc:8080 to-endpoint FORWARDED (TCP Flags: ACK)
-```
-
-Note that Hubble tells us the action, here `FORWARDED` but this could also be `DROPPED` as we see in later chapters.
+For now this should only show some packets that have been sent to an already deleted pod. After we configured NetworkPolicies we will see other dropped packets.

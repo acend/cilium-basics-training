@@ -39,10 +39,12 @@ minikube start --network-plugin=cni --cni=false --kubernetes-version=1.23.0 --ex
 
 As the `cilium` and `cilium-operator` by default try to communicate with the Kubernetes API using the default `kubernetes` service IP, they cannot do this with disabled `kube-proxy`. We, therefore, need to set the `KUBERNETES_SERVICE_HOST` and `KUBERNETES_SERVICE_PORT` environment variables to tell the two pods how to connect to the Kubernetes API.
 
-To findthe correct IP address execute the following command:
+To find the correct IP address execute the following command:
 
 ```bash
-kubectl config view -o jsonpath='{.clusters[?(@.name == "kubeless")].cluster.server}'
+API_SERVER_IP=$(kubectl config view -o jsonpath='{.clusters[?(@.name == "kubeless")].cluster.server}' | cut -f 3 -d / | cut -f1 -d:)
+API_SERVER_PORT=$(kubectl config view -o jsonpath='{.clusters[?(@.name == "kubeless")].cluster.server}' | cut -f 3 -d / | cut -f2 -d:)
+echo "$API_SERVER_IP:$API_SERVER_PORT"
 ```
 
 Use the shown IP address and port in the next Helm command to install cilium:
@@ -55,8 +57,8 @@ helm upgrade -i cilium cilium/cilium --version 1.11.0 \
   --set cluster.id=3 \
   --set operator.replicas=1 \
   --set kubeProxyReplacement=strict \
-  --set k8sServiceHost=REPLACE_WITH_API_SERVER_IP \
-  --set k8sServicePort=REPLACE_WITH_API_SERVER_PORT \
+  --set k8sServiceHost=$API_SERVER_IP \
+  --set k8sServicePort=$API_SERVER_PORT \
   --wait
 ```
 

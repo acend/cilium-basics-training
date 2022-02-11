@@ -108,11 +108,7 @@ To start Hubble UI execute
 cilium hubble ui &
 ```
 
-The browser should automatically open http://localhost:12000/ (open it manually if not).
-
-{{% alert title="Note" color="primary" %}}
-If you work in our Webshell environment, the browser won't open and you can't access http://localhost:12000/ directly. Instead use the public IP address of your vm instead of localhost: http://<ipaddress>:12000
-{{% /alert %}}
+In our Webshell environment you can use the public IP of the VM to access Hubble. A simple way it to execute `echo "http://$(curl -s ifconfig.me):12000"` and copy the output in a new brower tab. If you are working locally the browser should open http://localhost:12000/ (open it manually if not).
 
 We can then access the graphical service map by selecting our default namespace:
 
@@ -139,16 +135,16 @@ and also a table with the already familiar flow output previously seen in the `h
 
 Hubble flows are displayed in real-time at the bottom, with a visualization of the namespace objects in the center. Click on any flow, and click on any property from the right-side panel: notice that the filters at the top of the UI have been updated accordingly.
 
-Let's run a connectivity test again and see what happens in Hubble UI in the cilium-test namespace
+Let's run a connectivity test again and see what happens in Hubble UI in the cilium-test namespace. Since this test runs for a few minutes this could be a good time to grab a :coffee:.
 
 ```bash
 cilium connectivity test
 ```
 
-We can see that Hubble UI is not only capable of displaying flows within a namespace, it also helps visualize flows going in or out.
+We can see that Hubble UI is not only capable of displaying flows within a namespace, it also helps visualize flows going in or out of it.
 
 ![Hubble UI - Connectivity Test](../cilium_hubble_connectivity_test.png)
 
 And there are also several visual options in the Hubble UI:
 
-![Hubble UI - Connectivity Test](../hubble_ui_visual_options)
+![Hubble UI - Connectivity Test](../hubble_ui_visual_options.png)

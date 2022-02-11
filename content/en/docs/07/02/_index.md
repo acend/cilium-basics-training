@@ -105,5 +105,5 @@ Access denied
 ```
 
 {{% alert title="Note" color="primary" %}}
-You can now check the `Hubble Metrics` dashboard in grafana again. The graphs under HTTP should soon show some data as well.
+You can now check the `Hubble` dashboard in Grafana again. The graphs under HTTP should soon show some data as well. To generate more data just request-landing on `deathstar` a few times with `tiefighter`
 {{% /alert %}}

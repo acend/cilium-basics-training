@@ -4,7 +4,7 @@ weight: 21
 sectionnumber: 2.1
 ---
 
-In the previous lab, we intentionally installed version `v10.5.0` of Cilium. In this lab, we show you how to upgrade the installation.
+In the previous lab, we intentionally installed version `v10.5.0` of Cilium. In this lab, we show you how to upgrade this installation.
 
 
 ## Task {{% param sectionnumber %}}.1: Running pre-flight check
@@ -16,7 +16,8 @@ helm install cilium-preflight cilium/cilium --version 1.11.0 \
   --namespace=kube-system \
   --set preflight.enabled=true \
   --set agent=false \
-  --set operator.enabled=false
+  --set operator.enabled=false \
+  --wait
 ```
 
 
@@ -62,7 +63,7 @@ The `--reuse-values` flag may only be safely used if the Cilium chart version re
 
 ## Task {{% param sectionnumber %}}.4: Explore your installation after the upgrade
 
-We run `cilium status` again to verify the upgrade to the new version succeded
+We run `cilium status --wait` again to verify the upgrade to the new version succeded
 
 ```bash
     /¯¯\
@@ -84,7 +85,7 @@ Image versions    cilium             quay.io/cilium/cilium:v1.11.0:: 1
 And we see the right version in the `cilium` and `cilium-operator` images.
 
 
-In Cilium release 1.11.0 automatic mount of eBPF maps in the host filesystem were enabled. These eBPF maps are basically very efficient key-value stores used by Cilium. Having them mounted in the filesystem allows the datapath to continue operating even if the `cilium-agent` is restarting. We can verify that Cilium created global eBPF Maps on the node in /sys/fs/bpf/tc/globals/:
+In Cilium release 1.11.0 automatic mount of eBPF maps in the host filesystem were enabled. These eBPF maps are basically very efficient key-value stores used by Cilium. Having them mounted in the filesystem allows the datapath to continue operating even if the `cilium-agent` is restarting. We can verify that Cilium created global traffic control eBPF maps on the node in /sys/fs/bpf/tc/globals/:
 
 ```bash
 docker exec cluster1 ls /sys/fs/bpf/tc/globals/
