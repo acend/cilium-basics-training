@@ -124,6 +124,10 @@ kubectl -n kube-system exec $(kubectl -n kube-system get pods -l k8s-app=cilium 
 
 Open a second terminal to produce some traffic:
 
+{{% alert title="Note" color="primary" %}}
+If you are working in our Webshell environment, make sure to first login again to your VM after opening the second terminal.
+{{% /alert %}}
+
 ```bash
 curl -k https://192.168.49.2:8443
 ```
@@ -134,7 +138,7 @@ and also try to start an SSH session (you can cancel the comand when the passwor
 ssh 192.168.49.2
 ```
 
-and the in the verdict log you should see an output similar to this. For the `curl request` you see that the action is set to `audit`
+and the in the verdict log you should see an output similar to this. For the `curl` request you see that the action is set to `audit`
 
 ```
 Policy verdict log: flow 0xfd71ed86 local EP ID 671, remote ID world, proto 6, ingress, action audit, match none, 192.168.49.1:50760 -> 192.168.49.2:8443 tcp SYN
