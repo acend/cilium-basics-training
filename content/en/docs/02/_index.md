@@ -22,7 +22,7 @@ To start from a clean Kubernetes Cluster, make sure `cluster1` is not yet availa
 {{% /alert %}}
 
 ```bash
-minikube start --network-plugin=cni --cni=false --kubernetes-version=1.23.0 -p cluster1 
+minikube start --network-plugin=cni --cni=false --kubernetes-version=1.23.1 -p cluster1 
 ```
 
 {{% alert title="Note" color="primary" %}}
