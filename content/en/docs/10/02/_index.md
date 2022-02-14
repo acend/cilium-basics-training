@@ -26,7 +26,13 @@ helm upgrade -i cilium cilium/cilium \
   --wait
 ```
 
-The devices flag refers to the network devices Cilium is configured on such as eth0. Omitting this option leads Cilium to auto-detect what interfaces the host firewall applies to.
+The devices flag refers to the network devices Cilium is configured on such as `eth0`. Omitting this option leads Cilium to auto-detect what interfaces the host firewall applies to.
+
+Make sure to restart the `cilium` Pods with:
+
+```bash
+kubectl -n kube-system rollout restart ds/cilium
+```
 
 At this point, the Cilium-managed nodes are ready to enforce network policies.
 
@@ -79,16 +85,58 @@ You can apply this `CiliumClusterwideNetworkPolicy` with:
 kubectl apply -f ccwnp.yaml
 ```
 
-The host is represented as a special endpoint, with label `reserved:host`, in the output of the command `cilium endpoint list`. You can therefore inspect the status of the policy using that command.
+The host is represented as a special endpoint, with label `reserved:host`, in the output of the command `cilium endpoint list`. You can therefore inspect the status of the policy using that command:
 
 ```bash
 kubectl -n kube-system exec $(kubectl -n kube-system get pods -l k8s-app=cilium -o jsonpath='{.items[0].metadata.name}') -- cilium endpoint list
 ```
+You will see that the ingress policy enforcement for the `reserved:host` endpoint is `Disabled` but with `Audit` enabled:
+
+```
+Defaulted container "cilium-agent" out of: cilium-agent, mount-cgroup (init), clean-cilium-state (init)
+ENDPOINT   POLICY (ingress)   POLICY (egress)   IDENTITY   LABELS (source:key[=value])                                                  IPv6   IPv4         STATUS   
+           ENFORCEMENT        ENFORCEMENT                                                                                                                   
+671        Disabled (Audit)   Disabled          1          k8s:minikube.k8s.io/commit=3e64b11ed75e56e4898ea85f96b2e4af0301f43d                              ready   
+                                                           k8s:minikube.k8s.io/name=cluster1                                                                        
+                                                           k8s:minikube.k8s.io/updated_at=2022_02_14T13_45_35_0700                                                  
+                                                           k8s:minikube.k8s.io/version=v1.25.1                                                                      
+                                                           k8s:node-access=ssh                                                                                      
+                                                           k8s:node-role.kubernetes.io/control-plane                                                                
+                                                           k8s:node-role.kubernetes.io/master                                                                       
+                                                           k8s:node.kubernetes.io/exclude-from-external-load-balancers                                              
+                                                           reserved:host                                                                                            
+810        Disabled           Disabled          129160     k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name=kube-system          10.1.0.249   ready   
+                                                           k8s:io.cilium.k8s.policy.cluster=cluster1                                                                
+                                                           k8s:io.cilium.k8s.policy.serviceaccount=coredns                                                          
+                                                           k8s:io.kubernetes.pod.namespace=kube-system                                                              
+                                                           k8s:k8s-app=kube-dns                                                                                     
+4081       Disabled           Disabled          4          reserved:health                  
+```
+
 
 As long as the host endpoint is running in audit mode, communications disallowed by the policy won’t be dropped. They will however be reported by `cilium monitor` as `action audit`. The audit mode thus allows you to adjust the host policy to your environment, to avoid unexpected connection breakages.
 
+You can montitor the policy verdicts with:
+
 ```bash
 kubectl -n kube-system exec $(kubectl -n kube-system get pods -l k8s-app=cilium -o jsonpath='{.items[0].metadata.name}') -- cilium monitor -t policy-verdict --related-to $HOST_EP_ID
+```
+
+Open a second terminal to produce some traffic:
+
+```bash
+curl -k https://192.168.49.2:8443
+```
+
+and the in the verdict log you should see an output similar to this:
+
+
+```
+Listening for events on 4 CPUs with 64x4096 of shared memory
+Press Ctrl-C to quit
+Policy verdict log: flow 0x46fc9c58 local EP ID 671, remote ID world, proto 6, ingress, action allow, match all, 192.168.49.1:39034 -> 192.168.49.2:8443 tcp SYN
+level=info msg="Initializing dissection cache..." subsys=monitor
+Policy verdict log: flow 0x46fc9c58 local EP ID 671, remote ID world, proto 6, ingress, action allow, match all, 192.168.49.1:39034 -> 192.168.49.2:8443 tcp SYN
 ```
 
 
