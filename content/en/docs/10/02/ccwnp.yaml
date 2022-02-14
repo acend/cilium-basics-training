@@ -10,7 +10,7 @@ spec:
       node-access: ssh
   ingress:
   - fromEntities:
-    - cluster
+    - all
   - toPorts:
     - ports:
       - port: "22"

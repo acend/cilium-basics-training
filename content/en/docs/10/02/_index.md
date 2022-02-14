@@ -128,15 +128,24 @@ Open a second terminal to produce some traffic:
 curl -k https://192.168.49.2:8443
 ```
 
-and the in the verdict log you should see an output similar to this:
+and also try to start an SSH session (you can cancel the comand when the passwort promt is shown):
 
+```bash
+ssh 192.168.49.2
+```
+
+and the in the verdict log you should see an output similar to this. For the `curl request` you see that the action is set to `audit`
 
 ```
-Listening for events on 4 CPUs with 64x4096 of shared memory
-Press Ctrl-C to quit
-Policy verdict log: flow 0x46fc9c58 local EP ID 671, remote ID world, proto 6, ingress, action allow, match all, 192.168.49.1:39034 -> 192.168.49.2:8443 tcp SYN
-level=info msg="Initializing dissection cache..." subsys=monitor
-Policy verdict log: flow 0x46fc9c58 local EP ID 671, remote ID world, proto 6, ingress, action allow, match all, 192.168.49.1:39034 -> 192.168.49.2:8443 tcp SYN
+Policy verdict log: flow 0xfd71ed86 local EP ID 671, remote ID world, proto 6, ingress, action audit, match none, 192.168.49.1:50760 -> 192.168.49.2:8443 tcp SYN
+Policy verdict log: flow 0xfd71ed86 local EP ID 671, remote ID world, proto 6, ingress, action audit, match none, 192.168.49.1:50760 -> 192.168.49.2:8443 tcp SYN
+```
+
+while the request to the SSH port has action `allow`:
+
+```
+Policy verdict log: flow 0x6b5b1b60 local EP ID 671, remote ID world, proto 6, ingress, action allow, match L4-Only, 192.168.49.1:48254 -> 192.168.49.2:22 tcp SYN
+Policy verdict log: flow 0x6b5b1b60 local EP ID 671, remote ID world, proto 6, ingress, action allow, match L4-Only, 192.168.49.1:48254 -> 192.168.49.2:22 tcp SYN
 ```
 
 
