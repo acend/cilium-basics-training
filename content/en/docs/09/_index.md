@@ -16,7 +16,7 @@ The exact ports are documented in the [Firewall Rules](https://docs.cilium.io/en
 To start a second cluster run the following command:
 
 ```bash
-minikube start --network-plugin=cni --cni=false --kubernetes-version=1.23.0 -p cluster2
+minikube start --network-plugin=cni --cni=false --kubernetes-version=1.23.1 -p cluster2
 ```
 
 As Minikube with the Docker driver uses separated Docker networks, we need to make sure that your system forwards traffic between the two networks. To enable forwarding by default execute
