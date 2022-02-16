@@ -8,13 +8,8 @@ menu:
 
 {{< blocks/section color="light">}}
 
-{{% blocks/feature icon="fa-chalkboard-teacher" url="https://changeme" title="Slide 1" %}}
+{{% blocks/feature icon="fa-chalkboard-teacher" url="https://drive.google.com/uc?export=download&id=1Zrse75mWHxFtqYn88RsBiK_BoeDL_5uq" title="Cilium Basics" %}}
 {{% /blocks/feature %}}
 
-{{% blocks/feature icon="fa-chalkboard-teacher" url="https://changeme" title="Slide 12" %}}
-{{% /blocks/feature %}}
-
-{{% blocks/feature icon="fa-chalkboard-teacher" url="https://changeme" title="Slide 3" %}}
-{{% /blocks/feature %}}
 
 {{< /blocks/section >}}
