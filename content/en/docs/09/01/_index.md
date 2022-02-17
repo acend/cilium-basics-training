@@ -93,20 +93,3 @@ Scale your `rebel-base` Deployment back to one replica:
 ```bash
 kubectl --context cluster1 scale deployment rebel-base --replicas=1
 ```
-
-
-## Task {{% param sectionnumber %}}.2: Load-balancing only to a Remote Cluster
-
-By default, a Global Service will load-balance across backends in multiple clusters. This implicitly configures `io.cilium/shared-service: "true"`. To prevent service backends from being shared to other clusters, and to ensure that the service will only load-balance to backends in remote clusters, this option should be disabled.
-
-So let us change our `rebel-base` service on `cluster1` with the following updated service definition:
-
-{{< highlight yaml >}}{{< readfile file="content/en/docs/09/01/svc2.yaml" >}}{{< /highlight >}}
-
-Apply this with:
-
-```bash
-kubectl --context cluster1 apply -f svc2.yaml
-```
-
-// TODO? What should be the result? I still see answers from both cluster...
