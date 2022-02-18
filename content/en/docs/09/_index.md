@@ -28,7 +28,7 @@ sudo iptables -I DOCKER-USER -j ACCEPT
 Then install Cilium using Helm. Remember, we need a different PodCIDR for the second cluster, therefore while installing Cilium, we have to change this config:
 
 ```bash
-helm upgrade -i cilium cilium/cilium --version 1.11.0 \
+helm upgrade -i cilium cilium/cilium --version 1.11.1 \
   --namespace kube-system \
   --set ipam.operator.clusterPoolIPv4PodCIDR=10.2.0.0/16 \
   --set cluster.name=cluster2 \
