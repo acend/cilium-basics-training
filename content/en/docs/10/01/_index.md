@@ -50,7 +50,7 @@ echo "$API_SERVER_IP:$API_SERVER_PORT"
 Use the shown IP address and port in the next Helm command to install cilium:
 
 ```bash
-helm upgrade -i cilium cilium/cilium --version 1.11.0 \
+helm upgrade -i cilium cilium/cilium --version 1.11.1 \
   --namespace kube-system \
   --set ipam.operator.clusterPoolIPv4PodCIDR=10.3.0.0/16 \
   --set cluster.name=kubeless \
