@@ -66,7 +66,7 @@ You can verify the correct podCidr using:
 kubectl get pod -A -o wide
 ```
 
-Have a look at the `codedns-` Pod and verify that it's IP is from your defined `10.2.0.0/16` range.
+Have a look at the `coredns-` Pod and verify that it's IP is from your defined `10.2.0.0/16` range.
 
 ```
 NAMESPACE     NAME                               READY   STATUS    RESTARTS   AGE   IP             NODE       NOMINATED NODE   READINESS GATES
