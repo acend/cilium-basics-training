@@ -24,9 +24,9 @@ cilium-klj4b   1/1       Running   0          4d
 cilium-zmjj9   1/1       Running   0          4d
 ```
 
-If Cilium encounters a problem that it cannot recover from, it will automatically report the failure state via `cilium status` which is regularly queried by the Kubernetes liveness probe to automatically restart Cilium pods. If a Cilium pod is in state `CrashLoopBackoff` then this indicates a permanent failure scenario.
+If Cilium encounters a problem that it cannot recover from, it will automatically report the failure state via `cilium status` which is regularly queried by the Kubernetes liveness probe to automatically restart Cilium pods. If a Cilium Pod is in state `CrashLoopBackoff` then this indicates a permanent failure scenario.
 
-If a particular Cilium pod is not in a running state, the status and health of the agent on that node can be retrieved by running `cilium status` in the context of that pod:
+If a particular Cilium Pod is not in a running state, the status and health of the agent on that node can be retrieved by running `cilium status` in the context of that pod:
 
 ```bash
 kubectl -n kube-system exec <podname> -- cilium status
@@ -74,21 +74,21 @@ The `<pod-name>` can be determined with the following command and by selecting t
 kubectl -n kube-system get pods -l k8s-app=cilium
 ```
 
-If the Cilium pod was already restarted due to the liveness problem after encountering an issue, it can be useful to retrieve the logs of the pod previous to the last restart:
+If the Cilium Pod was already restarted due to the liveness problem after encountering an issue, it can be useful to retrieve the logs of the Pod previous to the last restart:
 
 ```bash
 kubectl -n kube-system logs --timestamps -p <pod-name>
 ```
 
 
-## Policy Troubleshooting - Ensure pod is managed by Cilium
+## Policy Troubleshooting - Ensure Pod is managed by Cilium
 
-A potential cause for policy enforcement not functioning as expected is that the networking of the pod selected by the policy is not being managed by Cilium. The following situations result in unmanaged pods:
+A potential cause for policy enforcement not functioning as expected is that the networking of the Pod selected by the policy is not being managed by Cilium. The following situations result in unmanaged pods:
 
-* The pod is running in host networking and will use the host’s IP address directly. Such pods have full network connectivity but Cilium will not provide security policy enforcement for such pods.
-* The pod was started before Cilium was deployed. Cilium only manages pods that have been deployed after Cilium itself was started. Cilium will not provide security policy enforcement for such pods.
+* The Pod is running in host networking and will use the host’s IP address directly. Such pods have full network connectivity but Cilium will not provide security policy enforcement for such pods.
+* The Pod was started before Cilium was deployed. Cilium only manages pods that have been deployed after Cilium itself was started. Cilium will not provide security policy enforcement for such pods.
 
-If pod networking is not managed by Cilium. ingress and egress policy rules selecting the respective pods will not be applied. See the section Network Policy for more details.
+If Pod networking is not managed by Cilium, ingress and egress policy rules selecting the respective pods will not be applied. See the section Network Policy for more details.
 
 For a quick assessment of whether any pods are not managed by Cilium, the Cilium CLI will print the number of managed pods. If this prints that all of the pods are managed by Cilium, then there is no problem:
 

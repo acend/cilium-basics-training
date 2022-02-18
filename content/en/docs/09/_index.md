@@ -7,7 +7,7 @@ sectionnumber: 9
 
 ## Task {{% param sectionnumber %}}.1: Create a second Kubernetes Cluster
 
-To create a Cluster Mesh, we need a second Kubernetes Cluster. For the Cluster Mesh to work, the PodCIDR ranges in all clusters and nodes must be non-conflicting and have unique IP addresses. The Nodes in all clusters must have IP connectivity between each other and the network between the clusters must allow inter-cluster communication.
+To create a Cluster Mesh, we need a second Kubernetes cluster. For the Cluster Mesh to work, the PodCIDR ranges in all clusters and nodes must be non-conflicting and have unique IP addresses. The nodes in all clusters must have IP connectivity between each other and the network between the clusters must allow inter-cluster communication.
 
 {{% alert title="Note" color="primary" %}}
 The exact ports are documented in the [Firewall Rules](https://docs.cilium.io/en/v1.11/operations/system_requirements/#firewall-requirements) section.
@@ -19,25 +19,25 @@ To start a second cluster run the following command:
 minikube start --network-plugin=cni --cni=false --kubernetes-version=1.23.1 -p cluster2
 ```
 
-As Minikube with the Docker driver uses separated Docker networks, we need to make sure that your system forwards traffic between the two networks. To enable forwarding by default execute
+As Minikube with the Docker driver uses separated Docker networks, we need to make sure that your system forwards traffic between the two networks. To enable forwarding by default execute:
+
 ```bash
 sudo iptables -I DOCKER-USER -j ACCEPT
 ```
-
 
 Then install Cilium using Helm. Remember, we need a different PodCIDR for the second cluster, therefore while installing Cilium, we have to change this config:
 
 ```bash
 helm upgrade -i cilium cilium/cilium --version 1.11.0 \
   --namespace kube-system \
-  --set ipam.operator.clusterPoolIPv4PodCIDR=10.2.0.0/16 \
+  --set ipam.operator.clusterPoolIPv4PodCIDRList={10.2.0.0/16} \
   --set cluster.name=cluster2 \
   --set cluster.id=2 \
   --set operator.replicas=1 \
   --wait
 ```
 
-Then wait until the Cluster and Cilium is ready.
+Then wait until the cluster and Cilium is ready.
 
 ```bash
 cilium status --wait
@@ -60,13 +60,13 @@ Image versions    cilium             quay.io/cilium/cilium:v1.11.0: 1
                   cilium-operator    quay.io/cilium/operator-generic:v1.11.0: 1
 ```
 
-You can verify the correct podCidr using:
+You can verify the correct PodCIDR using:
 
 ```bash
 kubectl get pod -A -o wide
 ```
 
-Have a look at the `codedns-` Pod and verify that it's IP is from your defined `10.2.0.0/16` range.
+Have a look at the `codedns-` Pod and verify that its IP is from your defined `10.2.0.0/16` range.
 
 ```
 NAMESPACE     NAME                               READY   STATUS    RESTARTS   AGE   IP             NODE       NOMINATED NODE   READINESS GATES
@@ -81,8 +81,7 @@ kube-system   kube-scheduler-cluster2            1/1     Running   0          44
 kube-system   storage-provisioner                1/1     Running   1          49s   192.168.58.2   cluster2   <none>           <none>
 ```
 
-Great the second cluster and Cilium is ready to use.
-
+The second cluster and Cilium is ready to use.
 
 ## Task {{% param sectionnumber %}}.2: Enable Cluster Mesh on both Cluster
 
@@ -90,7 +89,7 @@ Now let us enable the Cluster Mesh using the `cilium` CLI on both clusters:
 
 
 {{% alert title="Note" color="primary" %}}
-Although so far we used Helm to install and update Cilium, enabling Cilium using Helm currently [unsupported](https://github.com/cilium/cilium/pull/17851). We have to make an exception from the rule to never mix Helm and CLI installations and do it with the CLI.
+Although so far we used Helm to install and update Cilium, enabling Cilium Service Mesh using Helm is currently [unsupported](https://github.com/cilium/cilium/pull/17851). We have to make an exception from the rule to never mix Helm and CLI installations and do it with the CLI.
 {{% /alert %}}
 
 ```bash
@@ -98,7 +97,7 @@ cilium clustermesh enable --context cluster1 --service-type NodePort
 cilium clustermesh enable --context cluster2 --service-type NodePort
 ```
 
-You can now verify the clustermesh status using:
+You can now verify the Cluster Mesh status using:
 
 ```bash
 cilium clustermesh status --context cluster1 --wait
@@ -166,7 +165,7 @@ The two clusters are now connected.
 
 ## Task {{% param sectionnumber %}}.3: Cluster Mesh Troubleshooting
 
-Use the following list of steps to troubleshoot issues with ClusterMesh:
+Use the following list of steps to troubleshoot issues with Cluster Mesh:
 
 ```bash
 cilium status --context cluster1
@@ -206,4 +205,4 @@ Image versions    cilium                   quay.io/cilium/cilium:v1.11.0: 1
 ```
 
 
-If you cannot resolve the issue with the above commands, follow the steps in [Cilium's Cluster Mesh Troubleshooting Guide](https://docs.cilium.io/en/v1.11/operations/troubleshooting/#troubleshooting-clustermesh)
+If you cannot resolve the issue with the above commands, follow the steps in [Cilium's Cluster Mesh Troubleshooting Guide](https://docs.cilium.io/en/v1.11/operations/troubleshooting/#troubleshooting-clustermesh).

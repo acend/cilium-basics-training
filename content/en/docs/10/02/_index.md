@@ -14,7 +14,7 @@ Cilium is also capable to act as a host firewall to enforce security policies fo
 
 ## Task {{% param sectionnumber %}}.1: Enable the Host Firewall in Cilium
 
-We need to enable the host firewall in the cilium config. This can be done using Helm:
+We need to enable the host firewall in the Cilium config. This can be done using Helm:
 
 
 ```bash
@@ -34,7 +34,7 @@ Make sure to restart the `cilium` Pods with:
 kubectl -n kube-system rollout restart ds/cilium
 ```
 
-At this point, the Cilium-managed nodes are ready to enforce network policies.
+At this point, the Cilium-managed nodes are ready to enforce Network Policies.
 
 
 ## Task {{% param sectionnumber %}}.2: Attach a Label to the Node
@@ -58,13 +58,13 @@ HOST_EP_ID=$(kubectl -n kube-system exec $CILIUM_POD_NAME -- cilium endpoint lis
 kubectl -n kube-system exec $CILIUM_POD_NAME -- cilium endpoint config $HOST_EP_ID PolicyAuditMode=Enabled
 ```
 
-and then verify with:
+Verification:
 
 ```bash
 kubectl -n kube-system exec $CILIUM_POD_NAME -- cilium endpoint config $HOST_EP_ID | grep PolicyAuditMode
 ```
 
-which should give you:
+The output should show you:
 
 ```
 PolicyAuditMode          Enabled
@@ -132,20 +132,20 @@ If you are working in our Webshell environment, make sure to first login again t
 curl -k https://192.168.49.2:8443
 ```
 
-and also try to start an SSH session (you can cancel the comand when the passwort promt is shown):
+Also try to start an SSH session (you can cancel the command when the password promt is shown):
 
 ```bash
 ssh 192.168.49.2
 ```
 
-and the in the verdict log you should see an output similar to this. For the `curl` request you see that the action is set to `audit`
+In the verdict log you should see an output similar to the following one. For the `curl` request you see that the action is set to `audit`:
 
 ```
 Policy verdict log: flow 0xfd71ed86 local EP ID 671, remote ID world, proto 6, ingress, action audit, match none, 192.168.49.1:50760 -> 192.168.49.2:8443 tcp SYN
 Policy verdict log: flow 0xfd71ed86 local EP ID 671, remote ID world, proto 6, ingress, action audit, match none, 192.168.49.1:50760 -> 192.168.49.2:8443 tcp SYN
 ```
 
-while the request to the SSH port has action `allow`:
+The request to the SSH port has action `allow`:
 
 ```
 Policy verdict log: flow 0x6b5b1b60 local EP ID 671, remote ID world, proto 6, ingress, action allow, match L4-Only, 192.168.49.1:48254 -> 192.168.49.2:22 tcp SYN

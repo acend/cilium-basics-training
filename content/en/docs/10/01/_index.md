@@ -10,7 +10,7 @@ In this lab, we are going to provision a new Kubernetes cluster without `kube-pr
 ## Task {{% param sectionnumber %}}.1: Deploy a new Kubernetes Cluster without `kube-proxy`
 
 
-Create a new Kubernetes Cluster using the `minikube`. As `minikube` uses `kubeadm` we can skip the phase where `kubeadm` installs the `kube-proxy` addon. Execute the following command to create a third cluster:
+Create a new Kubernetes cluster using `minikube`. As `minikube` uses `kubeadm` we can skip the phase where `kubeadm` installs the `kube-proxy` addon. Execute the following command to create a third cluster:
 
 ```bash
 minikube start --network-plugin=cni --cni=false --kubernetes-version=1.23.1 --extra-config=kubeadm.skip-phases=addon/kube-proxy -p kubeless
@@ -37,7 +37,7 @@ minikube start --network-plugin=cni --cni=false --kubernetes-version=1.23.1 --ex
 
 ## Task {{% param sectionnumber %}}.1: Deploy Cilium and enable the Kube Proxy replacement
 
-As the `cilium` and `cilium-operator` by default try to communicate with the Kubernetes API using the default `kubernetes` service IP, they cannot do this with disabled `kube-proxy`. We, therefore, need to set the `KUBERNETES_SERVICE_HOST` and `KUBERNETES_SERVICE_PORT` environment variables to tell the two pods how to connect to the Kubernetes API.
+As the `cilium` and `cilium-operator` Pods by default try to communicate with the Kubernetes API using the default `kubernetes` service IP, they cannot do this with disabled `kube-proxy`. We, therefore, need to set the `KUBERNETES_SERVICE_HOST` and `KUBERNETES_SERVICE_PORT` environment variables to tell the two Pods how to connect to the Kubernetes API.
 
 To find the correct IP address execute the following command:
 
@@ -47,12 +47,12 @@ API_SERVER_PORT=$(kubectl config view -o jsonpath='{.clusters[?(@.name == "kubel
 echo "$API_SERVER_IP:$API_SERVER_PORT"
 ```
 
-Use the shown IP address and port in the next Helm command to install cilium:
+Use the shown IP address and port in the next Helm command to install Cilium:
 
 ```bash
 helm upgrade -i cilium cilium/cilium --version 1.11.0 \
   --namespace kube-system \
-  --set ipam.operator.clusterPoolIPv4PodCIDR=10.3.0.0/16 \
+  --set ipam.operator.clusterPoolIPv4PodCIDRList={10.3.0.0/16} \
   --set cluster.name=kubeless \
   --set cluster.id=3 \
   --set operator.replicas=1 \
@@ -62,7 +62,7 @@ helm upgrade -i cilium cilium/cilium --version 1.11.0 \
   --wait
 ```
 
-We can now compare the running pods on `cluster2` and `kubeless` in the `kube-system` namespace.
+We can now compare the running Pods on `cluster2` and `kubeless` in the `kube-system` Namespace.
 
 ```bash
 kubectl --context cluster2 -n kube-system get pod
@@ -86,7 +86,7 @@ storage-provisioner                     1/1     Running   4 (100m ago)   21h
 
 ```
 
-while on `kubeless` there is no `kube-proxy` pod anymore:
+On `kubeless` there is no `kube-proxy` Pod anymore:
 
 ```bash
 kubectl --context kubeless -n kube-system get pod
@@ -124,12 +124,13 @@ NOT_FRONTEND=$(kubectl get pods -l app=not-frontend -o jsonpath='{.items[0].meta
 echo ${NOT_FRONTEND}
 ```
 
-Then execute:
+Then execute
 
 ```bash
 kubectl exec -ti ${FRONTEND} -- curl -I --connect-timeout 5 backend:8080
 kubectl exec -ti ${NOT_FRONTEND} -- curl -I --connect-timeout 5 backend:8080
 ```
+
 and then with the result you see that altought we have no `kube-proxy` running, the backend service can still be reached.
 
 ```

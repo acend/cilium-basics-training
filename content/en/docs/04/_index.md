@@ -6,7 +6,7 @@ sectionnumber: 4
 
 With metrics displayed in Grafana or another UI, we can get a quick overview of our cluster state and its traffic.
 
-Both Cilium and Hubble can be configured to serve Prometheus metrics independently of each other. Cilium metrics show us the state of Cilium itself, namely of the cilium-agent, cilium-envoy, and cilium-operator processes.
+Both Cilium and Hubble can be configured to serve Prometheus metrics independently of each other. Cilium metrics show us the state of Cilium itself, namely of the `cilium-agent`, `cilium-envoy`, and `cilium-operator` processes.
 Hubble metrics on the other hand give us information about the traffic of our applications.
 
 
@@ -25,7 +25,7 @@ helm upgrade -i cilium cilium/cilium \
 ```
 
 
-### Verify cilium metrics
+### Verify Cilium metrics
 
 We now verify that the Cilium agent has different metric endpoints exposed and list some of them:
 
@@ -59,7 +59,7 @@ hubble_tcp_flags_total{family="IPv4",flag="SYN"} 1609
 hubble_tcp_flags_total{family="IPv4",flag="SYN-ACK"} 1549
 ```
 {{% alert title="Note" color="primary" %}}
-The Cilium agent pods run as daemonset on the HostNetwork. This means you could also directly call a node.
+The Cilium agent pods run as DaemonSet on the HostNetwork. This means you could also directly call a node.
 ```bash
 NODE=$(kubectl get nodes --selector=kubernetes.io/role!=master -o jsonpath={.items[*].status.addresses[?\(@.type==\"InternalIP\"\)].address})
 curl -s $NODE:9090/metrics | grep cilium_nodes_all_num
@@ -67,14 +67,14 @@ curl -s $NODE:9090/metrics | grep cilium_nodes_all_num
 {{% /alert %}}
 
 {{% alert title="Note" color="primary" %}}
-It is not yet possible to get metrics from Cilium envoy (port 9095). Envoy only starts on a node if there is at least one pod with a layer 7 networkpolicy.
+It is not yet possible to get metrics from Cilium Envoy (port 9095). Envoy only starts on a node if there is at least one Pod with a layer 7 networkpolicy.
 {{% /alert %}}
 
 
 ## Task {{% param sectionnumber %}}.2:  Store and visualize metrics
 
 To make sense of metrics we store them in Prometheus and visualize them with Grafana dashboards.
-Install both into cilium-monitoring namespace to store and visualize Cilium and Hubble metrics.
+Install both into `cilium-monitoring` Namespace to store and visualize Cilium and Hubble metrics.
 ```bash
 kubectl apply -f https://raw.githubusercontent.com/cilium/cilium/v1.11/examples/kubernetes/addons/prometheus/monitoring-example.yaml
 ```

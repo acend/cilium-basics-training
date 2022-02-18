@@ -9,7 +9,7 @@ In the previous lab, we intentionally installed version `v10.5.0` of Cilium. In 
 
 ## Task {{% param sectionnumber %}}.1: Running pre-flight check
 
-When rolling out an upgrade with Kubernetes, Kubernetes will first terminate the pod followed by pulling the new image version and then finally spin up the new image. In order to reduce the downtime of the agent and to prevent `ErrImagePull` errors during the upgrade, the pre-flight check pre-pulls the new image version. If you are running in "Kubernetes Without kube-proxy" mode you must also pass on the Kubernetes API Server IP and/or the Kubernetes API Server Port when generating the cilium-preflight.yaml file.
+When rolling out an upgrade with Kubernetes, Kubernetes will first terminate the Pod followed by pulling the new image version and then finally spin up the new image. In order to reduce the downtime of the agent and to prevent `ErrImagePull` errors during the upgrade, the pre-flight check pre-pulls the new image version. If you are running in "Kubernetes Without kube-proxy" mode you must also pass on the Kubernetes API Server IP and/or the Kubernetes API Server Port when generating the `cilium-preflight.yaml` file.
 
 ```bash
 helm install cilium-preflight cilium/cilium --version 1.11.1 \
@@ -23,7 +23,7 @@ helm install cilium-preflight cilium/cilium --version 1.11.1 \
 
 ## Task {{% param sectionnumber %}}.2: Clean up pre-flight check
 
-Once the number of `READY` for the preflight DaemonSet is the same as the number of cilium pods running and the preflight Deployment is marked as `READY 1/1` you can delete the cilium-preflight and proceed with the upgrade.
+Once the number of `READY` for the preflight DaemonSet is the same as the number of Cilium pods running and the preflight Deployment is marked as `READY 1/1` you can delete the cilium-preflight and proceed with the upgrade.
 
 ```bash
 helm delete cilium-preflight --namespace=kube-system
@@ -43,7 +43,7 @@ To minimize datapath disruption during the upgrade, the `upgradeCompatibility` o
 ```bash
 helm upgrade -i cilium cilium/cilium --version 1.11.1 \
   --namespace kube-system \
-  --set ipam.operator.clusterPoolIPv4PodCIDR=10.1.0.0/16 \
+  --set ipam.operator.clusterPoolIPv4PodCIDRList={10.1.0.0/16} \
   --set cluster.name=cluster1 \
   --set cluster.id=1 \
   --set operator.replicas=1 \
@@ -51,7 +51,7 @@ helm upgrade -i cilium cilium/cilium --version 1.11.1 \
   --wait
 ```
 {{% alert title="Note" color="primary" %}}
-When upgrading from one minor release to another minor release using helm upgrade, do not use Helm’s `--reuse-values` flag. The  `--reuse-values` flag ignores any newly introduced values present in the new release and thus may cause the Helm template to render incorrectly. Instead, if you want to reuse the values from your existing installation, save the old values in a values file, check the file for any renamed or deprecated values, and then pass it to the `helm upgrade` command as described above. You can retrieve and save the values from an existing installation with the following command:
+When upgrading from one minor release to another minor release using `helm upgrade`, do not use Helm’s `--reuse-values` flag. The  `--reuse-values` flag ignores any newly introduced values present in the new release and thus may cause the Helm template to render incorrectly. Instead, if you want to reuse the values from your existing installation, save the old values in a values file, check the file for any renamed or deprecated values, and then pass it to the `helm upgrade` command as described above. You can retrieve and save the values from an existing installation with the following command:
 
 ```bash
 helm get values cilium --namespace=kube-system -o yaml > old-values.yaml

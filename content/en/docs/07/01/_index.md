@@ -49,7 +49,7 @@ Create the file `backend-egress-allow-fqdn.yaml` with the above content and appl
 kubectl apply -f backend-egress-allow-fqdn.yaml
 ```
 
-and check if the Cilium Network Policy was created:
+and check if the `CiliumNetworkPolicy` was created:
 
 ```bash
 kubectl get cnp                                
@@ -81,7 +81,7 @@ command terminated with exit code 28
 
 ```
 {{% alert title="Note" color="primary" %}}
-You can now check the `Hubble Metrics` dashboard in grafana again. The graphs under DNS should soon show some data as well. This is because with a Layer 7 Policy we have enabled the envoy in Cilium Agent.
+You can now check the `Hubble Metrics` dashboard in Grafana again. The graphs under DNS should soon show some data as well. This is because with a Layer 7 Policy we have enabled the Envoy in Cilium Agent.
 {{% /alert %}}
 
 With the ingress and egress policies in place on `app=backend` pods, we have implemented a simple zero-trust model to all traffic to and from our backend. In a real-world scenario, cluster administrators may leverage network policies and overlay them at all levels and for all kinds of traffic.
@@ -89,7 +89,7 @@ With the ingress and egress policies in place on `app=backend` pods, we have imp
 
 ## Task {{% param sectionnumber %}}.2: Cleanup
 
-To not mess up the proceeding labs we are going to delete the Cilium Network Policy again and therefore allow all egress traffic again:
+To not mess up the proceeding labs we are going to delete the `CiliumNetworkPolicy` again and therefore allow all egress traffic again:
 
 ```bash
 kubectl delete cnp backend-egress-allow-fqdn
