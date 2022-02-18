@@ -15,7 +15,7 @@ Hubble metrics on the other hand give us information about the traffic of our ap
 We start by enabling different metrics, for dropped and HTTP traffic we also want to have metrics specified by pod.
 
 ```bash
-helm upgrade -i cilium cilium/cilium \
+helm upgrade -i cilium cilium/cilium --version 1.11.1 \
    --namespace kube-system \
    --reuse-values \
    --set prometheus.enabled=true \
