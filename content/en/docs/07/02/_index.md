@@ -7,9 +7,9 @@ sectionnumber: 7.2
 
 ## Task {{% param sectionnumber %}}.1: Deploy a new Demo Application
 
-In this Star Wars inspired example, there are three microservices applications: deathstar, tiefighter, and xwing. The deathstar runs an HTTP webservice on port 80, which is exposed as a Kubernetes Service to load balance requests to deathstar across two pod replicas. The deathstar service provides landing services to the empire’s spaceships so that they can request a landing port. The tiefighter pod represents a landing-request client service on a typical empire ship and xwing represents a similar service on an alliance ship. They exist so that we can test different security policies for access control to deathstar landing services.
+In this Star Wars inspired example, there are three microservices applications: deathstar, tiefighter, and xwing. The deathstar runs an HTTP webservice on port 80, which is exposed as a Kubernetes Service to load balance requests to deathstar across two Pod replicas. The deathstar service provides landing services to the empire’s spaceships so that they can request a landing port. The tiefighter Pod represents a landing-request client service on a typical empire ship and xwing represents a similar service on an alliance ship. They exist so that we can test different security policies for access control to deathstar landing services.
 
-The file `sw-app.yaml` contains a Kubernetes Deployment for each of the three services. Each deployment is identified using the Kubernetes labels (org=empire, class=deathstar), (org=empire, class=tiefighter), and (org=alliance, class=xwing). It also includes a deathstar-service, which load balances traffic to all pods with labels org=empire and class=deathstar.
+The file `sw-app.yaml` contains a Kubernetes Deployment for each of the three services. Each deployment is identified using the Kubernetes labels (`org=empire`, `class=deathstar`), (`org=empire`, `class=tiefighter`), and (`org=alliance`, `class=xwing`). It also includes a deathstar-service, which load balances traffic to all pods with labels `org=empire` and `class=deathstar`.
 
 {{< highlight yaml >}}{{< readfile file="content/en/docs/07/02/sw-app.yaml" >}}{{< /highlight >}}
 
@@ -25,7 +25,7 @@ And as we have already some Network Policies in our Namespace the default ingres
 
 {{< highlight yaml >}}{{< readfile file="content/en/docs/07/02/cnp.yaml" >}}{{< /highlight >}}
 
-Apply the Cilium Network Policy with:
+Apply the `CiliumNetworkPolicy` with:
 
 ```bash
 kubectl apply -f cnp.yaml
@@ -78,7 +78,7 @@ Cilium is capable of enforcing HTTP-layer (i.e., L7) policies to limit what URLs
 
 {{< highlight yaml >}}{{< readfile file="content/en/docs/07/02/cnp-l7.yaml" >}}{{< /highlight >}}
 
-Update the existing rule to apply L7-aware policy to protect deathstar using:
+Update the existing rule to apply the L7-aware policy to protect deathstar using:
 
 ```bash
 kubectl apply -f cnp-l7.yaml

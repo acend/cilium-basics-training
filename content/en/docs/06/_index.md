@@ -15,7 +15,7 @@ If you are not yet familiar with Kubernetes Network Policies we suggest going to
 
 ## Task {{% param sectionnumber %}}.1: Cilium Endpoints and Identities
 
-Each Pod from our simple application is represented in Cilium as an [Endpoint](https://docs.cilium.io/en/stable/concepts/terminology/#endpoint). We can use the `cilium` tool inside a Cilium pod to list them.
+Each Pod from our simple application is represented in Cilium as an [Endpoint](https://docs.cilium.io/en/stable/concepts/terminology/#endpoint). We can use the `cilium` tool inside a Cilium Pod to list them.
 
 First get all Cilium pods with:
 
@@ -34,7 +34,7 @@ kubectl -n kube-system exec <podname> -- cilium endpoint list
 ```
 
 {{% alert title="Note" color="primary" %}}
-Or we just execute the first pod of the daemonset:
+Or we just execute the first Pod of the DaemonSet:
 
 ```bash
 kubectl -n kube-system exec ds/cilium -- cilium endpoint list
@@ -53,7 +53,7 @@ kubectl -n kube-system exec daemonset/cilium -- cilium endpoint list | grep -E -
 kubectl delete pod test-identity
 ```
 
-We see that the number for this pod in the column IDENTITY has changed after we added another label. If you run `endpoint list` right after pod-labeling you might also see `waiting-for-identity` as the status of the endpoint.
+We see that the number for this Pod in the column IDENTITY has changed after we added another label. If you run `endpoint list` right after pod-labeling you might also see `waiting-for-identity` as the status of the endpoint.
 
 
 ## Task {{% param sectionnumber %}}.2: Verify connectivity
@@ -127,7 +127,7 @@ Ok, then let's create the policy with:
 kubectl apply -f backend-ingress-deny.yaml
 ```
 
-and you can verify the created Network Policy with:
+and you can verify the created `NetworkPolicy` with:
 
 ```bash
 kubectl get netpol
@@ -163,10 +163,10 @@ curl: (28) Connection timed out after 5001 milliseconds
 command terminated with exit code 28
 ```
 
-The network policy correctly switched the default ingress behavior from default allow to default deny. We can also check this in grafana.
+The network policy correctly switched the default ingress behavior from default allow to default deny. We can also check this in Grafana.
 
 {{% alert title="Note" color="primary" %}}
-Note: our earlier grafana port-forward should still be running (can be checked by running jobs or `ps aux | grep "cilium-monitoring"`). If it does not open the URL from the command output below (or http://localhost:3000/dashboards with a local setup).
+Note: our earlier Grafana port-forward should still be running (can be checked by running jobs or `ps aux | grep "cilium-monitoring"`). If it does not open the URL from the command output below (or http://localhost:3000/dashboards with a local setup).
 
 ```bash
 kubectl -n cilium-monitoring port-forward service/grafana --address 0.0.0.0 --address :: 3000:3000 &
@@ -195,7 +195,7 @@ Above you see our original policy, we create an new one with the editor now.
 
 ![Cilium editor edit name](cilium_editor_edit_name.png)
 
-* On the ingress side, add `app=frontend` as podSelector for pods in the same namespace.
+* On the ingress side, add `app=frontend` as podSelector for pods in the same Namespace.
 
 ![Cilium editor add rule](cilium_editor_add.png)
 
@@ -204,7 +204,7 @@ Above you see our original policy, we create an new one with the editor now.
 ![Cilium editor backend allow rule](cilium_editor_backend-allow-ingress.png)
 
 
-* Copy the policy YAML into a file named backend-allow-ingress-frontend.yaml.
+* Copy the policy YAML into a file named `backend-allow-ingress-frontend.yaml`.
 
 The file should look like this:
 
@@ -301,9 +301,9 @@ Jan 13 12:54:49.922: default/not-frontend-8f467ccbd-lh4w4:37134 <> default/backe
 ```
 
 
-## Task {{% param sectionnumber %}}.6: Inspecting the cilium endpoints again
+## Task {{% param sectionnumber %}}.6: Inspecting the Cilium endpoints again
 
-We can now check the cilium endpoints again.
+We can now check the Cilium endpoints again.
 
 ```bash
 kubectl -n kube-system exec -it ds/cilium -- cilium endpoint list

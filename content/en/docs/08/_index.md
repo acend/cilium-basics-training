@@ -23,7 +23,7 @@ To see traffic between nodes, we move the frontend pod from Chapter 3 to the new
 
 {{< highlight yaml >}}{{< readfile file="content/en/docs/08/patch.yaml" >}}{{< /highlight >}}
 
-create a file patch.yaml with the above content. You can patch the frontend deployment now:
+create a file `patch.yaml` with the above content. You can patch the frontend deployment now:
 
 ```bash
 kubectl patch deployments.apps frontend --type merge --patch-file patch.yaml
@@ -49,7 +49,7 @@ xwing                          1/1     Running       0             11m   10.1.0.
 
 ## Task {{% param sectionnumber %}}.3:  Enable node traffic encryption with WireGuard
 
-Enabling WireGuard based encryption with helm is simple:
+Enabling WireGuard based encryption with Helm is simple:
 
 ```bash
 helm upgrade -i cilium cilium/cilium --version 1.11.1 \
@@ -62,7 +62,7 @@ helm upgrade -i cilium cilium/cilium --version 1.11.1 \
   --wait
 ```
 
-and then restart the cilium Daemonset:
+Afterwards restart the Cilium DaemonSet:
 
 ```bash
 kubectl -n kube-system rollout restart ds cilium
@@ -92,7 +92,7 @@ CILIUM_AGENT=$(kubectl get pod -n kube-system -l k8s-app=cilium -o jsonpath="{.i
 kubectl debug -n kube-system -i ${CILIUM_AGENT} --image=nicolaka/netshoot -- tcpdump -ni cilium_wg0 -X port 8080
 ```
 
-If you don't see any traffic, you can generate it yourself in a second terminal. For those using the Webshell a second Terminal can be opened using the menu `Terminal` then `Split Terminal`. Now in this second terminal run
+If you don't see any traffic, you can generate it yourself in a second terminal. For those using the Webshell a second Terminal can be opened using the menu `Terminal` then `Split Terminal`. Now in this second terminal run:
 
 ```bash
 FRONTEND=$(kubectl get pods -l app=frontend -o jsonpath='{.items[0].metadata.name}')
@@ -120,7 +120,7 @@ helm upgrade -i cilium cilium/cilium \
   --wait
 ```
 
-and then restart the cilium Daemonset:
+and then restart the Cilium Daemonset:
 
 ```bash
 kubectl -n kube-system rollout restart ds cilium

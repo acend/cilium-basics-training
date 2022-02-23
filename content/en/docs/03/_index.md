@@ -75,7 +75,7 @@ Available Commands:
   version     Display detailed version information
 
 Global Flags:
-      --config string   Optional config file (default "/home/sebastian/.config/hubble/config.yaml")
+      --config string   Optional config file (default "/home/user/.config/hubble/config.yaml")
   -D, --debug           Enable debug messages
 
 Get help:
@@ -186,7 +186,7 @@ and then wait until Hubble is enabled:
 ✅ Hubble was successfully enabled!
 ```
 
-When you have a look at your running pods with `kubectl get pod -A` you should see a pod with a name starting with `hubble-relay`:
+When you have a look at your running pods with `kubectl get pod -A` you should see a Pod with a name starting with `hubble-relay`:
 
 ```bash
 kubectl get pod -A
@@ -265,7 +265,7 @@ The Hubble CLI is now primed for observing network traffic within the cluster.
 
 ## Task {{% param sectionnumber %}}.4: Observing flows with Hubble
 
-We now want to use the `hubble` CLI to observe some network flows in our Kubernetes Cluster. Let us have a look at the following command:
+We now want to use the `hubble` CLI to observe some network flows in our Kubernetes cluster. Let us have a look at the following command:
 
 ```bash
 hubble observe
@@ -303,7 +303,7 @@ with
 hubble observe -f
 ```
 
-you can observe and follow the currently active flows in your Kubernetes Cluster. Stop the command with `CTRL+C`.
+you can observe and follow the currently active flows in your Kubernetes cluster. Stop the command with `CTRL+C`.
 
 Let us produce some traffic:
 

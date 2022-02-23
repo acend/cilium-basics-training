@@ -9,7 +9,7 @@ This lab will guide you to perform load-balancing and service discovery across m
 
 ## Task {{% param sectionnumber %}}.1: Load-balancing with Global Services
 
-Establishing load-balancing between clusters is achieved by defining a Kubernetes service with an identical name and namespace in each cluster and adding the `annotation io.cilium/global-service: "true"` to declare it global. Cilium will automatically perform load-balancing to pods in both clusters.
+Establishing load-balancing between clusters is achieved by defining a Kubernetes service with an identical name and Namespace in each cluster and adding the `annotation io.cilium/global-service: "true"` to declare it global. Cilium will automatically perform load-balancing to pods in both clusters.
 
 We are going to deploy a global service and a sample application on both of our connected clusters.
 
@@ -51,7 +51,7 @@ for i in {1..10}; do
 done
 ```
 
-as a Result you get the following output:
+as a result you get the following output:
 
 ```
 {"Galaxy": "Alderaan", "Cluster": "Cluster-2"}
@@ -66,7 +66,7 @@ as a Result you get the following output:
 {"Galaxy": "Alderaan", "Cluster": "Cluster-2"}
 ```
 
-and as you see, you get results from both clusters. Even ig you scale down your `rebel-base` Deployment on `cluster1` with:
+and as you see, you get results from both clusters. Even if you scale down your `rebel-base` Deployment on `cluster1` with
 
 ```bash
 kubectl --context cluster1 scale deployment rebel-base --replicas=0

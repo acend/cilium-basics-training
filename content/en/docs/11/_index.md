@@ -3,12 +3,12 @@ title: "11. Cilium Service Mesh"
 weight: 11
 sectionnumber: 11
 ---
-Cilium Service Mesh enables functions like Ingress or Layer 7 Loadbalancing.
+Cilium Service Mesh enables functions like ingress or layer 7 loadbalancing.
 
 
 ## Task {{% param sectionnumber %}}.1: Installation
 
-Cilium Service Mesh is still in Beta, if you want more information about the current status you can find it [here](https://github.com/cilium/cilium-service-mesh-beta). The Beta version uses specific images, because of that we will use a dedicated cluster and install Cilium with the CLI.
+Cilium Service Mesh is still in beta, if you want more information about the current status you can find it [here](https://github.com/cilium/cilium-service-mesh-beta). The beta version uses specific images, because of that we will use a dedicated cluster and install Cilium with the CLI.
 
 {{% alert title="Note" color="primary" %}}
 You can stop cluster1 with `minikube stop -p cluster1` to free up resources and speed up things.
@@ -20,9 +20,7 @@ minikube start --network-plugin=cni --cni=false --kubernetes-version=1.23.0 -p s
 cilium install --version -service-mesh:v1.11.0-beta.1 --config enable-envoy-config=true --kube-proxy-replacement=probe
 ```
 
-Wait until cilium is ready (check with `cilium status`)
-
-and then also enable the Hubble UI:
+Wait until cilium is ready (check with `cilium status`) and also enable the Hubble UI:
 
 ```bash
 cilium hubble enable --ui 
@@ -31,7 +29,7 @@ cilium hubble enable --ui
 
 ## Task {{% param sectionnumber %}}.2: Create Ingress
 
-Cilium Service Mesh can handle Ingress traffic with its envoy proxy.
+Cilium Service Mesh can handle ingress traffic with its Envoy proxy.
 
 
 We deploy [the sample app from chapter 3](https://cilium-basics.training.acend.ch/docs/03/#task-32-deploy-simple-application).
@@ -39,13 +37,13 @@ We deploy [the sample app from chapter 3](https://cilium-basics.training.acend.c
 
 {{< highlight yaml >}}{{< readfile file="content/en/docs/03/simple-app.yaml" >}}{{< /highlight >}}
 
-Apply this with:
+Apply it with:
 
 ```bash
 kubectl apply -f simple-app.yaml
 ```
 
-Now we add an Ingress resource:
+Now we add an ingress resource:
 
 {{< highlight yaml >}}{{< readfile file="content/en/docs/11/ingress.yaml" >}}{{< /highlight >}}
 
@@ -61,16 +59,16 @@ Check the ingress and the service:
 kubectl describe ingress
 kubectl get svc cilium-ingress-backend
 ```
-We have successfully created an Ingress service. Unfortunately, minikube has no loadbalancer deployed and we will not get a public IP for our service (status stays pending)
+We have successfully created an ingress service. Unfortunately, Minikube has no loadbalancer deployed and we will not get a public IP for our service (status stays pending)
 
-As a workaround, we can test the service from inside kubernetes.
+As a workaround, we can test the service from inside Kubernetes.
 
 ```bash
 SERVICE_IP=$(kubectl get svc cilium-ingress-backend -ojsonpath={.spec.clusterIP})
 kubectl run --rm=true -it --restart=Never --image=curlimages/curl -- curl http://${SERVICE_IP}/public
 ```
 
-And you get the following output:
+You should get the following output:
 
 ```
 [
@@ -87,50 +85,51 @@ We can also use `minikube tunnel -p servicemesh` and then curl the Cluster-IP di
 
 ## Task {{% param sectionnumber %}}.3: Layer 7 Loadbalancing
 
-Ingress alone is not really a Service Mesh feature. Let us test out a traffic control example by loadbalancing a service inside the proxy.
+Ingress alone is not really a Service Mesh feature. Let us test a traffic control example by loadbalancing a service inside the proxy.
 
 
 Start by creating the second service:
 
 {{< highlight yaml >}}{{< readfile file="content/en/docs/11/backend2.yaml" >}}{{< /highlight >}}
 
-And apply it:
+Apply it:
 ```bash
 kubectl apply -f backend2.yaml
 ```
 
-Call it
+Call it:
 ```bash
 kubectl run --rm=true -it --restart=Never --image=curlimages/curl -- curl --connect-timeout 3 http://backend-2:8080/public
 ```
+
 We see output very similiar to our simple application backend, but with a changed text.
 
-Layer 7 loadbalancing will need to be routed through the proxy, we will enable this for our backend pods using a Cilium Network Policy with HTTP rules. We will block access to /public and allow requests to /private:
+As layer 7 loadbalancing requires traffic to be routed through the proxy, we will enable this for our backend Pods using a `CiliumNetworkPolicy` with HTTP rules. We will block access to `/public` and allow requests to `/private`:
 
 {{< highlight yaml >}}{{< readfile file="content/en/docs/11/cnp-l7-sm.yaml" >}}{{< /highlight >}}
 
-Apply the CiliumNetwork Policy with:
+Apply the `CiliumNetworkPolicy` with:
 
 ```bash
 kubectl apply -f cnp-l7-sm.yaml
 ```
 
-Until now only backend service is replying to Ingress traffic. Now we configure envoy to loadbalance the traffic 50/50 between backend and backend-2 with retries.
+Until now only the backend service is replying to Ingress traffic. Now we configure Envoy to loadbalance the traffic 50/50 between backend and backend-2 with retries.
 We are using a CustomResource called `CiliumEnvoyConfig` for this:
 
 {{< highlight yaml >}}{{< readfile file="content/en/docs/11/envoyconfig.yaml" >}}{{< /highlight >}}
 
 {{% alert title="Note" color="primary" %}}
-If you want to read more about envoy configuration [envoy Architectural Overview](https://www.envoyproxy.io/docs/envoy/latest/intro/arch_overview/http/http) is a good place.
+If you want to read more about Envoy configuration [Envoy Architectural Overview](https://www.envoyproxy.io/docs/envoy/latest/intro/arch_overview/http/http) is a good place to start.
 {{% /alert %}}
 
-Apply the CiliumEnvoyConfig with:
+Apply the `CiliumEnvoyConfig` with:
 
 ```bash
 kubectl apply -f envoyconfig.yaml
 ```
 
-Test it by running `curl` a few times...different backends should respond.
+Test it by running `curl` a few times -- different backends should respond:
 
 ```bash
 for i in {1..5}; do
@@ -159,7 +158,7 @@ This basic traffic control example shows only one function of Cilium Service Mes
 
 ## Task {{% param sectionnumber %}}.4: Cleanup
 
-You can delete the service mesh cluster now.
+You can delete the Service Mesh cluster now.
 
 ```bash
 minikube delete -p servicemesh

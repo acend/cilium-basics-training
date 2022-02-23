@@ -9,7 +9,7 @@ Cilium can be installed using multiple ways:
 * Cilium CLI
 * Using Helm
 
-In this lab, we are going to use [helm](https://helm.sh) which is recommended for production use.
+In this lab, we are going to use [Helm](https://helm.sh) which is recommended for production use.
 The [Cilium command-line](https://github.com/cilium/cilium-cli/) tool is used (Cilium CLI) for verification and troubleshooting.
 
 
@@ -18,7 +18,7 @@ The [Cilium command-line](https://github.com/cilium/cilium-cli/) tool is used (C
 We are going to spin up a new Kubernetes cluster with the following command:
 
 {{% alert title="Note" color="primary" %}}
-To start from a clean Kubernetes Cluster, make sure `cluster1` is not yet available. You can verify this with `minikube profile list`. If you already have a `cluster1` you can delete the cluster with `minikube delete -p cluster1`.
+To start from a clean Kubernetes cluster, make sure `cluster1` is not yet available. You can verify this with `minikube profile list`. If you already have a `cluster1` you can delete the cluster with `minikube delete -p cluster1`.
 {{% /alert %}}
 
 ```bash
@@ -26,7 +26,7 @@ minikube start --network-plugin=cni --cni=false --kubernetes-version=1.23.1 -p c
 ```
 
 {{% alert title="Note" color="primary" %}}
-During this training, you will create multiple clusters. For this, we use a feature in minikube called profile which you see with the `-p cluster1` option. You can list all your profiles with `minikube profile list` and you can change to another cluster with `minikube profile <profilename>`, this will also set your current context for `kubectl` to the specified profile/cluster.
+During this training, you will create multiple clusters. For this, we use a feature in Minikube called profile which you see with the `-p cluster1` option. You can list all your profiles with `minikube profile list` and you can change to another cluster with `minikube profile <profilename>`, this will also set your current context for `kubectl` to the specified profile/cluster.
 {{% /alert %}}
 
 Minikube installed a new Kubernetes cluster without any Container Network Interface (CNI). CNI installation happens in the next task.
@@ -120,7 +120,7 @@ which should give you an output similar to this:
 cilium-cli: v0.10.1 compiled with go1.17.6 on linux/amd64
 cilium image (default): v1.11.1
 cilium image (stable): v1.11.1
-cilium image (running): unknown. Unable to obtain cilium version, no cilium pods found in namespace "kube-system"
+cilium image (running): unknown. Unable to obtain cilium version, no cilium pods found in Namespace "kube-system"
 ```
 
 {{% alert title="Note" color="primary" %}}
@@ -154,7 +154,7 @@ We don't have yet installed Cilium, therefore the error is perfectly fine.
 
 ## Task {{% param sectionnumber %}}.3: Install Cilium
 
-Let's install Cilium with helm. First we need to add the Cilium Helm Repository:
+Let's install Cilium with Helm. First we need to add the Cilium Helm repository:
 
 ```bash
 helm repo add cilium https://helm.cilium.io/
@@ -194,7 +194,7 @@ Image versions    cilium             quay.io/cilium/cilium:v1.10.5: 1
 ```
 
 {{% alert title="Note" color="primary" %}}
-If the output is not the same, make sure all cilium container are up and in a ready state.
+If the output is not the same, make sure all Cilium container are up and in a ready state.
 {{% /alert %}}
 
 
@@ -280,7 +280,7 @@ This will run for some minutes, let's wait.
 ✅ All 11 tests (76 actions) successful, 0 tests skipped, 0 scenarios skipped.
 ```
 
-Once done, clean up the connectivity test namespace:
+Once done, clean up the connectivity test Namespace:
 
 ```bash
 kubectl delete ns cilium-test --wait=false
@@ -329,11 +329,11 @@ NAMESPACE   NAME                            AGE
 It might be possible that you still see identites created by `cilium connectivity test`. They will be deleted by `cilium-operator` after max. 15 minutes.
 {{% /alert %}}
 
-{{% details title="Can you guess why only the coredns pod is listed as an Endpoint and Identity?" %}}
-This pod is the only one which is NOT on the Host Network.
+{{% details title="Can you guess why only the coredns Pod is listed as an Endpoint and Identity?" %}}
+This Pod is the only one which is NOT on the Host Network.
 {{% /details %}}
 
-{{% details title="Is it possible to have more CiliumNodes than nodes in a Kubernetes Cluster?" %}}
+{{% details title="Is it possible to have more CiliumNodes than nodes in a Kubernetes cluster?" %}}
 A CiliumNode is a host with cilium-agent installed. So this could also be VM outside Kubernetes.
 {{% /details %}}
 
@@ -352,7 +352,7 @@ docker exec -it cluster1 bash
 ```
 
 
-Now we have a shell with access to the node. We will check out the cilium installation:
+Now we have a shell with access to the node. We will check out the Cilium installation:
 
 ```bash
 ls -l /etc/cni/net.d/
@@ -363,7 +363,7 @@ exit #exit twice if you used kubectl debug
 ```
 We make a few oberservations:
 
-* Kubernetes uses the configuration file with the lowest number so it takes cilium with the prefix 05.
+* Kubernetes uses the configuration file with the lowest number so it takes Cilium with the prefix 05.
 * The configuration file is written as a  [CNI spec](https://github.com/containernetworking/cni/blob/master/SPEC.md#configuration-format).
 * The `cilium` binary was installed to /opt/cni/bin.
 * Cilium created two virtual network interfaces `cilium_net`,`cilium_host` (host traffic) and the vxlan overlay interface `cilium_vxlan`
@@ -376,6 +376,6 @@ This is what the installation with the `cilium` cli would have looked like:
 ```bash
 # cilium install --config cluster-pool-ipv4-cidr=10.1.0.0/16 --cluster-name cluster1 --cluster-id 1 --version v1.10.5
 ```
-Be careful to never use CLI and Helm together to install, this can break an already running cilium installation.
+Be careful to never use CLI and Helm together to install, this can break an already running Cilium installation.
 
 After this initial installation, we can proceed by upgrading to a newer version in the next lab.

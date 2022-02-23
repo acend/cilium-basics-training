@@ -52,7 +52,7 @@ kube-system   kube-scheduler-minikube            1/1     Running   0          17
 kube-system   storage-provisioner                1/1     Running   1          174m
 ```
 
-Cilium agents are restarting, and a new Hubble UI pod is now present on top of the Hubble Relay pod. As above, we can wait for Cilium and Hubble to be ready by running:
+Cilium agents are restarting, and a new Hubble UI Pod is now present on top of the Hubble Relay pod. As above, we can wait for Cilium and Hubble to be ready by running:
 
 ```bash
 cilium status --wait
@@ -92,7 +92,7 @@ hubble status
 ```
 
 {{% alert title="Note" color="primary" %}}
-Our earlier command cilium hubble port-forward should still be running (can be checked by running jobs or `ps aux | grep "cilium hubble port-forward"`). If it does not, Hubble status will fail and we have to run it again:
+Our earlier command Cilium Hubble port-forward should still be running (can be checked by running jobs or `ps aux | grep "cilium hubble port-forward"`). If it does not, Hubble status will fail and we have to run it again:
 
 ```bash
 cilium hubble port-forward&
@@ -110,7 +110,7 @@ cilium hubble ui &
 
 In our Webshell environment you can use the public IP of the VM to access Hubble. A simple way it to execute `echo "http://$(curl -s ifconfig.me):12000"` and copy the output in a new browser tab. If you are working locally the browser should open http://localhost:12000/ (open it manually if not).
 
-We can then access the graphical service map by selecting our default namespace:
+We can then access the graphical service map by selecting our default Namespace:
 
 ![Hubble UI Choose Namespace](../cilium_choose_ns.png)
 
@@ -135,13 +135,13 @@ and also a table with the already familiar flow output previously seen in the `h
 
 Hubble flows are displayed in real-time at the bottom, with a visualization of the namespace objects in the center. Click on any flow, and click on any property from the right-side panel: notice that the filters at the top of the UI have been updated accordingly.
 
-Let's run a connectivity test again and see what happens in Hubble UI in the cilium-test namespace. Since this test runs for a few minutes this could be a good time to grab a :coffee:.
+Let's run a connectivity test again and see what happens in Hubble UI in the `cilium-test` Namespace. Since this test runs for a few minutes this could be a good time to grab a :coffee:.
 
 ```bash
 cilium connectivity test
 ```
 
-We can see that Hubble UI is not only capable of displaying flows within a namespace, it also helps visualize flows going in or out of it.
+We can see that Hubble UI is not only capable of displaying flows within a Namespace, it also helps visualize flows going in or out of it.
 
 ![Hubble UI - Connectivity Test](../cilium_hubble_connectivity_test.png)
 

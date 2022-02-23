@@ -15,7 +15,7 @@ The following policy illustrates how to allow particular pods to communicate bet
 For the Pods to resolve the `rebel-base` service name they still need connectivity to Kubernetes DNS Service. Therefore access to that is also allowed.
 {{% /alert %}}
 
-Kubernetes security policies are not automatically distributed across clusters, it is your responsibility to apply CiliumNetworkPolicy or NetworkPolicy in all clusters.
+Kubernetes security policies are not automatically distributed across clusters, it is your responsibility to apply `CiliumNetworkPolicy` or `NetworkPolicy` in all clusters.
 
 So let us apply the above `CiliumNetworkPolicy` to both clusters:
 
@@ -24,7 +24,7 @@ kubectl --context cluster1 apply -f cnp-cm.yaml
 kubectl --context cluster2 apply -f cnp-cm.yaml
 ```
 
-Let us run our `curl` `for` loop again:
+Let us run our `curl` `for` loop again
 
 ```bash
 XWINGPOD=$(kubectl --context cluster1 get pod -l name=x-wing -o jsonpath="{.items[0].metadata.name}")
@@ -53,4 +53,4 @@ curl: (28) Connection timed out after 1000 milliseconds
 command terminated with exit code 28
 ```
 
-all connections to `cluster2` are dropped while the ones to `cluster1` are still working.
+All connections to `cluster2` are dropped while the ones to `cluster1` are still working.
