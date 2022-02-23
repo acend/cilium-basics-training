@@ -83,6 +83,7 @@ kube-system   storage-provisioner                1/1     Running   1          49
 
 The second cluster and Cilium is ready to use.
 
+
 ## Task {{% param sectionnumber %}}.2: Enable Cluster Mesh on both Cluster
 
 Now let us enable the Cluster Mesh using the `cilium` CLI on both clusters:
