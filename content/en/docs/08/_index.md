@@ -52,7 +52,7 @@ xwing                          1/1     Running       0             11m   10.1.0.
 Enabling WireGuard based encryption with Helm is simple:
 
 ```bash
-helm upgrade -i cilium cilium/cilium \
+helm upgrade -i cilium cilium/cilium --version 1.11.1 \
   --namespace kube-system \
   --reuse-values \
   --set l7Proxy=false \

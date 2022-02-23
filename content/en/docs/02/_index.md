@@ -374,7 +374,7 @@ We make a few oberservations:
 This is what the installation with the `cilium` cli would have looked like:
 
 ```bash
-cilium install --config cluster-pool-ipv4-cidr=10.1.0.0/16 --cluster-name cluster1 --cluster-id 1 --version v1.10.5
+# cilium install --config cluster-pool-ipv4-cidr=10.1.0.0/16 --cluster-name cluster1 --cluster-id 1 --version v1.10.5
 ```
 Be careful to never use CLI and Helm together to install, this can break an already running Cilium installation.
 

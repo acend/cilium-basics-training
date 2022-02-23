@@ -18,7 +18,7 @@ We need to enable the host firewall in the Cilium config. This can be done using
 
 
 ```bash
-helm upgrade -i cilium cilium/cilium \
+helm upgrade -i cilium cilium/cilium --version 1.11.1 \
   --namespace kube-system \
   --reuse-values \
   --set hostFirewall.enabled=true \
