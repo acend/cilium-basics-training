@@ -20,7 +20,7 @@ helm upgrade -i cilium cilium/cilium --version {{% param "ciliumVersion.postUpgr
 ```
 
 {{% alert title="Note" color="primary" %}}
-When using the `cilium` CLI you can execute the following command to enable the Hubble UI:
+When using the `cilium` CLI, you can execute the following command to enable the Hubble UI:
 
 ```bash
 cilium hubble enable --ui

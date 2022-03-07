@@ -11,7 +11,11 @@ Cilium Service Mesh enables functions like ingress or layer 7 loadbalancing.
 Cilium Service Mesh is still in beta, if you want more information about the current status you can find it [here](https://github.com/cilium/cilium-service-mesh-beta). The beta version uses specific images, because of that we will use a dedicated cluster and install Cilium with the CLI.
 
 {{% alert title="Note" color="primary" %}}
-You can stop cluster1 with `minikube stop -p cluster1` to free up resources and speed up things.
+In case cluster1 is still running, stop it
+```bash
+minikube stop -p cluster1`
+```
+to free up resources and speed up things.
 {{% /alert %}}
 
 
@@ -43,7 +47,7 @@ Apply it with:
 kubectl apply -f simple-app.yaml
 ```
 
-Now we add an ingress resource, create a file named `ingress.yaml` with the text below:
+Now we add an ingress resource. Create a file named `ingress.yaml` with the text below inside:
 
 {{< highlight yaml >}}{{< readfile file="content/en/docs/11/ingress.yaml" >}}{{< /highlight >}}
 

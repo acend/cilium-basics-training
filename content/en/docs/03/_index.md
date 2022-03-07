@@ -16,10 +16,6 @@ So let us install the `hubble` CLI.
 
 ### Linux/Webshell Setup
 
-{{% alert title="Note" color="primary" %}}
-If you are working in our webshell based lab setup, you also need the following Linux setup.
-{{% /alert %}}
-
 Execute the following command to download the `hubble` CLI:
 
 ```bash
