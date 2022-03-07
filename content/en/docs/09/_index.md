@@ -56,8 +56,8 @@ Deployment        cilium-operator    Desired: 1, Ready: 1/1, Available: 1/1
 Containers:       cilium-operator    Running: 1
                   cilium             Running: 1
 Cluster Pods:     1/1 managed by Cilium
-Image versions    cilium             quay.io/cilium/cilium:v1.11.0: 1
-                  cilium-operator    quay.io/cilium/operator-generic:v1.11.0: 1
+Image versions    cilium             quay.io/cilium/cilium:v{{% param "ciliumVersion.postUpgrade" %}}: 1
+                  cilium-operator    quay.io/cilium/operator-generic:v{{% param "ciliumVersion.postUpgrade" %}}: 1
 ```
 
 You can verify the correct PodCIDR using:
@@ -197,11 +197,11 @@ Containers:       cilium                   Running: 1
                   hubble-relay             Running: 1
                   clustermesh-apiserver    Running: 1
 Cluster Pods:     6/6 managed by Cilium
-Image versions    cilium                   quay.io/cilium/cilium:v1.11.0: 1
-                  cilium-operator          quay.io/cilium/operator-generic:v1.11.0: 1
-                  hubble-relay             quay.io/cilium/hubble-relay:v1.11.0: 1
+Image versions    cilium                   quay.io/cilium/cilium:v{{% param "ciliumVersion.postUpgrade" %}}: 1
+                  cilium-operator          quay.io/cilium/operator-generic:v{{% param "ciliumVersion.postUpgrade" %}}: 1
+                  hubble-relay             quay.io/cilium/hubble-relay:v{{% param "ciliumVersion.postUpgrade" %}}: 1
                   clustermesh-apiserver    quay.io/coreos/etcd:v3.4.13: 1
-                  clustermesh-apiserver    quay.io/cilium/clustermesh-apiserver:v1.11.0: 1
+                  clustermesh-apiserver    quay.io/cilium/clustermesh-apiserver:v{{% param "ciliumVersion.postUpgrade" %}}: 1
 
 ```
 

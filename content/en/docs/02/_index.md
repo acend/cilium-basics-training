@@ -47,7 +47,7 @@ This should produce a similar output:
 
 ```
 NAME       STATUS   ROLES                  AGE   VERSION
-cluster1   Ready    control-plane,master   86s   v1.23.0
+cluster1   Ready    control-plane,master   86s   v{{% param "kubernetesVersion" %}}
 ```
 Depending on your Minikube version and environment your node might stay NotReady because no CNI is installed. After we installed Cilium it will become ready.
 
@@ -123,8 +123,8 @@ which should give you an output similar to this:
 
 ```
 cilium-cli: v0.10.1 compiled with go1.17.6 on linux/amd64
-cilium image (default): v1.11.1
-cilium image (stable): v1.11.1
+cilium image (default): v{{% param "ciliumVersion.preUpgrade" %}}
+cilium image (stable): v{{% param "ciliumVersion.preUpgrade" %}}
 cilium image (running): unknown. Unable to obtain cilium version, no cilium pods found in Namespace "kube-system"
 ```
 
@@ -193,8 +193,8 @@ Deployment        cilium-operator    Desired: 1, Ready: 1/1, Available: 1/1
 Containers:       cilium             Running: 1
                   cilium-operator    Running: 1
 Cluster Pods:     1/1 managed by Cilium
-Image versions    cilium             quay.io/cilium/cilium:v1.10.5: 1
-                  cilium-operator    quay.io/cilium/operator-generic:v1.10.5: 1
+Image versions    cilium             quay.io/cilium/cilium:v{{% param "ciliumVersion.preUpgrade" %}}: 1
+                  cilium-operator    quay.io/cilium/operator-generic:v{{% param "ciliumVersion.preUpgrade" %}}: 1
 
 ```
 
@@ -284,6 +284,10 @@ This will run for some minutes, let's wait.
 ......
 ✅ All 11 tests (76 actions) successful, 0 tests skipped, 0 scenarios skipped.
 ```
+
+{{% alert title="Note" color="primary" %}}
+As we installed an older version of cilium but using the latest `cilium` CLI, it's ok if some tests are failing.
+{{% /alert %}}
 
 Once done, clean up the connectivity test Namespace:
 

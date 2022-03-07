@@ -204,7 +204,7 @@ Above you see our original policy, we create an new one with the editor now.
 ![Cilium editor backend allow rule](cilium_editor_backend-allow-ingress.png)
 
 
-* Copy the policy YAML into a file named `backend-allow-ingress-frontend.yaml`.
+* Copy the policy YAML into a file named `backend-allow-ingress-frontend.yaml`. Make sure to use the `Networkpolicy` and not the `CiliumNetworkPolicy`.
 
 The file should look like this:
 

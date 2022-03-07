@@ -185,7 +185,7 @@ and then wait until Hubble is enabled:
 ♻️  Restarted Cilium pods
 ⌛ Waiting for Cilium to become ready before deploying other Hubble component(s)...
 🔑 Generating certificates for Relay...
-✨ Deploying Relay from quay.io/cilium/hubble-relay:v1.11.2...
+✨ Deploying Relay from quay.io/cilium/hubble-relay:v{{% param "ciliumVersion.postUpgrade" %}}...
 ⌛ Waiting for Hubble to be installed...
 ✅ Hubble was successfully enabled!
 ```
@@ -236,9 +236,9 @@ Containers:       cilium             Running: 1
                   cilium-operator    Running: 1
                   hubble-relay       Running: 1
 Cluster Pods:     9/9 managed by Cilium
-Image versions    cilium             quay.io/cilium/cilium:v1.11.0@sha256:ea677508010800214b0b5497055f38ed3bff57963fa2399bcb1c69cf9476453a: 1
-                  cilium-operator    quay.io/cilium/operator-generic:v1.11.0@sha256:b522279577d0d5f1ad7cadaacb7321d1b172d8ae8c8bc816e503c897b420cfe3: 1
-                  hubble-relay       quay.io/cilium/hubble-relay:v1.11.0@sha256:306ce38354a0a892b0c175ae7013cf178a46b79f51c52adb5465d87f14df0838: 1
+Image versions    cilium             quay.io/cilium/cilium:v1.11.2@sha256:ea677508010800214b0b5497055f38ed3bff57963fa2399bcb1c69cf9476453a: 1
+                  cilium-operator    quay.io/cilium/operator-generic:v1.11.2@sha256:b522279577d0d5f1ad7cadaacb7321d1b172d8ae8c8bc816e503c897b420cfe3: 1
+                  hubble-relay       quay.io/cilium/hubble-relay:v1.11.2@sha256:306ce38354a0a892b0c175ae7013cf178a46b79f51c52adb5465d87f14df0838: 1
 ```
 
 Hubble is now enabled. We can now locally port-forward to the Hubble pod:

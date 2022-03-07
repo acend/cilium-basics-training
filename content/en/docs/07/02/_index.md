@@ -78,7 +78,7 @@ Cilium is capable of enforcing HTTP-layer (i.e., L7) policies to limit what URLs
 
 {{< highlight yaml >}}{{< readfile file="content/en/docs/07/02/cnp-l7.yaml" >}}{{< /highlight >}}
 
-Update the existing rule to apply the L7-aware policy to protect deathstar using:
+Update the existing rule to apply the L7-aware policy to protect deathstar using. Create a file `cnp-l7.yaml` with the above content and apply with:
 
 ```bash
 kubectl apply -f cnp-l7.yaml
