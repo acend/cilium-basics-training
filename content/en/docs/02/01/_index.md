@@ -78,7 +78,7 @@ Deployment        cilium-operator    Desired: 1, Ready: 1/1, Available: 1/1
 Containers:       cilium-operator    Running: 1
                   cilium             Running: 1
 Cluster Pods:     1/1 managed by Cilium
-Image versions    cilium             quay.io/cilium/cilium:v{% param "ciliumVersion.postUpgrade" %}}:: 1
+Image versions    cilium             quay.io/cilium/cilium:v{{% param "ciliumVersion.postUpgrade" %}}:: 1
                   cilium-operator    quay.io/cilium/operator-generic:v{{% param "ciliumVersion.postUpgrade" %}}@: 1
 ```
 
