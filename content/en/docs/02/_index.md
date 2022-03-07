@@ -79,13 +79,13 @@ But you should not see any CNI related pods!
 
 ## Task {{% param sectionnumber %}}.2: Install Cilium CLI
 
-The `cilium` CLI tool is a single binary file that can be downloaded from the project's release page. Follow the instructions depending on your operating system
+The `cilium` CLI tool is a single binary file that can be downloaded from the project's release page. Follow the instructions depending on your operating system or environment.
 
 
-### Linux Setup
+### Linux/Webshell Setup
 
 {{% alert title="Note" color="primary" %}}
-If you are working in our webshell based lab setup, you also need the following Linux setup.
+If you are working in our webshell based lab setup please always follow the Linux setup.
 {{% /alert %}}
 
 
@@ -234,6 +234,10 @@ cilium connectivity test
 
 This will run for some minutes, let's wait.
 
+{{% alert title="Note" color="primary" %}}
+As we installed an older version of cilium but are using the latest `cilium` CLI, it's ok if some tests are failing.
+{{% /alert %}}
+
 ```
 ℹ️  Single-node environment detected, enabling single-node connectivity test
 ℹ️  Monitor aggregation detected, will skip some flow validation steps
@@ -284,10 +288,6 @@ This will run for some minutes, let's wait.
 ......
 ✅ All 11 tests (76 actions) successful, 0 tests skipped, 0 scenarios skipped.
 ```
-
-{{% alert title="Note" color="primary" %}}
-As we installed an older version of cilium but using the latest `cilium` CLI, it's ok if some tests are failing.
-{{% /alert %}}
 
 Once done, clean up the connectivity test Namespace:
 

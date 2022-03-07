@@ -47,7 +47,29 @@ xwing                          1/1     Running       0             11m   10.1.0.
 ```
 
 
-## Task {{% param sectionnumber %}}.3:  Enable node traffic encryption with WireGuard
+## Task {{% param sectionnumber %}}.3:  Sniff traffic between nodes
+
+To check if we see unencrypted traffic between nodes we will use tcpdump.
+Let us filter on the host interfce for all packets containing the string `password`:
+
+```bash
+CILIUM_AGENT=$(kubectl get pod -n kube-system -l k8s-app=cilium -o jsonpath="{.items[0].metadata.name}")
+kubectl debug -n kube-system -i ${CILIUM_AGENT} --image=nicolaka/netshoot -- tcpdump -ni eth0 -vv | grep password
+```
+
+In a second terminal we will call our backend service with a password. For those using the Webshell a second Terminal can be opened using the menu `Terminal` then `Split Terminal`, also don't forget to ssh into the VM again. Now in this second terminal run:
+
+```bash
+FRONTEND=$(kubectl get pods -l app=frontend -o jsonpath='{.items[0].metadata.name}')
+for i in {1..10}; do
+ kubectl exec -ti ${FRONTEND} -- curl -Is backend:8080?password=secret
+done
+```
+
+You should now see our string `password` sniffed in the network traffic. Hit `Ctrl+C` to stop sniffing but keep the second terminal open.
+
+
+## Task {{% param sectionnumber %}}.4:  Enable node traffic encryption with WireGuard
 
 Enabling WireGuard based encryption with Helm is simple:
 
@@ -62,7 +84,7 @@ helm upgrade -i cilium cilium/cilium --version {{% param "ciliumVersion.postUpgr
   --wait
 ```
 
-Afterwards restart the Cilium DaemonSet:
+Afterwards restart the Cilium DaemonSet (ignore the deprecation warnings):
 
 ```bash
 kubectl -n kube-system rollout restart ds cilium
@@ -71,7 +93,7 @@ kubectl -n kube-system rollout restart ds cilium
 Currently, L7 policy enforcement and visibility is [not supported](https://github.com/cilium/cilium/issues/15462) with WireGuard, this is why we have to disable it.
 
 
-### Verify encryption is working
+## Task {{% param sectionnumber %}}.5:  Verify encryption is working
 
 
 Verify the number of peers in encryption is 1 (this can take a while, the number is sum of nodes - 1)
@@ -81,33 +103,31 @@ kubectl -n kube-system exec -ti ds/cilium -- cilium status | grep Encryption
 
 You should see something similar to this (in this example we have a two-node cluster):
 
-```bash
+```
 Encryption:             Wireguard       [cilium_wg0 (Pubkey: XbTJd5Gnp7F8cG2Ymj6q11dBx8OtP1J5ZOAhswPiYAc=, Port: 51871, Peers: 1)]
 ```
 
-We now check if the traffic is really sent to the WireGuard tunnel device cilium_wg0.
+We now check if the traffic is really encrypted, we start sniffing again:
 
 ```bash
 CILIUM_AGENT=$(kubectl get pod -n kube-system -l k8s-app=cilium -o jsonpath="{.items[0].metadata.name}")
-kubectl debug -n kube-system -i ${CILIUM_AGENT} --image=nicolaka/netshoot -- tcpdump -ni cilium_wg0 -X port 8080
+kubectl debug -n kube-system -i ${CILIUM_AGENT} --image=nicolaka/netshoot -- tcpdump -ni eth0 -vv | grep password
 ```
 
-If you don't see any traffic, you can generate it yourself in a second terminal. For those using the Webshell a second Terminal can be opened using the menu `Terminal` then `Split Terminal`. Now in this second terminal run:
+Now in the other terminal generate traffic:
 
 ```bash
 FRONTEND=$(kubectl get pods -l app=frontend -o jsonpath='{.items[0].metadata.name}')
-kubectl exec -ti ${FRONTEND} -- curl -Is backend:8080
+for i in {1..10}; do
+ kubectl exec -ti ${FRONTEND} -- curl -Is backend:8080?password=secret
+done
 ```
-You should now see traffic flowing through the WireGuard tunnel interface cilium_wg0.
+As you should see the traffic is encrypted now and we can't find our string anymore in plaintext on eth0. To sniff the traffic before it is encrypted replace the interface `eth0` with the WireGuard interface `cilium_wg0`.
 
-You can close the second terminal with `exit`. Then hit `Ctrl+C` to stop sniffing.
-
-{{% alert title="Note" color="primary" %}}
-As we are sniffing in the WireGuard interface `cilium_wg0` you see the unencrypted traffic.
-{{% /alert %}}
+Hit `Ctrl+C` to stop sniffing. You can close the second terminal with `exit`.
 
 
-## Task {{% param sectionnumber %}}.4:  CleanUp
+## Task {{% param sectionnumber %}}.6: CleanUp
 
 To not mess up the next ClusterMesh Lab we are going to disable WireGuard encryption again:
 
@@ -120,7 +140,7 @@ helm upgrade -i cilium cilium/cilium --version {{% param "ciliumVersion.postUpgr
   --wait
 ```
 
-and then restart the Cilium Daemonset:
+and then restart the Cilium Daemonset (ignore the deprecation warnings):
 
 ```bash
 kubectl -n kube-system rollout restart ds cilium

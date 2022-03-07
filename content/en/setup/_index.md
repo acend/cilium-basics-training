@@ -50,4 +50,4 @@ curl -s https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | ba
 
 ## Webshell access
 
-//TODO
+Your trainer will give you the necessary details.
