@@ -140,7 +140,7 @@ and also a table with the already familiar flow output previously seen in the `h
 
 Hubble flows are displayed in real-time at the bottom, with a visualization of the namespace objects in the center. Click on any flow, and click on any property from the right-side panel: notice that the filters at the top of the UI have been updated accordingly.
 
-Let's run a connectivity test again and see what happens in Hubble UI in the `cilium-test` namespace. In the Hubble UI dropdown change to `cilium-test` and start the test. Since this test runs for a few minutes this could be a good time to grab a :coffee:.
+Let's run a connectivity test again and see what happens in Hubble UI in the `cilium-test` namespace. In the Hubble UI dropdown change to `cilium-test`. Since this test runs for a few minutes this could be a good time to grab a :coffee:.
 
 ```bash
 cilium connectivity test

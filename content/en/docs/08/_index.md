@@ -46,6 +46,7 @@ xwing                          1/1     Running       0             11m   10.1.0.
 
 ```
 
+
 ## Task {{% param sectionnumber %}}.3:  Sniff traffic between nodes
 
 To check if we see unencrypted traffic between nodes we will use tcpdump.
