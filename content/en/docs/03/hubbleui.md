@@ -12,7 +12,7 @@ Not only does Hubble allow us to inspect flows from the command line, but it als
 Enabling the optional Hubble UI component with Helm looks like this:
 
 ```bash
-helm upgrade -i cilium cilium/cilium --version 1.11.1 \
+helm upgrade -i cilium cilium/cilium --version {{% param "ciliumVersion.postUpgrade" %}} \
   --namespace kube-system \
   --reuse-values \
   --set hubble.ui.enabled=true \

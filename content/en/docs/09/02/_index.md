@@ -17,7 +17,7 @@ For the Pods to resolve the `rebel-base` service name they still need connectivi
 
 Kubernetes security policies are not automatically distributed across clusters, it is your responsibility to apply `CiliumNetworkPolicy` or `NetworkPolicy` in all clusters.
 
-So let us apply the above `CiliumNetworkPolicy` to both clusters:
+Create a file `cnp-cm.yaml` with the above content and apply the `CiliumNetworkPolicy` to both clusters:
 
 ```bash
 kubectl --context cluster1 apply -f cnp-cm.yaml

@@ -16,7 +16,7 @@ You can stop cluster1 with `minikube stop -p cluster1` to free up resources and 
 
 
 ```bash
-minikube start --network-plugin=cni --cni=false --kubernetes-version=1.23.0 -p servicemesh
+minikube start --network-plugin=cni --cni=false --kubernetes-version={{% param "kubernetesVersion" %}} -p servicemesh
 cilium install --version -service-mesh:v1.11.0-beta.1 --config enable-envoy-config=true --kube-proxy-replacement=probe
 ```
 
@@ -106,16 +106,18 @@ We see output very similiar to our simple application backend, but with a change
 
 As layer 7 loadbalancing requires traffic to be routed through the proxy, we will enable this for our backend Pods using a `CiliumNetworkPolicy` with HTTP rules. We will block access to `/public` and allow requests to `/private`:
 
+Create a file `cnp-l7-sm.yaml` with the following content:
+
 {{< highlight yaml >}}{{< readfile file="content/en/docs/11/cnp-l7-sm.yaml" >}}{{< /highlight >}}
 
-Apply the `CiliumNetworkPolicy` with:
+And apply the `CiliumNetworkPolicy` with:
 
 ```bash
 kubectl apply -f cnp-l7-sm.yaml
 ```
 
 Until now only the backend service is replying to Ingress traffic. Now we configure Envoy to loadbalance the traffic 50/50 between backend and backend-2 with retries.
-We are using a CustomResource called `CiliumEnvoyConfig` for this:
+We are using a CustomResource called `CiliumEnvoyConfig` for this. Create a file `envoyconfig.yaml` with the following content:
 
 {{< highlight yaml >}}{{< readfile file="content/en/docs/11/envoyconfig.yaml" >}}{{< /highlight >}}
 

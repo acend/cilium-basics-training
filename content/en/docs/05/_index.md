@@ -131,6 +131,10 @@ kube-system/kubernetes-dashboard-77d8b98585-g52k5
 kube-system/storage-provisioner
 ```
 
+{{% alert title="Note" color="primary" %}}
+It's ok if you don't see any Pods listed with the above command. We don't have any unmanaged Pods in our setup.
+{{% /alert %}}
+
 
 ## Reporting a problem - Automatic log & state collection
 

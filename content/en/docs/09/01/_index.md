@@ -13,7 +13,7 @@ Establishing load-balancing between clusters is achieved by defining a Kubernete
 
 We are going to deploy a global service and a sample application on both of our connected clusters.
 
-First the Kubernetes service:
+First the Kubernetes service. Create a file `svc.yaml` with the following content:
 
 {{< highlight yaml >}}{{< readfile file="content/en/docs/09/01/svc.yaml" >}}{{< /highlight >}}
 

@@ -13,17 +13,17 @@ In this lab, we are going to provision a new Kubernetes cluster without `kube-pr
 Create a new Kubernetes cluster using `minikube`. As `minikube` uses `kubeadm` we can skip the phase where `kubeadm` installs the `kube-proxy` addon. Execute the following command to create a third cluster:
 
 ```bash
-minikube start --network-plugin=cni --cni=false --kubernetes-version=1.23.1 --extra-config=kubeadm.skip-phases=addon/kube-proxy -p kubeless
+minikube start --network-plugin=cni --cni=false --kubernetes-version={{% param "kubernetesVersion" %}} --extra-config=kubeadm.skip-phases=addon/kube-proxy -p kubeless
 ```
 
 ```
-😄  [cluster3] minikube v1.24.0 on Ubuntu 20.04
+😄  [cluster3] minikube v{{% param "kubernetesVersion" %}} on Ubuntu 20.04
 ✨  Automatically selected the docker driver. Other choices: virtualbox, ssh
 ❗  With --network-plugin=cni, you will need to provide your own CNI. See --cni flag as a user-friendly alternative
 👍  Starting control plane node cluster3 in cluster cluster3
 🚜  Pulling base image ...
 🔥  Creating docker container (CPUs=2, Memory=8000MB) ...
-🐳  Preparing Kubernetes v1.23.0 on Docker 20.10.8 ...
+🐳  Preparing Kubernetes v{{% param "kubernetesVersion" %}} on Docker 20.10.8 ...
     ▪ kubeadm.skip-phases=addon/kube-proxy
     ▪ Generating certificates and keys ...
     ▪ Booting up control plane ...
@@ -50,7 +50,7 @@ echo "$API_SERVER_IP:$API_SERVER_PORT"
 Use the shown IP address and port in the next Helm command to install Cilium:
 
 ```bash
-helm upgrade -i cilium cilium/cilium --version 1.11.1 \
+helm upgrade -i cilium cilium/cilium --version {{% param "ciliumVersion.postUpgrade" %}} \
   --namespace kube-system \
   --set ipam.operator.clusterPoolIPv4PodCIDRList={10.3.0.0/16} \
   --set cluster.name=kubeless \

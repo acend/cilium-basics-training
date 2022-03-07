@@ -3,7 +3,7 @@ kind: CiliumNetworkPolicy
 metadata:
   name: "allow-cross-cluster"
 spec:
-  description: "Allow x-wing in cluster1 to contact rebel-base in cluster2"
+  description: "Allow x-wing in cluster1 to only contact rebel-base in cluster1"
   endpointSelector:
     matchLabels:
       name: x-wing
