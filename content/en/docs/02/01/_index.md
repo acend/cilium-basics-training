@@ -12,7 +12,7 @@ In the previous lab, we intentionally installed version `v10.5.0` of Cilium. In 
 When rolling out an upgrade with Kubernetes, Kubernetes will first terminate the Pod followed by pulling the new image version and then finally spin up the new image. In order to reduce the downtime of the agent and to prevent `ErrImagePull` errors during the upgrade, the pre-flight check pre-pulls the new image version. If you are running in "Kubernetes Without kube-proxy" mode you must also pass on the Kubernetes API Server IP and/or the Kubernetes API Server Port when generating the `cilium-preflight.yaml` file.
 
 ```bash
-helm install cilium-preflight cilium/cilium --version 1.11.1 \
+helm install cilium-preflight cilium/cilium --version 1.11.2 \
   --namespace=kube-system \
   --set preflight.enabled=true \
   --set agent=false \
@@ -41,7 +41,7 @@ Helm can be used to either upgrade Cilium directly or to generate a new set of Y
 To minimize datapath disruption during the upgrade, the `upgradeCompatibility` option should be set to the initial Cilium version which was installed in this cluster. Valid options are:
 
 ```bash
-helm upgrade -i cilium cilium/cilium --version 1.11.1 \
+helm upgrade -i cilium cilium/cilium --version {{% param "ciliumVersion.postUpgrade" %}} \
   --namespace kube-system \
   --set ipam.operator.clusterPoolIPv4PodCIDRList={10.1.0.0/16} \
   --set cluster.name=cluster1 \
@@ -96,7 +96,7 @@ docker exec cluster1 ls /sys/fs/bpf/tc/globals/
 
 Occasionally, it may be necessary to undo the rollout because a step was missed or something went wrong during the upgrade. To undo the rollout run:
 
-```bash
+```
 helm history cilium --namespace=kube-system
 helm rollback cilium [REVISION] --namespace=kube-system
 ```

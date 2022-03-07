@@ -18,7 +18,7 @@ We need to enable the host firewall in the Cilium config. This can be done using
 
 
 ```bash
-helm upgrade -i cilium cilium/cilium --version 1.11.1 \
+helm upgrade -i cilium cilium/cilium --version {{% param "ciliumVersion.postUpgrade" %}} \
   --namespace kube-system \
   --reuse-values \
   --set hostFirewall.enabled=true \
@@ -77,9 +77,11 @@ Host Policies match on node labels using a Node Selector to identify the nodes t
 
 Host policies don’t apply to communications between pods or between pods and the outside of the cluster, except if those pods are host-networking pods.
 
+Create a file `ccwnp.yaml` with the following content:
+
 {{< highlight yaml >}}{{< readfile file="content/en/docs/10/02/ccwnp.yaml" >}}{{< /highlight >}}
 
-You can apply this `CiliumClusterwideNetworkPolicy` with:
+And then apply this `CiliumClusterwideNetworkPolicy` with:
 
 ```bash
 kubectl apply -f ccwnp.yaml

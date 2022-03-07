@@ -16,7 +16,7 @@ The exact ports are documented in the [Firewall Rules](https://docs.cilium.io/en
 To start a second cluster run the following command:
 
 ```bash
-minikube start --network-plugin=cni --cni=false --kubernetes-version=1.23.1 -p cluster2
+minikube start --network-plugin=cni --cni=false --kubernetes-version={{% param "kubernetesVersion" %}} -p cluster2
 ```
 
 As Minikube with the Docker driver uses separated Docker networks, we need to make sure that your system forwards traffic between the two networks. To enable forwarding by default execute:
@@ -28,7 +28,7 @@ sudo iptables -I DOCKER-USER -j ACCEPT
 Then install Cilium using Helm. Remember, we need a different PodCIDR for the second cluster, therefore while installing Cilium, we have to change this config:
 
 ```bash
-helm upgrade -i cilium cilium/cilium --version 1.11.1 \
+helm upgrade -i cilium cilium/cilium --version {{% param "ciliumVersion.postUpgrade" %}} \
   --namespace kube-system \
   --set ipam.operator.clusterPoolIPv4PodCIDRList={10.2.0.0/16} \
   --set cluster.name=cluster2 \

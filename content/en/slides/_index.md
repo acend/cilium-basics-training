@@ -11,5 +11,8 @@ menu:
 {{% blocks/feature icon="fa-chalkboard-teacher" url="https://drive.google.com/uc?export=download&id=1Zrse75mWHxFtqYn88RsBiK_BoeDL_5uq" title="Cilium Basics" %}}
 {{% /blocks/feature %}}
 
+{{% blocks/feature icon="fa-chalkboard-teacher" url="../pdf/pdf.pdf" title="Lab PDF" %}}
+{{% /blocks/feature %}}
+
 
 {{< /blocks/section >}}

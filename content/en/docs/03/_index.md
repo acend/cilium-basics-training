@@ -16,6 +16,10 @@ So let us install the `hubble` CLI.
 
 ### Linux Setup
 
+{{% alert title="Note" color="primary" %}}
+If you are working in our webshell based lab setup, you also need the following Linux setup.
+{{% /alert %}}
+
 Execute the following command to download the `hubble` CLI:
 
 ```bash
@@ -158,7 +162,7 @@ echo ${NOT_FRONTEND}
 When you install Cilium using Helm, then Hubble is already enabled. The value for this is `hubble.enabled` which is set to `true` in the `values.yaml` of the Cilium Helm Chart. But we also want to enable Hubble Relay. With the following Helm command you can enable Hubble with Hubble Relay:
 
 ```bash
-helm upgrade -i cilium cilium/cilium --version 1.11.1 \
+helm upgrade -i cilium cilium/cilium --version {{% param "ciliumVersion.postUpgrade" %}} \
   --namespace kube-system \
   --reuse-values \
   --set hubble.enabled=true \
@@ -169,7 +173,7 @@ helm upgrade -i cilium cilium/cilium --version 1.11.1 \
 If you have installed Cilium with the `cilium` CLI then Hubble component is not enabled by default (nor is Hubble Relay). You can enable Hubble using the following `cilium` CLI command:
 
 
-```bash
+```
 # cilium hubble enable
 ```
 
@@ -181,7 +185,7 @@ and then wait until Hubble is enabled:
 ♻️  Restarted Cilium pods
 ⌛ Waiting for Cilium to become ready before deploying other Hubble component(s)...
 🔑 Generating certificates for Relay...
-✨ Deploying Relay from quay.io/cilium/hubble-relay:v1.10.5...
+✨ Deploying Relay from quay.io/cilium/hubble-relay:v1.11.2...
 ⌛ Waiting for Hubble to be installed...
 ✅ Hubble was successfully enabled!
 ```

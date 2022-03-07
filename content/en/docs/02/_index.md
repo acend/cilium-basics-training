@@ -22,7 +22,7 @@ To start from a clean Kubernetes cluster, make sure `cluster1` is not yet availa
 {{% /alert %}}
 
 ```bash
-minikube start --network-plugin=cni --cni=false --kubernetes-version=1.23.1 -p cluster1 
+minikube start --network-plugin=cni --cni=false --kubernetes-version={{% param "kubernetesVersion" %}} -p cluster1 
 ```
 
 {{% alert title="Note" color="primary" %}}
@@ -83,6 +83,11 @@ The `cilium` CLI tool is a single binary file that can be downloaded from the pr
 
 
 ### Linux Setup
+
+{{% alert title="Note" color="primary" %}}
+If you are working in our webshell based lab setup, you also need the following Linux setup.
+{{% /alert %}}
+
 
 Execute the following command to download the `cilium` CLI:
 
@@ -163,7 +168,7 @@ helm repo add cilium https://helm.cilium.io/
 and then we can install Cilium:
 
 ```bash
-helm upgrade -i cilium cilium/cilium --version 1.10.5 \
+helm upgrade -i cilium cilium/cilium --version {{% param "ciliumVersion.preUpgrade" %}} \
   --namespace kube-system \
   --set ipam.operator.clusterPoolIPv4PodCIDR=10.1.0.0/16 \
   --set cluster.name=cluster1 \
@@ -373,7 +378,7 @@ We make a few oberservations:
 
 This is what the installation with the `cilium` cli would have looked like:
 
-```bash
+```
 # cilium install --config cluster-pool-ipv4-cidr=10.1.0.0/16 --cluster-name cluster1 --cluster-id 1 --version v1.10.5
 ```
 Be careful to never use CLI and Helm together to install, this can break an already running Cilium installation.

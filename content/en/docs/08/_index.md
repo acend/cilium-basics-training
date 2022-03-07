@@ -52,7 +52,7 @@ xwing                          1/1     Running       0             11m   10.1.0.
 Enabling WireGuard based encryption with Helm is simple:
 
 ```bash
-helm upgrade -i cilium cilium/cilium --version 1.11.1 \
+helm upgrade -i cilium cilium/cilium --version {{% param "ciliumVersion.postUpgrade" %}} \
   --namespace kube-system \
   --reuse-values \
   --set l7Proxy=false \
@@ -112,7 +112,7 @@ As we are sniffing in the WireGuard interface `cilium_wg0` you see the unencrypt
 To not mess up the next ClusterMesh Lab we are going to disable WireGuard encryption again:
 
 ```bash
-helm upgrade -i cilium cilium/cilium \
+helm upgrade -i cilium cilium/cilium --version {{% param "ciliumVersion.postUpgrade" %}}\
   --namespace kube-system \
   --reuse-values \
   --set l7Proxy=true \
@@ -135,8 +135,3 @@ kubectl -n kube-system exec -ti ds/cilium -- cilium status | grep Encryption
 ```
 Encryption:                       Disabled
 ```
-
-
-## Legal
-
-“WireGuard” is a registered trademark of Jason A. Donenfeld

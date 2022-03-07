@@ -21,7 +21,7 @@ kubectl apply -f sw-app.yaml
 
 And as we have already some Network Policies in our Namespace the default ingress behavior is default deny. Therefore we need a new Network Policy to access services on `deathstar`:
 
-`cnp.yaml`:
+Create a file `cnp.yaml` with the following content:
 
 {{< highlight yaml >}}{{< readfile file="content/en/docs/07/02/cnp.yaml" >}}{{< /highlight >}}
 
