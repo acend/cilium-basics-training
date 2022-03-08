@@ -177,7 +177,14 @@ helm upgrade -i cilium cilium/cilium --version {{% param "ciliumVersion.preUpgra
   --wait
 ```
 
-and now run again the `cilium status --wait` command:
+and now run again the
+
+```bash
+
+cilium status --wait
+```
+
+command:
 
 ```
 cilium status 
@@ -225,6 +232,10 @@ kube-system   kube-scheduler-minikube            1/1     Running   0          11
 kube-system   storage-provisioner                1/1     Running   1          2m3s
 
 ```
+
+{{% alert title="Note" color="primary" %}}
+It might take some time until all Pods ar in state `Runnning` and `READY`. Wait before continue.
+{{% /alert %}}
 
 Alright, Cilium is up and running, let us make some tests. The `cilium` CLI allows you to run a connectivity test:
 

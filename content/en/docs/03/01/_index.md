@@ -273,6 +273,10 @@ Flows/s: 3.84
 Connected Nodes: 1/1
 ```
 
+{{% alert title="Note" color="primary" %}}
+If the nodes are not yet connected, give it some time and try again. There is a Certificate Authority thats first needs to be fully loaded by the components.
+{{% /alert %}}
+
 The Hubble CLI is now primed for observing network traffic within the cluster.
 
 

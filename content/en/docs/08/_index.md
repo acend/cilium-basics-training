@@ -86,16 +86,15 @@ helm upgrade -i cilium cilium/cilium --version {{% param "ciliumVersion.postUpgr
   --wait
 ```
 
-Afterwards restart the Cilium DaemonSet (ignore the deprecation warnings):
+Afterwards restart the Cilium DaemonSet:
+
+{{% alert title="Note" color="primary" %}}
+You will see some deprecation warnings in this command. You can ignore them.
+{{% /alert %}}
 
 ```bash
 kubectl -n kube-system rollout restart ds cilium
 ```
-
-{{% alert title="Note" color="primary" %}}
-You will see some warnings in this command. You can ignore them.
-{{% /alert %}}
-
 
 Currently, L7 policy enforcement and visibility is [not supported](https://github.com/cilium/cilium/issues/15462) with WireGuard, this is why we have to disable it.
 
@@ -147,7 +146,11 @@ helm upgrade -i cilium cilium/cilium --version {{% param "ciliumVersion.postUpgr
   --wait
 ```
 
-and then restart the Cilium Daemonset (ignore the deprecation warnings):
+and then restart the Cilium Daemonset:
+
+{{% alert title="Note" color="primary" %}}
+You will see some deprecation warnings in this command. You can ignore them.
+{{% /alert %}}
 
 ```bash
 kubectl -n kube-system rollout restart ds cilium
