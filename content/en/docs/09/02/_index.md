@@ -1,56 +1,95 @@
 ---
-title: "9.2 Network Policies"
+title: "9.2 Load-balancing with Global Services"
 weight: 92
 sectionnumber: 9.2
 ---
 
-## Task {{% param sectionnumber %}}.1: Allowing Specific Communication Between Clusters
+This lab will guide you to perform load-balancing and service discovery across multiple Kubernetes clusters.
 
 
-The following policy illustrates how to allow particular pods to communicate between two clusters.
+## Task {{% param sectionnumber %}}.1: Load-balancing with Global Services
 
-{{< highlight yaml >}}{{< readfile file="content/en/docs/09/02/cnp-cm.yaml" >}}{{< /highlight >}}
+Establishing load-balancing between clusters is achieved by defining a Kubernetes service with an identical name and Namespace in each cluster and adding the `annotation io.cilium/global-service: "true"` to declare it global. Cilium will automatically perform load-balancing to pods in both clusters.
 
-{{% alert title="Note" color="primary" %}}
-For the Pods to resolve the `rebel-base` service name they still need connectivity to Kubernetes DNS Service. Therefore access to that is also allowed.
-{{% /alert %}}
+We are going to deploy a global service and a sample application on both of our connected clusters.
 
-Kubernetes security policies are not automatically distributed across clusters, it is your responsibility to apply `CiliumNetworkPolicy` or `NetworkPolicy` in all clusters.
+First the Kubernetes service. Create a file `svc.yaml` with the following content:
 
-Create a file `cnp-cm.yaml` with the above content and apply the `CiliumNetworkPolicy` to both clusters:
+{{< highlight yaml >}}{{< readfile file="content/en/docs/09/02/svc.yaml" >}}{{< /highlight >}}
+
+Apply this with:
 
 ```bash
-kubectl --context cluster1 apply -f cnp-cm.yaml
-kubectl --context cluster2 apply -f cnp-cm.yaml
+kubectl --context cluster1 apply -f svc.yaml
+kubectl --context cluster2 apply -f svc.yaml
 ```
 
-Let us run our `curl` `for` loop again
+Then deploy our sample application on both clusters.
+
+`cluster1.yaml`:
+
+{{< highlight yaml >}}{{< readfile file="content/en/docs/09/02/cluster1.yaml" >}}{{< /highlight >}}
+
+```bash
+kubectl --context cluster1 apply -f cluster1.yaml
+```
+
+`cluster2.yaml`:
+
+{{< highlight yaml >}}{{< readfile file="content/en/docs/09/02/cluster2.yaml" >}}{{< /highlight >}}
+
+```bash
+kubectl --context cluster2 apply -f cluster2.yaml
+```
+
+Now you can execute from either cluster the following command (there are two x-wing pods, simply select one):
 
 ```bash
 XWINGPOD=$(kubectl --context cluster1 get pod -l name=x-wing -o jsonpath="{.items[0].metadata.name}")
 for i in {1..10}; do                                       
-  kubectl --context cluster1 exec -it $XWINGPOD -- curl -m 1 rebel-base
+  kubectl --context cluster1  exec -it $XWINGPOD -- curl -m 1 rebel-base
 done
 ```
 
-and as an result you see:
+as a result you get the following output:
 
-```c
-url: (28) Connection timed out after 1001 milliseconds
-command terminated with exit code 28
-curl: (28) Connection timed out after 1000 milliseconds
-command terminated with exit code 28
+```
+{"Galaxy": "Alderaan", "Cluster": "Cluster-2"}
 {"Galaxy": "Alderaan", "Cluster": "Cluster-1"}
-curl: (28) Connection timed out after 1000 milliseconds
-command terminated with exit code 28
+{"Galaxy": "Alderaan", "Cluster": "Cluster-2"}
 {"Galaxy": "Alderaan", "Cluster": "Cluster-1"}
 {"Galaxy": "Alderaan", "Cluster": "Cluster-1"}
 {"Galaxy": "Alderaan", "Cluster": "Cluster-1"}
-curl: (28) Connection timed out after 1000 milliseconds
-command terminated with exit code 28
 {"Galaxy": "Alderaan", "Cluster": "Cluster-1"}
-curl: (28) Connection timed out after 1000 milliseconds
-command terminated with exit code 28
+{"Galaxy": "Alderaan", "Cluster": "Cluster-1"}
+{"Galaxy": "Alderaan", "Cluster": "Cluster-1"}
+{"Galaxy": "Alderaan", "Cluster": "Cluster-2"}
 ```
 
-All connections to `cluster2` are dropped while the ones to `cluster1` are still working.
+and as you see, you get results from both clusters. Even if you scale down your `rebel-base` Deployment on `cluster1` with
+
+```bash
+kubectl --context cluster1 scale deployment rebel-base --replicas=0
+```
+
+and then execute the `curl` `for` loop again, you still get answers, this time only from `cluster2`:
+
+```
+{"Galaxy": "Alderaan", "Cluster": "Cluster-2"}
+{"Galaxy": "Alderaan", "Cluster": "Cluster-2"}
+{"Galaxy": "Alderaan", "Cluster": "Cluster-2"}
+{"Galaxy": "Alderaan", "Cluster": "Cluster-2"}
+{"Galaxy": "Alderaan", "Cluster": "Cluster-2"}
+{"Galaxy": "Alderaan", "Cluster": "Cluster-2"}
+{"Galaxy": "Alderaan", "Cluster": "Cluster-2"}
+{"Galaxy": "Alderaan", "Cluster": "Cluster-2"}
+{"Galaxy": "Alderaan", "Cluster": "Cluster-2"}
+{"Galaxy": "Alderaan", "Cluster": "Cluster-2"}
+
+```
+
+Scale your `rebel-base` Deployment back to one replica:
+
+```bash
+kubectl --context cluster1 scale deployment rebel-base --replicas=1
+```
