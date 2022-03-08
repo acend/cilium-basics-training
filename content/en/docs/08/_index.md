@@ -21,9 +21,11 @@ minikube -p cluster1 node add
 
 To see traffic between nodes, we move the frontend pod from Chapter 3 to the newly created node:
 
+Create a file `patch.yaml` with the follwing content_
+
 {{< highlight yaml >}}{{< readfile file="content/en/docs/08/patch.yaml" >}}{{< /highlight >}}
 
-create a file `patch.yaml` with the above content. You can patch the frontend deployment now:
+You can patch the frontend deployment now:
 
 ```bash
 kubectl patch deployments.apps frontend --type merge --patch-file patch.yaml
@@ -67,6 +69,11 @@ Afterwards restart the Cilium DaemonSet:
 ```bash
 kubectl -n kube-system rollout restart ds cilium
 ```
+
+{{% alert title="Note" color="primary" %}}
+You will see some warnings in this command. You can ignore them.
+{{% /alert %}}
+
 
 Currently, L7 policy enforcement and visibility is [not supported](https://github.com/cilium/cilium/issues/15462) with WireGuard, this is why we have to disable it.
 

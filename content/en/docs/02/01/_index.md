@@ -25,6 +25,21 @@ helm install cilium-preflight cilium/cilium --version {{% param "ciliumVersion.p
 
 Once the number of `READY` for the preflight DaemonSet is the same as the number of Cilium pods running and the preflight Deployment is marked as `READY 1/1` you can delete the cilium-preflight and proceed with the upgrade.
 
+To check the preflight Pods using:
+
+```bash
+kubectl get pod -A | grep cilium-pre-flight
+```
+
+and you should get an output like this:
+
+```
+kube-system   cilium-pre-flight-check-84f67b54f6-hz57g   1/1     Running   0               63s
+kube-system   cilium-pre-flight-check-skglp              1/1     Running   0               63s
+```
+
+The pods are `READY` therefore we can delete the `cilium-preflight` release again with:
+
 ```bash
 helm delete cilium-preflight --namespace=kube-system
 ```

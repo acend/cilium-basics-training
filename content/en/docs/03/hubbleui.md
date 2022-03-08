@@ -22,8 +22,8 @@ helm upgrade -i cilium cilium/cilium --version {{% param "ciliumVersion.postUpgr
 {{% alert title="Note" color="primary" %}}
 When using the `cilium` CLI you can execute the following command to enable the Hubble UI:
 
-```bash
-cilium hubble enable --ui
+```
+# cilium hubble enable --ui
 ```
 {{% /alert %}}
 
@@ -110,7 +110,7 @@ cilium hubble ui &
 
 In our Webshell environment you can use the public IP of the VM to access Hubble. A simple way it to execute `echo "http://$(curl -s ifconfig.me):12000"` and copy the output in a new browser tab. If you are working locally the browser should open http://localhost:12000/ (open it manually if not).
 
-We can then access the graphical service map by selecting our default Namespace:
+We can then access the graphical service map by selecting our `default` Namespace:
 
 ![Hubble UI Choose Namespace](../cilium_choose_ns.png)
 
@@ -148,3 +148,9 @@ We can see that Hubble UI is not only capable of displaying flows within a Names
 And there are also several visual options in the Hubble UI:
 
 ![Hubble UI - Connectivity Test](../hubble_ui_visual_options.png)
+
+Once done, clean up the connectivity test Namespace again:
+
+```bash
+kubectl delete ns cilium-test --wait=false
+```
