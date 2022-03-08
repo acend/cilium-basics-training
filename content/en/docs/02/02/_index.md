@@ -77,9 +77,15 @@ The `--reuse-values` flag may only be safely used if the Cilium chart version re
 
 ## Task {{% param sectionnumber %}}.4: Explore your installation after the upgrade
 
-We run `cilium status --wait` again to verify the upgrade to the new version succeded
+We can run:
 
 ```bash
+cilium status --wait
+```
+
+again to verify the upgrade to the new version succeded
+
+```
     /¯¯\
  /¯¯\__/¯¯\    Cilium:         OK
  \__/¯¯\__/    Operator:       OK
@@ -112,7 +118,7 @@ Occasionally, it may be necessary to undo the rollout because a step was missed 
 
 ```
 helm history cilium --namespace=kube-system
-helm rollback cilium [REVISION] --namespace=kube-system
+# helm rollback cilium [REVISION] --namespace=kube-system
 ```
 
 This will revert the latest changes to the Cilium DaemonSet and return Cilium to the state it was in prior to the upgrade.
