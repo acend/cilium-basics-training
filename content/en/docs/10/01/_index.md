@@ -1,179 +1,177 @@
 ---
-title: "10.1 Kubernetes Without kube-proxy"
+title: "10.1 Host Firewall"
 weight: 101
 sectionnumber: 10.1
 ---
 
-In this lab, we are going to provision a new Kubernetes cluster without `kube-proxy` to use Cilium as a full replacement for it.
+
+{{% alert title="Note" color="primary" %}}
+This lab should be done on your `cluster1`, make sure to switch to `cluster1` with `minikube profile cluster1`
+{{% /alert %}}
+
+Cilium is also capable to act as a host firewall to enforce security policies for Kubernetes nodes. In this lab, we are going to show you briefly how this works.
 
 
-## Task {{% param sectionnumber %}}.1: Deploy a new Kubernetes Cluster without `kube-proxy`
+## Task {{% param sectionnumber %}}.1: Enable the Host Firewall in Cilium
 
+We need to enable the host firewall in the Cilium config. This can be done using Helm:
 
-Create a new Kubernetes cluster using `minikube`. As `minikube` uses `kubeadm` we can skip the phase where `kubeadm` installs the `kube-proxy` addon. Execute the following command to create a third cluster:
-
-```bash
-minikube start --network-plugin=cni --cni=false --kubernetes-version={{% param "kubernetesVersion" %}} --extra-config=kubeadm.skip-phases=addon/kube-proxy -p kubeless
-```
-
-```
-😄  [cluster3] minikube v{{% param "kubernetesVersion" %}} on Ubuntu 20.04
-✨  Automatically selected the docker driver. Other choices: virtualbox, ssh
-❗  With --network-plugin=cni, you will need to provide your own CNI. See --cni flag as a user-friendly alternative
-👍  Starting control plane node cluster3 in cluster cluster3
-🚜  Pulling base image ...
-🔥  Creating docker container (CPUs=2, Memory=8000MB) ...
-🐳  Preparing Kubernetes v{{% param "kubernetesVersion" %}} on Docker 20.10.8 ...
-    ▪ kubeadm.skip-phases=addon/kube-proxy
-    ▪ Generating certificates and keys ...
-    ▪ Booting up control plane ...
-    ▪ Configuring RBAC rules ...
-🔎  Verifying Kubernetes components...
-    ▪ Using image gcr.io/k8s-minikube/storage-provisioner:v5
-🌟  Enabled addons: storage-provisioner, default-storageclass
-🏄  Done! kubectl is now configured to use "cluster3" cluster and "default" namespace by default
-```
-
-
-## Task {{% param sectionnumber %}}.1: Deploy Cilium and enable the Kube Proxy replacement
-
-As the `cilium` and `cilium-operator` Pods by default try to communicate with the Kubernetes API using the default `kubernetes` service IP, they cannot do this with disabled `kube-proxy`. We, therefore, need to set the `KUBERNETES_SERVICE_HOST` and `KUBERNETES_SERVICE_PORT` environment variables to tell the two Pods how to connect to the Kubernetes API.
-
-To find the correct IP address execute the following command:
-
-```bash
-API_SERVER_IP=$(kubectl config view -o jsonpath='{.clusters[?(@.name == "kubeless")].cluster.server}' | cut -f 3 -d / | cut -f1 -d:)
-API_SERVER_PORT=$(kubectl config view -o jsonpath='{.clusters[?(@.name == "kubeless")].cluster.server}' | cut -f 3 -d / | cut -f2 -d:)
-echo "$API_SERVER_IP:$API_SERVER_PORT"
-```
-
-Use the shown IP address and port in the next Helm command to install Cilium:
 
 ```bash
 helm upgrade -i cilium cilium/cilium --version {{% param "ciliumVersion.postUpgrade" %}} \
   --namespace kube-system \
-  --set ipam.operator.clusterPoolIPv4PodCIDRList={10.3.0.0/16} \
-  --set cluster.name=kubeless \
-  --set cluster.id=3 \
-  --set operator.replicas=1 \
-  --set kubeProxyReplacement=strict \
-  --set k8sServiceHost=$API_SERVER_IP \
-  --set k8sServicePort=$API_SERVER_PORT \
+  --reuse-values \
+  --set hostFirewall.enabled=true \
+  --set devices='{eth0}' \
   --wait
 ```
 
-We can now compare the running Pods on `cluster2` and `kubeless` in the `kube-system` Namespace.
+The devices flag refers to the network devices Cilium is configured on such as `eth0`. Omitting this option leads Cilium to auto-detect what interfaces the host firewall applies to.
+
+Make sure to restart the `cilium` Pods with (ignore the deprecation warnings):
 
 ```bash
-kubectl --context cluster2 -n kube-system get pod
+kubectl -n kube-system rollout restart ds/cilium
 ```
 
-Here we see the running `kube-proxy` pod:
+At this point, the Cilium-managed nodes are ready to enforce Network Policies.
 
-```
-NAME                                    READY   STATUS    RESTARTS       AGE
-cilium-mvh65                            1/1     Running   1 (100m ago)   104m
-cilium-operator-56f9689f68-twv8k        1/1     Running   2 (100m ago)   21h
-clustermesh-apiserver-5cc7c7b64-vbnwk   2/2     Running   4 (100m ago)   21h
-coredns-64897985d-f2s5c                 1/1     Running   2 (100m ago)   21h
-etcd-cluster2                           1/1     Running   2 (100m ago)   21h
-hubble-relay-6486ddd7cc-2c9p2           1/1     Running   2 (100m ago)   21h
-kube-apiserver-cluster2                 1/1     Running   2 (99m ago)    21h
-kube-controller-manager-cluster2        1/1     Running   2 (100m ago)   21h
-kube-proxy-gd8w4                        1/1     Running   2 (100m ago)   21h
-kube-scheduler-cluster2                 1/1     Running   2 (99m ago)    21h
-storage-provisioner                     1/1     Running   4 (100m ago)   21h
 
-```
+## Task {{% param sectionnumber %}}.2: Attach a Label to the Node
 
-On `kubeless` there is no `kube-proxy` Pod anymore:
+In this lab, we will apply host policies only to nodes with the label `node-access=ssh`. We thus first need to attach that label to a node in the cluster.
 
 ```bash
-kubectl --context kubeless -n kube-system get pod
-```
-
-```
-NAME                               READY   STATUS    RESTARTS       AGE
-cilium-operator-68bfb94678-785dk   1/1     Running   0              17m
-cilium-vrqms                       1/1     Running   0              17m
-coredns-64897985d-fk5lj            1/1     Running   0              59m
-etcd-cluster3                      1/1     Running   0              59m
-kube-apiserver-cluster3            1/1     Running   0              59m
-kube-controller-manager-cluster3   1/1     Running   0              59m
-kube-scheduler-cluster3            1/1     Running   0              59m
-storage-provisioner                1/1     Running   13 (17m ago)   59m
+kubectl label node cluster1 node-access=ssh
 ```
 
 
-## Task {{% param sectionnumber %}}.2: Deploy our simple app again to the new cluster
+## Task {{% param sectionnumber %}}.2: Enable Policy Audit Mode for the Host Endpoint
 
-As this is a new cluster we want to deploy our `simple-app.yaml` from lab 03 again to run some experiments. Run the following command using the `simple-app.yaml` from lab 03:
+[Host Policies](https://docs.cilium.io/en/latest/policy/language/#hostpolicies) enforce access control over connectivity to and from nodes. Particular care must be taken to ensure that when host policies are imported, Cilium does not block access to the nodes or break the cluster’s normal behavior (for example by blocking communication with kube-apiserver).
+
+To avoid such issues, we can switch the host firewall in audit mode, to validate the impact of host policies before enforcing them. When Policy Audit Mode is enabled, no network policy is enforced so this setting is not recommended for production deployment.
 
 ```bash
-kubectl create -f simple-app.yaml
+CILIUM_POD_NAME=$(kubectl -n kube-system get pods -l "k8s-app=cilium" -o jsonpath="{.items[?(@.spec.nodeName=='cluster1')].metadata.name}")
+HOST_EP_ID=$(kubectl -n kube-system exec $CILIUM_POD_NAME -- cilium endpoint list -o jsonpath='{[?(@.status.identity.id==1)].id}')
+kubectl -n kube-system exec $CILIUM_POD_NAME -- cilium endpoint config $HOST_EP_ID PolicyAuditMode=Enabled
 ```
 
-Now let us redo the task from lab 03.
-
-Let's make life again a bit easier by storing the Pod's name into an environment variable so we can reuse it later again:
+Verification:
 
 ```bash
-FRONTEND=$(kubectl get pods -l app=frontend -o jsonpath='{.items[0].metadata.name}')
-echo ${FRONTEND}
-NOT_FRONTEND=$(kubectl get pods -l app=not-frontend -o jsonpath='{.items[0].metadata.name}')
-echo ${NOT_FRONTEND}
+kubectl -n kube-system exec $CILIUM_POD_NAME -- cilium endpoint config $HOST_EP_ID | grep PolicyAuditMode
 ```
 
-Then execute
+The output should show you:
+
+```
+PolicyAuditMode          Enabled
+```
+
+
+## Task {{% param sectionnumber %}}.3: Apply a Host Network Policy
+
+Host Policies match on node labels using a Node Selector to identify the nodes to which the policy applies. The following policy applies to all nodes. It allows communications from outside the cluster only on port TCP/22. All communications from the cluster to the hosts are allowed.
+
+Host policies don’t apply to communications between pods or between pods and the outside of the cluster, except if those pods are host-networking pods.
+
+Create a file `ccwnp.yaml` with the following content:
+
+{{< highlight yaml >}}{{< readfile file="content/en/docs/10/01/ccwnp.yaml" >}}{{< /highlight >}}
+
+And then apply this `CiliumClusterwideNetworkPolicy` with:
 
 ```bash
-kubectl exec -ti ${FRONTEND} -- curl -I --connect-timeout 5 backend:8080
+kubectl apply -f ccwnp.yaml
 ```
 
-and
+The host is represented as a special endpoint, with label `reserved:host`, in the output of the command `cilium endpoint list`. You can therefore inspect the status of the policy using that command:
 
 ```bash
-kubectl exec -ti ${NOT_FRONTEND} -- curl -I --connect-timeout 5 backend:8080
+kubectl -n kube-system exec $(kubectl -n kube-system get pods -l k8s-app=cilium -o jsonpath='{.items[0].metadata.name}') -- cilium endpoint list
 ```
-
-You see that altought we have no `kube-proxy` running, the backend service can still be reached.
+You will see that the ingress policy enforcement for the `reserved:host` endpoint is `Disabled` but with `Audit` enabled:
 
 ```
-HTTP/1.1 200 OK
-X-Powered-By: Express
-Vary: Origin, Accept-Encoding
-Access-Control-Allow-Credentials: true
-Accept-Ranges: bytes
-Cache-Control: public, max-age=0
-Last-Modified: Sat, 26 Oct 1985 08:15:00 GMT
-ETag: W/"83d-7438674ba0"
-Content-Type: text/html; charset=UTF-8
-Content-Length: 2109
-Date: Tue, 14 Dec 2021 10:01:16 GMT
-Connection: keep-alive
-
-HTTP/1.1 200 OK
-X-Powered-By: Express
-Vary: Origin, Accept-Encoding
-Access-Control-Allow-Credentials: true
-Accept-Ranges: bytes
-Cache-Control: public, max-age=0
-Last-Modified: Sat, 26 Oct 1985 08:15:00 GMT
-ETag: W/"83d-7438674ba0"
-Content-Type: text/html; charset=UTF-8
-Content-Length: 2109
-Date: Tue, 14 Dec 2021 10:01:16 GMT
-Connection: keep-alive
+Defaulted container "cilium-agent" out of: cilium-agent, mount-cgroup (init), clean-cilium-state (init)
+ENDPOINT   POLICY (ingress)   POLICY (egress)   IDENTITY   LABELS (source:key[=value])                                                  IPv6   IPv4         STATUS   
+           ENFORCEMENT        ENFORCEMENT                                                                                                                   
+671        Disabled (Audit)   Disabled          1          k8s:minikube.k8s.io/commit=3e64b11ed75e56e4898ea85f96b2e4af0301f43d                              ready   
+                                                           k8s:minikube.k8s.io/name=cluster1                                                                        
+                                                           k8s:minikube.k8s.io/updated_at=2022_02_14T13_45_35_0700                                                  
+                                                           k8s:minikube.k8s.io/version=v1.25.1                                                                      
+                                                           k8s:node-access=ssh                                                                                      
+                                                           k8s:node-role.kubernetes.io/control-plane                                                                
+                                                           k8s:node-role.kubernetes.io/master                                                                       
+                                                           k8s:node.kubernetes.io/exclude-from-external-load-balancers                                              
+                                                           reserved:host                                                                                            
+810        Disabled           Disabled          129160     k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name=kube-system          10.1.0.249   ready   
+                                                           k8s:io.cilium.k8s.policy.cluster=cluster1                                                                
+                                                           k8s:io.cilium.k8s.policy.serviceaccount=coredns                                                          
+                                                           k8s:io.kubernetes.pod.namespace=kube-system                                                              
+                                                           k8s:k8s-app=kube-dns                                                                                     
+4081       Disabled           Disabled          4          reserved:health                  
 ```
 
 
-## Task {{% param sectionnumber %}}.3: Cleanup
+As long as the host endpoint is running in audit mode, communications disallowed by the policy won’t be dropped. They will however be reported by `cilium monitor` as `action audit`. The audit mode thus allows you to adjust the host policy to your environment, to avoid unexpected connection breakages.
 
-We don't need `kubeless` anymore. You can stop `kubeless` with:
+You can montitor the policy verdicts with:
 
 ```bash
-minikube stop -p kubeless
-minikube delete -p kubeless
+kubectl -n kube-system exec $(kubectl -n kube-system get pods -l k8s-app=cilium -o jsonpath='{.items[0].metadata.name}') -- cilium monitor -t policy-verdict --related-to $HOST_EP_ID
 ```
 
-to free up resources and speed up things.
+Open a second terminal to produce some traffic:
+
+{{% alert title="Note" color="primary" %}}
+If you are working in our Webshell environment, make sure to first login again to your VM after opening the second terminal.
+{{% /alert %}}
+
+```bash
+curl -k https://192.168.49.2:8443
+```
+
+Also try to start an SSH session (you can cancel the command when the password promt is shown):
+
+```bash
+ssh 192.168.49.2
+```
+
+In the verdict log you should see an output similar to the following one. For the `curl` request you see that the action is set to `audit`:
+
+```
+Policy verdict log: flow 0xfd71ed86 local EP ID 671, remote ID world, proto 6, ingress, action audit, match none, 192.168.49.1:50760 -> 192.168.49.2:8443 tcp SYN
+Policy verdict log: flow 0xfd71ed86 local EP ID 671, remote ID world, proto 6, ingress, action audit, match none, 192.168.49.1:50760 -> 192.168.49.2:8443 tcp SYN
+```
+
+The request to the SSH port has action `allow`:
+
+```
+Policy verdict log: flow 0x6b5b1b60 local EP ID 671, remote ID world, proto 6, ingress, action allow, match L4-Only, 192.168.49.1:48254 -> 192.168.49.2:22 tcp SYN
+Policy verdict log: flow 0x6b5b1b60 local EP ID 671, remote ID world, proto 6, ingress, action allow, match L4-Only, 192.168.49.1:48254 -> 192.168.49.2:22 tcp SYN
+```
+
+
+## Task {{% param sectionnumber %}}.4: Clean Up
+
+Once you are confident all required communication to the host from outside the cluster is allowed, you can disable policy audit mode to enforce the host policy.
+
+{{% alert title="Note" color="primary" %}}
+When enforcing the host policy, make sure that none of the communications required to access the cluster or for the cluster to work properly are denied. They should appear as `action allow`.
+{{% /alert %}}
+
+We are not going to do this extended task (as it would require some more rules for the cluster to continue working). But the command to disable the audit mode looks like this:
+
+```
+# kubectl -n kube-system  exec $CILIUM_POD_NAME -- cilium endpoint config $HOST_EP_ID PolicyAuditMode=Disabled
+```
+
+Simply cleanup and continue:
+
+```bash
+kubectl delete ccnp demo-host-policy
+kubectl label node cluster1 node-access-
+```

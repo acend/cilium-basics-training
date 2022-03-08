@@ -1,7 +1,7 @@
 ---
-title: "3.1 Hubble UI"
-weight: 31
-sectionnumber: 3.1
+title: "3.2 Hubble UI"
+weight: 32
+sectionnumber: 3.2
 ---
 
 Not only does Hubble allow us to inspect flows from the command line, but it also allows us to see them in real-time on a graphical service map via Hubble UI. Again, this also is an optional component that is disabled by default.

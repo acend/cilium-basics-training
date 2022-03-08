@@ -1,93 +1,186 @@
 ---
-title: "2.1 Upgrade Cilium"
-weight: 21
-sectionnumber: 2.1
+title: "2. Install Cilium"
+weight: 2
+sectionnumber: 2
 ---
 
-In the previous lab, we intentionally installed version `v{{% param "ciliumVersion.preUpgrade" %}}` of Cilium. In this lab, we show you how to upgrade this installation.
+Cilium can be installed using multiple ways:
+
+* Cilium CLI
+* Using Helm
+
+In this lab, we are going to use [Helm](https://helm.sh) which is recommended for production use.
+The [Cilium command-line](https://github.com/cilium/cilium-cli/) tool is used (Cilium CLI) for verification and troubleshooting.
 
 
-## Task {{% param sectionnumber %}}.1: Running pre-flight check
+## Task {{% param sectionnumber %}}.1: Install a Kubernetes Cluster
 
-When rolling out an upgrade with Kubernetes, Kubernetes will first terminate the Pod followed by pulling the new image version and then finally spin up the new image. In order to reduce the downtime of the agent and to prevent `ErrImagePull` errors during the upgrade, the pre-flight check pre-pulls the new image version. If you are running in "Kubernetes Without kube-proxy" mode you must also pass on the Kubernetes API Server IP and/or the Kubernetes API Server Port when generating the `cilium-preflight.yaml` file.
+We are going to spin up a new Kubernetes cluster with the following command:
 
-```bash
-helm install cilium-preflight cilium/cilium --version {{% param "ciliumVersion.postUpgrade" %}} \
-  --namespace=kube-system \
-  --set preflight.enabled=true \
-  --set agent=false \
-  --set operator.enabled=false \
-  --wait
-```
-
-
-## Task {{% param sectionnumber %}}.2: Clean up pre-flight check
-
-Now we let us examine the preflight check:
-
-```bash
-kubectl get deploy -n kube-system cilium-pre-flight-check
-kubectl get ds -n kube-system
-```
-The preflight check is successful if the deployment `cilium-pre-flight-check` has a `READY` value of `1/1` and the the daemonsets `cilium` and `cilium-pre-flight-check` have the same number of `READY` pods (`1` in our case).
-You can delete the cilium-preflight and proceed with the upgrade.
-
-To check the preflight Pods using:
-
-```bash
-kubectl get pod -A | grep cilium-pre-flight
-```
-
-and you should get an output like this:
-
-```
-kube-system   cilium-pre-flight-check-84f67b54f6-hz57g   1/1     Running   0               63s
-kube-system   cilium-pre-flight-check-skglp              1/1     Running   0               63s
-```
-
-The pods are `READY` therefore we can delete the `cilium-preflight` release again with:
-
-```bash
-helm delete cilium-preflight --namespace=kube-system
-```
-
-
-## Task {{% param sectionnumber %}}.3: Upgrading Cilium
-
-During normal cluster operations, all Cilium components should run the same version. Upgrading just one of them (e.g., upgrading the agent without upgrading the operator) could result in unexpected cluster behavior. The following steps will describe how to upgrade all of the components from one stable release to a later stable release.
-
-When upgrading from one minor release to another minor release, for example 1.x to 1.y, it is recommended to upgrade to the latest patch release for a Cilium release series first. The latest patch releases for each supported version of Cilium are [here](https://github.com/cilium/cilium#stable-releases). Upgrading to the latest patch release ensures the most seamless experience if a rollback is required following the minor release upgrade. The upgrade guides for previous versions can be found for each minor version at the bottom left corner.
-
-Helm can be used to either upgrade Cilium directly or to generate a new set of YAML files that can be used to upgrade an existing deployment via kubectl. By default, Helm will generate the new templates using the default values files packaged with each new release. You still need to ensure that you are specifying the equivalent options as used for the initial deployment, either by specifying them at the command line or by committing the values to a YAML file.
-
-To minimize datapath disruption during the upgrade, the `upgradeCompatibility` option should be set to the initial Cilium version which was installed in this cluster. Valid options are:
-
-```bash
-helm upgrade -i cilium cilium/cilium --version {{% param "ciliumVersion.postUpgrade" %}} \
-  --namespace kube-system \
-  --set ipam.operator.clusterPoolIPv4PodCIDRList={10.1.0.0/16} \
-  --set cluster.name=cluster1 \
-  --set cluster.id=1 \
-  --set operator.replicas=1 \
-  --set upgradeCompatibility=1.10 \
-  --wait
-```
 {{% alert title="Note" color="primary" %}}
-When upgrading from one minor release to another minor release using `helm upgrade`, do not use Helm’s `--reuse-values` flag. The  `--reuse-values` flag ignores any newly introduced values present in the new release and thus may cause the Helm template to render incorrectly. Instead, if you want to reuse the values from your existing installation, save the old values in a values file, check the file for any renamed or deprecated values, and then pass it to the `helm upgrade` command as described above. You can retrieve and save the values from an existing installation with the following command:
+To start from a clean Kubernetes cluster, make sure `cluster1` is not yet available. You can verify this with `minikube profile list`. If you already have a `cluster1` you can delete the cluster with `minikube delete -p cluster1`.
+{{% /alert %}}
 
 ```bash
-helm get values cilium --namespace=kube-system -o yaml > old-values.yaml
+minikube start --network-plugin=cni --cni=false --kubernetes-version={{% param "kubernetesVersion" %}} -p cluster1 
 ```
 
-The `--reuse-values` flag may only be safely used if the Cilium chart version remains unchanged, for example when `helm upgrade` is used to apply configuration changes without upgrading Cilium.
+{{% alert title="Note" color="primary" %}}
+During this training, you will create multiple clusters. For this, we use a feature in Minikube called profile which you see with the `-p cluster1` option. You can list all your profiles with `minikube profile list` and you can change to another cluster with `minikube profile <profilename>`, this will also set your current context for `kubectl` to the specified profile/cluster.
+{{% /alert %}}
+
+Minikube installed a new Kubernetes cluster without any Container Network Interface (CNI). CNI installation happens in the next task.
+
+Minikube added a new context to your Kubernetes config file and set this as default. Verify this with the following command:
+
+```bash
+kubectl config current-context
+```
+
+This should show `cluster1`. Now check that everything is up and running:
+
+```bash
+kubectl get node
+```
+
+This should produce a similar output:
+
+```
+NAME       STATUS   ROLES                  AGE   VERSION
+cluster1   Ready    control-plane,master   86s   v{{% param "kubernetesVersion" %}}
+```
+Depending on your Minikube version and environment your node might stay NotReady because no CNI is installed. After we installed Cilium it will become ready.
+
+Check if all pods are running with:
+
+```bash
+kubectl get pod -A
+```
+
+which produces the following output
+
+```
+NAMESPACE     NAME                               READY   STATUS              RESTARTS   AGE
+kube-system   coredns-558bd4d5db-wdlrh           0/1     ContainerCreating   0          3m1s
+kube-system   etcd-minikube                      1/1     Running             0          3m7s
+kube-system   kube-apiserver-cluster1            1/1     Running             0          3m16s
+kube-system   kube-controller-manager-cluster1   1/1     Running             0          3m7s
+kube-system   kube-proxy-9bjbq                   1/1     Running             0          3m1s
+kube-system   kube-scheduler-cluster1            1/1     Running             0          3m7s
+kube-system   storage-provisioner                1/1     Running             0          3m11s
+```
+
+
+{{% alert title="Note" color="primary" %}}
+Depending on your Minikube version, coredns might start or not which is ok.
+But you should not see any CNI related pods!
 {{% /alert %}}
 
 
-## Task {{% param sectionnumber %}}.4: Explore your installation after the upgrade
+## Task {{% param sectionnumber %}}.2: Install Cilium CLI
 
-We run `cilium status --wait` again to verify the upgrade to the new version succeded
+The `cilium` CLI tool is a single binary file that can be downloaded from the project's release page. Follow the instructions depending on your operating system or environment.
+
+
+### Linux/Webshell Setup
+
+{{% alert title="Note" color="primary" %}}
+If you are working in our webshell based lab setup please always follow the Linux setup.
+{{% /alert %}}
+
+
+Execute the following command to download the `cilium` CLI:
 
 ```bash
+curl -L --remote-name-all https://github.com/cilium/cilium-cli/releases/latest/download/cilium-linux-amd64.tar.gz{,.sha256sum}
+sha256sum --check cilium-linux-amd64.tar.gz.sha256sum
+sudo tar xzvfC cilium-linux-amd64.tar.gz /usr/local/bin
+rm cilium-linux-amd64.tar.gz{,.sha256sum}
+```
+
+
+### macOS Setup
+
+Execute the following command to download the `cilium` CLI:
+
+```bash
+curl -L --remote-name-all https://github.com/cilium/cilium-cli/releases/latest/download/cilium-darwin-amd64.tar.gz{,.sha256sum}
+shasum -a 256 -c cilium-darwin-amd64.tar.gz.sha256sum
+sudo tar xzvfC cilium-darwin-amd64.tar.gz /usr/local/bin
+rm cilium-darwin-amd64.tar.gz{,.sha256sum}
+```
+
+
+## Cilium CLI
+
+Now that we have the `cilium` CLI let's have a look at some commands:
+
+```bash
+cilium version
+```
+
+which should give you an output similar to this:
+
+```
+cilium-cli: v0.10.1 compiled with go1.17.6 on linux/amd64
+cilium image (default): v{{% param "ciliumVersion.preUpgrade" %}}
+cilium image (stable): v{{% param "ciliumVersion.preUpgrade" %}}
+cilium image (running): unknown. Unable to obtain cilium version, no cilium pods found in Namespace "kube-system"
+```
+
+{{% alert title="Note" color="primary" %}}
+It's ok if your installation does not show the same version.
+{{% /alert %}}
+
+Then let us look at
+
+```bash
+cilium status
+```
+
+```
+cilium status 
+    /¯¯\
+ /¯¯\__/¯¯\    Cilium:         1 errors
+ \__/¯¯\__/    Operator:       disabled
+ /¯¯\__/¯¯\    Hubble:         disabled
+ \__/¯¯\__/    ClusterMesh:    disabled
+    \__/
+
+Containers:      cilium             
+                 cilium-operator    
+Cluster Pods:    0/0 managed by Cilium
+Errors:          cilium    cilium    daemonsets.apps "cilium" not found
+
+```
+
+We don't have yet installed Cilium, therefore the error is perfectly fine.
+
+
+## Task {{% param sectionnumber %}}.3: Install Cilium
+
+Let's install Cilium with Helm. First we need to add the Cilium Helm repository:
+
+```bash
+helm repo add cilium https://helm.cilium.io/
+```
+
+and then we can install Cilium:
+
+```bash
+helm upgrade -i cilium cilium/cilium --version {{% param "ciliumVersion.preUpgrade" %}} \
+  --namespace kube-system \
+  --set ipam.operator.clusterPoolIPv4PodCIDR=10.1.0.0/16 \
+  --set cluster.name=cluster1 \
+  --set cluster.id=1 \
+  --set operator.replicas=1 \
+  --wait
+```
+
+and now run again the `cilium status --wait` command:
+
+```
+cilium status 
     /¯¯\
  /¯¯\__/¯¯\    Cilium:         OK
  \__/¯¯\__/    Operator:       OK
@@ -97,30 +190,201 @@ We run `cilium status --wait` again to verify the upgrade to the new version suc
 
 DaemonSet         cilium             Desired: 1, Ready: 1/1, Available: 1/1
 Deployment        cilium-operator    Desired: 1, Ready: 1/1, Available: 1/1
-Containers:       cilium-operator    Running: 1
-                  cilium             Running: 1
+Containers:       cilium             Running: 1
+                  cilium-operator    Running: 1
 Cluster Pods:     1/1 managed by Cilium
-Image versions    cilium             quay.io/cilium/cilium:v{{% param "ciliumVersion.postUpgrade" %}}:: 1
-                  cilium-operator    quay.io/cilium/operator-generic:v{{% param "ciliumVersion.postUpgrade" %}}@: 1
+Image versions    cilium             quay.io/cilium/cilium:v{{% param "ciliumVersion.preUpgrade" %}}: 1
+                  cilium-operator    quay.io/cilium/operator-generic:v{{% param "ciliumVersion.preUpgrade" %}}: 1
+
 ```
 
-And we see the right version in the `cilium` and `cilium-operator` images.
+{{% alert title="Note" color="primary" %}}
+If the output is not the same, make sure all Cilium container are up and in a ready state.
+{{% /alert %}}
 
 
-In Cilium release 1.11.0 automatic mount of eBPF maps in the host filesystem were enabled. These eBPF maps are basically very efficient key-value stores used by Cilium. Having them mounted in the filesystem allows the datapath to continue operating even if the `cilium-agent` is restarting. We can verify that Cilium created global traffic control eBPF maps on the node in /sys/fs/bpf/tc/globals/:
+Take a look at the pods again to see what happened under the hood:
 
 ```bash
-docker exec cluster1 ls /sys/fs/bpf/tc/globals/
+kubectl get pods -A
+```
+
+and you should see now the Pods related to Cilium:
+
+```
+kubectl get pod -A
+NAMESPACE     NAME                               READY   STATUS    RESTARTS   AGE
+kube-system   cilium-hsk8g                       1/1     Running   0          89s
+kube-system   cilium-operator-8dd4dc946-n9ght    1/1     Running   0          89s
+kube-system   coredns-558bd4d5db-xzvc9           1/1     Running   0          111s
+kube-system   etcd-minikube                      1/1     Running   0          118s
+kube-system   kube-apiserver-minikube            1/1     Running   0          118s
+kube-system   kube-controller-manager-minikube   1/1     Running   0          118s
+kube-system   kube-proxy-bqs4d                   1/1     Running   0          111s
+kube-system   kube-scheduler-minikube            1/1     Running   0          118s
+kube-system   storage-provisioner                1/1     Running   1          2m3s
+
+```
+
+Alright, Cilium is up and running, let us make some tests. The `cilium` CLI allows you to run a connectivity test:
+
+```bash
+cilium connectivity test
+```
+
+This will run for some minutes, let's wait.
+
+{{% alert title="Note" color="primary" %}}
+As we installed an older version of cilium but are using the latest `cilium` CLI, it's ok if some tests are failing.
+{{% /alert %}}
+
+```
+ℹ️  Single-node environment detected, enabling single-node connectivity test
+ℹ️  Monitor aggregation detected, will skip some flow validation steps
+✨ [minikube] Creating namespace for connectivity check...
+✨ [minikube] Deploying echo-same-node service...
+✨ [minikube] Deploying same-node deployment...
+✨ [minikube] Deploying client deployment...
+✨ [minikube] Deploying client2 deployment...
+⌛ [minikube] Waiting for deployments [client client2 echo-same-node] to become ready...
+⌛ [minikube] Waiting for deployments [] to become ready...
+⌛ [minikube] Waiting for CiliumEndpoint for pod cilium-test/client-6488dcf5d4-fkv57 to appear...
+⌛ [minikube] Waiting for CiliumEndpoint for pod cilium-test/client2-5998d566b4-l66kc to appear...
+⌛ [minikube] Waiting for CiliumEndpoint for pod cilium-test/echo-same-node-745bd5c77-dqxr9 to appear...
+⌛ [minikube] Waiting for Service cilium-test/echo-same-node to become ready...
+⌛ [minikube] Waiting for NodePort 192.168.49.2:31041 (cilium-test/echo-same-node) to become ready...
+ℹ️  Skipping IPCache check
+⌛ [minikube] Waiting for pod cilium-test/client-6488dcf5d4-fkv57 to reach default/kubernetes service...
+⌛ [minikube] Waiting for pod cilium-test/client2-5998d566b4-l66kc to reach default/kubernetes service...
+🔭 Enabling Hubble telescope...
+⚠️  Unable to contact Hubble Relay, disabling Hubble telescope and flow validation: rpc error: code = Unavailable desc = connection error: desc = "transport: Error while dialing dial tcp 127.0.0.1:4245: connect: connection refused"
+ℹ️  Expose Relay locally with:
+   cilium hubble enable
+   cilium status --wait
+   cilium hubble port-forward&
+🏃 Running tests...
+
+[=] Test [no-policies]
+....................
+[=] Test [allow-all]
+................
+[=] Test [client-ingress]
+..
+[=] Test [echo-ingress]
+..
+[=] Test [client-egress]
+..
+[=] Test [to-entities-world]
+......
+[=] Test [to-cidr-1111]
+....
+[=] Test [echo-ingress-l7]
+..
+[=] Test [client-egress-l7]
+........
+[=] Test [dns-only]
+........
+[=] Test [to-fqdns]
+......
+✅ All 11 tests (76 actions) successful, 0 tests skipped, 0 scenarios skipped.
+```
+
+Once done, clean up the connectivity test Namespace:
+
+```bash
+kubectl delete ns cilium-test --wait=false
 ```
 
 
-## Rolling Back
+## Task {{% param sectionnumber %}}.4: Explore your installation
 
-Occasionally, it may be necessary to undo the rollout because a step was missed or something went wrong during the upgrade. To undo the rollout run:
+We have learned about the Cilium components. Let us check out the installed CRDs now:
+
+```bash
+kubectl api-resources | grep cilium
+``````
+
+Which shows CRDs installed by Cilium:
+
+```bash
+ciliumclusterwidenetworkpolicies   ccnp           cilium.io/v2                           false        CiliumClusterwideNetworkPolicy
+ciliumegressnatpolicies                           cilium.io/v2alpha1                     false        CiliumEgressNATPolicy
+ciliumendpoints                    cep,ciliumep   cilium.io/v2                           true         CiliumEndpoint
+ciliumexternalworkloads            cew            cilium.io/v2                           false        CiliumExternalWorkload
+ciliumidentities                   ciliumid       cilium.io/v2                           false        CiliumIdentity
+ciliumlocalredirectpolicies        clrp           cilium.io/v2                           true         CiliumLocalRedirectPolicy
+ciliumnetworkpolicies              cnp,ciliumnp   cilium.io/v2                           true         CiliumNetworkPolicy
+ciliumnodes                        cn,ciliumn     cilium.io/v2                           false        CiliumNode
+``````
+
+And now we check all installed Cilium CRDs
+```bash
+kubectl get ccnp,cep,cew,ciliumid,clrp,cnp,cn -A
+```
+
+We see 1 node, 1 identity and 1 endpoint:
+```bash
+NAMESPACE     NAME                                               ENDPOINT ID   IDENTITY ID   INGRESS ENFORCEMENT   EGRESS ENFORCEMENT   VISIBILITY POLICY   ENDPOINT STATE   IPV4         IPV6
+kube-system   ciliumendpoint.cilium.io/coredns-64897985d-7485t   465           67688                                                                        ready            10.1.0.215   
+
+NAMESPACE   NAME                             NAMESPACE     AGE
+            ciliumidentity.cilium.io/67688   kube-system   18m
+
+NAMESPACE   NAME                            AGE
+            ciliumnode.cilium.io/cluster1   18m
+```
+
+{{% alert title="Note" color="primary" %}}
+It might be possible that you still see identites created by `cilium connectivity test`. They will be deleted by `cilium-operator` after max. 15 minutes.
+{{% /alert %}}
+
+{{% details title="Can you guess why only the coredns Pod is listed as an Endpoint and Identity?" %}}
+This Pod is the only one which is NOT on the Host Network.
+{{% /details %}}
+
+{{% details title="Is it possible to have more CiliumNodes than nodes in a Kubernetes cluster?" %}}
+A CiliumNode is a host with cilium-agent installed. So this could also be VM outside Kubernetes.
+{{% /details %}}
+
+We have discussed CNI plugin installations, let us check out the Cilium installation on the node.
+
+We can either start a debug container on the node and chroot its /
+
+```bash
+kubectl debug node/cluster1 -it --image=busybox
+chroot /host
+```
+
+or we use docker to access the node:
+```bash
+docker exec -it cluster1 bash
+```
+
+
+Now we have a shell with access to the node. We will check out the Cilium installation:
+
+```bash
+ls -l /etc/cni/net.d/
+cat /etc/cni/net.d/05-cilium.conf
+/opt/cni/bin/cilium-cni --help
+ip a
+exit #exit twice if you used kubectl debug
+```
+We make a few oberservations:
+
+* Kubernetes uses the configuration file with the lowest number so it takes Cilium with the prefix 05.
+* The configuration file is written as a  [CNI spec](https://github.com/containernetworking/cni/blob/master/SPEC.md#configuration-format).
+* The `cilium` binary was installed to /opt/cni/bin.
+* Cilium created two virtual network interfaces `cilium_net`,`cilium_host` (host traffic) and the vxlan overlay interface `cilium_vxlan`
+
+
+## Install Cilium with the `cilium` cli
+
+This is what the installation with the `cilium` cli would have looked like:
 
 ```
-helm history cilium --namespace=kube-system
-helm rollback cilium [REVISION] --namespace=kube-system
+# cilium install --config cluster-pool-ipv4-cidr=10.1.0.0/16 --cluster-name cluster1 --cluster-id 1 --version v1.10.5
 ```
+Be careful to never use CLI and Helm together to install, this can break an already running Cilium installation.
 
-This will revert the latest changes to the Cilium DaemonSet and return Cilium to the state it was in prior to the upgrade.
+After this initial installation, we can proceed by upgrading to a newer version in the next lab.
