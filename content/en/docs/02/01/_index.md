@@ -32,6 +32,21 @@ kubectl get ds -n kube-system
 The preflight check is successful if the deployment `cilium-pre-flight-check` has a `READY` value of `1/1` and the the daemonsets `cilium` and `cilium-pre-flight-check` have the same number of `READY` pods (`1` in our case).
 You can delete the cilium-preflight and proceed with the upgrade.
 
+To check the preflight Pods using:
+
+```bash
+kubectl get pod -A | grep cilium-pre-flight
+```
+
+and you should get an output like this:
+
+```
+kube-system   cilium-pre-flight-check-84f67b54f6-hz57g   1/1     Running   0               63s
+kube-system   cilium-pre-flight-check-skglp              1/1     Running   0               63s
+```
+
+The pods are `READY` therefore we can delete the `cilium-preflight` release again with:
+
 ```bash
 helm delete cilium-preflight --namespace=kube-system
 ```

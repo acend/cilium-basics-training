@@ -104,6 +104,15 @@ Deploy the app:
 kubectl apply -f simple-app.yaml
 ```
 
+this gives you the following output:
+
+```
+deployment.apps/frontend created
+deployment.apps/not-frontend created
+deployment.apps/backend created
+service/backend created
+```
+
 Verify with the following command that everything is up and running:
 
 ```bash
@@ -242,6 +251,10 @@ Hubble is now enabled. We can now locally port-forward to the Hubble pod:
 ```bash
 cilium hubble port-forward&
 ```
+
+{{% alert title="Note" color="primary" %}}
+The port-forwarding is needed as the hubble Kubernetes service is only a `ClusterIP` service and not exposed outside of the cluster network. With the port-forwarding you can access the hubble service from your localhost.
+{{% /alert %}}
 
 {{% alert title="Note" color="primary" %}}
 Note the `&` after the command which puts the process in the background so we can continue working in the shell.

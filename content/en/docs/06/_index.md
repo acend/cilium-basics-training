@@ -71,6 +71,12 @@ Now we generate some traffic as a baseline test.
 
 ```bash
 kubectl exec -ti ${FRONTEND} -- curl -I --connect-timeout 5 backend:8080
+```
+
+and
+
+
+```bash
 kubectl exec -ti ${NOT_FRONTEND} -- curl -I --connect-timeout 5 backend:8080
 ```
 
@@ -113,11 +119,9 @@ Until now ingress and egress policy enforcement are still disabled on all of our
 
 ## Task {{% param sectionnumber %}}.3: Deny traffic with a Network Policy
 
-We block traffic by applying the following network policy:
+We block traffic by applying a network policy. Create a file `backend-ingress-deny.yaml` with the following content:
 
 {{< highlight yaml >}}{{< readfile file="content/en/docs/06/backend-ingress-deny.yaml" >}}{{< /highlight >}}
-
-Create a file `backend-ingress-deny.yaml` with the above content.
 
 The policy will deny all ingress traffic as it is of type Ingress but specifies no allow rule, and will be applied to all pods with the `app=backend` label thanks to the podSelector.
 
@@ -149,6 +153,11 @@ We can now execute the connectivity check again:
 
 ```bash
 kubectl exec -ti ${FRONTEND} -- curl -I --connect-timeout 5 backend:8080
+```
+
+and
+
+```bash
 kubectl exec -ti ${NOT_FRONTEND} -- curl -I --connect-timeout 5 backend:8080
 ```
 
@@ -221,6 +230,8 @@ and then execute the connectivity test again:
 ```bash
 kubectl exec -ti ${FRONTEND} -- curl -I --connect-timeout 5 backend:8080
 ```
+
+and
 
 ```bash
 kubectl exec -ti ${NOT_FRONTEND} -- curl -I --connect-timeout 5 backend:8080

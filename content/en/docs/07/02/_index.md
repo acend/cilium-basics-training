@@ -76,9 +76,11 @@ main.main()
 
 Cilium is capable of enforcing HTTP-layer (i.e., L7) policies to limit what URLs the tiefighter is allowed to reach. Here is an example policy file that extends our original policy by limiting tiefighter to making only a POST /v1/request-landing API call, but disallowing all other calls (including PUT /v1/exhaust-port).
 
+Create a file `cnp-l7.yaml` with the following content:
+
 {{< highlight yaml >}}{{< readfile file="content/en/docs/07/02/cnp-l7.yaml" >}}{{< /highlight >}}
 
-Update the existing rule to apply the L7-aware policy to protect deathstar using. Create a file `cnp-l7.yaml` with the above content and apply with:
+Update the existing rule to apply the L7-aware policy to protect deathstar using with:
 
 ```bash
 kubectl apply -f cnp-l7.yaml
