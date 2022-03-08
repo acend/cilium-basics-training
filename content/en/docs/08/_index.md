@@ -89,7 +89,7 @@ helm upgrade -i cilium cilium/cilium --version {{% param "ciliumVersion.postUpgr
 Afterwards restart the Cilium DaemonSet:
 
 {{% alert title="Note" color="primary" %}}
-You will see some warnings in this command. You can ignore them.
+You will see some deprecation warnings in this command. You can ignore them.
 {{% /alert %}}
 
 ```bash
@@ -149,7 +149,7 @@ helm upgrade -i cilium cilium/cilium --version {{% param "ciliumVersion.postUpgr
 and then restart the Cilium Daemonset:
 
 {{% alert title="Note" color="primary" %}}
-You will see some warnings in this command. You can ignore them.
+You will see some deprecation warnings in this command. You can ignore them.
 {{% /alert %}}
 
 ```bash

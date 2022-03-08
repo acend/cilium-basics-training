@@ -1,7 +1,7 @@
 ---
-title: "9. Cluster Mesh"
-weight: 9
-sectionnumber: 9
+title: "9.1 Enable Cluster Mesh"
+weight: 91
+sectionnumber: 91
 ---
 
 

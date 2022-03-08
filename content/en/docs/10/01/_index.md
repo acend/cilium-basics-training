@@ -28,7 +28,11 @@ helm upgrade -i cilium cilium/cilium --version {{% param "ciliumVersion.postUpgr
 
 The devices flag refers to the network devices Cilium is configured on such as `eth0`. Omitting this option leads Cilium to auto-detect what interfaces the host firewall applies to.
 
-Make sure to restart the `cilium` Pods with (ignore the deprecation warnings):
+Make sure to restart the `cilium` Pods with:
+
+{{% alert title="Note" color="primary" %}}
+You will see some deprecation warnings in this command. You can ignore them.
+{{% /alert %}}
 
 ```bash
 kubectl -n kube-system rollout restart ds/cilium
