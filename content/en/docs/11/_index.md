@@ -13,7 +13,7 @@ Cilium Service Mesh is still in beta, if you want more information about the cur
 {{% alert title="Note" color="primary" %}}
 In case cluster1 is still running, stop it
 ```bash
-minikube stop -p cluster1`
+minikube stop -p cluster1
 ```
 to free up resources and speed up things.
 {{% /alert %}}

@@ -29,7 +29,7 @@ If Cilium encounters a problem that it cannot recover from, it will automaticall
 If a particular Cilium Pod is not in a running state, the status and health of the agent on that node can be retrieved by running `cilium status` in the context of that pod:
 
 ```bash
-kubectl -n kube-system exec <podname> -- cilium status
+kubectl -n kube-system exec ds/cilium -- cilium status
 ```
 
 The output looks similar to this:
@@ -57,7 +57,14 @@ Cluster health:         1/1 reachable   (2022-01-10T12:29:11Z)
 
 ```
 
-Detailed information about the status of Cilium can be inspected with the `cilium status --verbose` command. Verbose output includes detailed IPAM state (allocated addresses), Cilium controller status, and details of the Proxy status.
+More detailed information about the status of Cilium can be inspected with:
+
+
+```bash
+kubectl -n kube-system exec ds/cilium -- cilium status --verbose
+```
+
+Verbose output includes detailed IPAM state (allocated addresses), Cilium controller status, and details of the Proxy status.
 
 
 ## Logs
