@@ -36,7 +36,7 @@ cilium hubble enable --ui
 Cilium Service Mesh can handle ingress traffic with its Envoy proxy.
 
 
-We deploy [the sample app from chapter 3](https://cilium-basics.training.acend.ch/docs/03/#task-32-deploy-simple-application).
+We deploy [the sample app from chapter 3](https://cilium-basics-pr-109.training.acend.ch/docs/03/01/#task-311-install-the-hubble-cli).
 
 
 {{< highlight yaml >}}{{< readfile file="content/en/docs/03/01/simple-app.yaml" >}}{{< /highlight >}}
