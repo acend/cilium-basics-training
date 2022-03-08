@@ -10,14 +10,6 @@ Cilium Service Mesh enables functions like ingress or layer 7 loadbalancing.
 
 Cilium Service Mesh is still in beta, if you want more information about the current status you can find it [here](https://github.com/cilium/cilium-service-mesh-beta). The beta version uses specific images, because of that we will use a dedicated cluster and install Cilium with the CLI.
 
-{{% alert title="Note" color="primary" %}}
-In case cluster1 is still running, stop it
-```bash
-minikube stop -p cluster1
-```
-to free up resources and speed up things.
-{{% /alert %}}
-
 
 ```bash
 minikube start --network-plugin=cni --cni=false --kubernetes-version={{% param "kubernetesVersion" %}} -p servicemesh
