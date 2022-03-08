@@ -13,7 +13,7 @@ Cilium Service Mesh is still in beta, if you want more information about the cur
 {{% alert title="Note" color="primary" %}}
 In case cluster1 is still running, stop it
 ```bash
-minikube stop -p cluster1`
+minikube stop -p cluster1
 ```
 to free up resources and speed up things.
 {{% /alert %}}
@@ -39,7 +39,7 @@ Cilium Service Mesh can handle ingress traffic with its Envoy proxy.
 We deploy [the sample app from chapter 3](https://cilium-basics.training.acend.ch/docs/03/#task-32-deploy-simple-application).
 
 
-{{< highlight yaml >}}{{< readfile file="content/en/docs/03/simple-app.yaml" >}}{{< /highlight >}}
+{{< highlight yaml >}}{{< readfile file="content/en/docs/03/01/simple-app.yaml" >}}{{< /highlight >}}
 
 Apply it with:
 
