@@ -1,7 +1,7 @@
 ---
-title: "2. Install Cilium"
-weight: 2
-sectionnumber: 2
+title: "2.1 Install Cilium"
+weight: 21
+sectionnumber: 2.1
 ---
 
 Cilium can be installed using multiple ways:
