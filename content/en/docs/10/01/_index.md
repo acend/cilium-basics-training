@@ -129,12 +129,9 @@ Then execute
 ```bash
 kubectl exec -ti ${FRONTEND} -- curl -I --connect-timeout 5 backend:8080
 ```
-<<<<<<< HEAD
 
 and
 
-=======
->>>>>>> main
 ```bash
 kubectl exec -ti ${NOT_FRONTEND} -- curl -I --connect-timeout 5 backend:8080
 ```
