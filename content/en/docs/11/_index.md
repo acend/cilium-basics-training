@@ -11,7 +11,11 @@ Cilium Service Mesh enables functions like ingress or layer 7 loadbalancing.
 Cilium Service Mesh is still in beta, if you want more information about the current status you can find it [here](https://github.com/cilium/cilium-service-mesh-beta). The beta version uses specific images, because of that we will use a dedicated cluster and install Cilium with the CLI.
 
 {{% alert title="Note" color="primary" %}}
-You can stop cluster1 with `minikube stop -p cluster1` to free up resources and speed up things.
+In case cluster1 is still running, stop it
+```bash
+minikube stop -p cluster1`
+```
+to free up resources and speed up things.
 {{% /alert %}}
 
 
@@ -43,11 +47,11 @@ Apply it with:
 kubectl apply -f simple-app.yaml
 ```
 
-Now we add an ingress resource:
+Now we add an ingress resource. Create a file named `ingress.yaml` with the text below inside:
 
 {{< highlight yaml >}}{{< readfile file="content/en/docs/11/ingress.yaml" >}}{{< /highlight >}}
 
-Apply again with:
+Apply it with:
 
 ```bash
 kubectl apply -f ingress.yaml
@@ -87,8 +91,7 @@ We can also use `minikube tunnel -p servicemesh` and then curl the Cluster-IP di
 
 Ingress alone is not really a Service Mesh feature. Let us test a traffic control example by loadbalancing a service inside the proxy.
 
-
-Start by creating the second service:
+Start by creating the second service. Create a file named `backend2.yaml` and put in the text below:
 
 {{< highlight yaml >}}{{< readfile file="content/en/docs/11/backend2.yaml" >}}{{< /highlight >}}
 
@@ -134,7 +137,7 @@ kubectl apply -f envoyconfig.yaml
 Test it by running `curl` a few times -- different backends should respond:
 
 ```bash
-for i in {1..5}; do
+for i in {1..10}; do
   kubectl run --rm=true -it --image=curlimages/curl --restart=Never curl -- curl  http://backend:8080/private
 done
 ```

@@ -7,18 +7,14 @@ sectionnumber: 3
 Before we start with the CNI functionality of Cilium and its security components we want to enable the optional Hubble component (which is disabled by default). So we can take full advantage of its eBFP observability capabilities.
 
 
-## Task {{% param sectionnumber %}}.1: Install the Hubble CLI
+## Task {{% param sectionnumber %}}.0.1: Install the Hubble CLI
 
 Similar to the `cilium` CLI, the `hubble` CLI interfaces with Hubble and allows observing network traffic within Kubernetes.
 
 So let us install the `hubble` CLI.
 
 
-### Linux Setup
-
-{{% alert title="Note" color="primary" %}}
-If you are working in our webshell based lab setup, you also need the following Linux setup.
-{{% /alert %}}
+### Linux/Webshell Setup
 
 Execute the following command to download the `hubble` CLI:
 
@@ -90,7 +86,7 @@ Use "hubble [command] --help" for more information about a command.
 ```
 
 
-## Task {{% param sectionnumber %}}.2: Deploy a simple application
+## Task {{% param sectionnumber %}}.0.2: Deploy a simple application
 
 Before we enable Hubble in Cilium we want to make sure we have at least one application to observe.
 
@@ -166,7 +162,7 @@ echo ${NOT_FRONTEND}
 ```
 
 
-## Task {{% param sectionnumber %}}.3: Enable Hubble in Cilium
+## Task {{% param sectionnumber %}}.0.3: Enable Hubble in Cilium
 
 When you install Cilium using Helm, then Hubble is already enabled. The value for this is `hubble.enabled` which is set to `true` in the `values.yaml` of the Cilium Helm Chart. But we also want to enable Hubble Relay. With the following Helm command you can enable Hubble with Hubble Relay:
 
@@ -280,7 +276,7 @@ Connected Nodes: 1/1
 The Hubble CLI is now primed for observing network traffic within the cluster.
 
 
-## Task {{% param sectionnumber %}}.4: Observing flows with Hubble
+## Task {{% param sectionnumber %}}.0.4: Observing flows with Hubble
 
 We now want to use the `hubble` CLI to observe some network flows in our Kubernetes cluster. Let us have a look at the following command:
 

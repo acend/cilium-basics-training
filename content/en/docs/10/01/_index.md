@@ -129,14 +129,17 @@ Then execute
 ```bash
 kubectl exec -ti ${FRONTEND} -- curl -I --connect-timeout 5 backend:8080
 ```
+<<<<<<< HEAD
 
 and
 
+=======
+>>>>>>> main
 ```bash
 kubectl exec -ti ${NOT_FRONTEND} -- curl -I --connect-timeout 5 backend:8080
 ```
 
-and then with the result you see that altought we have no `kube-proxy` running, the backend service can still be reached.
+You see that altought we have no `kube-proxy` running, the backend service can still be reached.
 
 ```
 HTTP/1.1 200 OK
@@ -169,7 +172,7 @@ Connection: keep-alive
 
 ## Task {{% param sectionnumber %}}.3: Cleanup
 
-We don't need `kubeless` anymore. You can stop `kubeless` with 
+We don't need `kubeless` anymore. You can stop `kubeless` with:
 
 ```bash
 minikube stop -p kubeless
