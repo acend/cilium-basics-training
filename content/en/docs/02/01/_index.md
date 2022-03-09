@@ -177,6 +177,8 @@ helm upgrade -i cilium cilium/cilium --version {{% param "ciliumVersion.preUpgra
   --wait
 ```
 
+For all values possible in the Cilium Helm chart, have a look at the https://github.com/cilium/cilium/tree/master/install/kubernetes/cilium[Repository] or the https://docs.cilium.io/en/stable/helm-reference/[Helm Reference] in Cilium's documentation.
+
 and now run again the `cilium status --wait` command:
 
 ```
