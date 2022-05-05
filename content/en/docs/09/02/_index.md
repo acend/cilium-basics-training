@@ -2,6 +2,7 @@
 title: "9.2 Load-balancing with Global Services"
 weight: 92
 sectionnumber: 9.2
+OnlyWhenNot: techlab
 ---
 
 This lab will guide you to perform load-balancing and service discovery across multiple Kubernetes clusters.

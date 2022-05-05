@@ -2,6 +2,7 @@
 title: "2.1 Install Cilium"
 weight: 21
 sectionnumber: 2.1
+OnlyWhenNot: techlab
 ---
 
 Cilium can be installed using multiple ways:

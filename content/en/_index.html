@@ -3,7 +3,7 @@ title = "Cilium Basics Training"
 linkTitle = "Cilium Basics Training"
 
 +++
-
+{{< onlyWhenNot techlab >}}
 {{< blocks/cover title="Welcome to the Cilium Basics Training" image_anchor="top" height="full" color="primary" >}}
 <div class="mx-auto">
 	<a class="btn btn-lg btn-primary mr-3 mb-4" href="{{< relref "/setup" >}}">
@@ -17,3 +17,19 @@ linkTitle = "Cilium Basics Training"
 	</a>
 </div>
 {{< /blocks/cover >}}
+{{< /onlyWhenNot >}}
+{{< onlyWhen techlab >}}
+{{< blocks/cover title="Welcome to the Cilium Techlab" image_anchor="top" height="full" color="primary" >}}
+<div class="mx-auto">
+	<a class="btn btn-lg btn-primary mr-3 mb-4" href="{{< relref "/setup" >}}">
+		Setup <i class="fas fa-cogs ml-2 "></i>
+        </a>
+	<a class="btn btn-lg btn-primary mr-3 mb-4" href="{{< relref "/docs" >}}">
+		Labs <i class="fas fa-flask ml-2"></i>
+	</a>
+	<a class="btn btn-lg btn-secondary mr-3 mb-4" href="{{< relref "/slides" >}}">
+		Slides <i class="fas fa-chalkboard-teacher ml-2 "></i>
+	</a>
+</div>
+{{< /blocks/cover >}}
+{{< /onlyWhen >}}

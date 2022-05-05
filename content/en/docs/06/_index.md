@@ -2,6 +2,7 @@
 title: "6. Network Policies"
 weight: 6
 sectionnumber: 6
+OnlyWhenNot: techlab
 ---
 
 ## Network Policies
