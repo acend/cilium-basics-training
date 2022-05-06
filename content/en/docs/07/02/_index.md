@@ -1,11 +1,11 @@
 ---
-title: "7.2 HTTP-aware L7 Policy"
+title: "HTTP-aware L7 Policy"
 weight: 72
 sectionnumber: 7.2
 ---
 
 
-## Task {{% param sectionnumber %}}.1: Deploy a new Demo Application
+## {{% task %}} Deploy a new Demo Application
 
 In this Star Wars inspired example, there are three microservices applications: deathstar, tiefighter, and xwing. The deathstar runs an HTTP webservice on port 80, which is exposed as a Kubernetes Service to load balance requests to deathstar across two Pod replicas. The deathstar service provides landing services to the empire’s spaceships so that they can request a landing port. The tiefighter Pod represents a landing-request client service on a typical empire ship and xwing represents a similar service on an alliance ship. They exist so that we can test different security policies for access control to deathstar landing services.
 
@@ -52,7 +52,7 @@ command terminated with exit code 28
 ```
 
 
-## Task {{% param sectionnumber %}}.2: Apply and Test HTTP-aware L7 Policy
+## {{% task %}} Apply and Test HTTP-aware L7 Policy
 
 In the simple scenario above, it was sufficient to either give tiefighter / xwing full access to deathstar’s API or no access at all. But to provide the strongest security (i.e., enforce least-privilege isolation) between microservices, each service that calls deathstar’s API should be limited to making only the set of HTTP requests it requires for legitimate operation.
 

@@ -1,5 +1,5 @@
 ---
-title: "2.2 Upgrade Cilium"
+title: "Upgrade Cilium"
 weight: 22
 sectionnumber: 2.2
 ---
@@ -7,7 +7,7 @@ sectionnumber: 2.2
 In the previous lab, we intentionally installed version `v{{% param "ciliumVersion.preUpgrade" %}}` of Cilium. In this lab, we show you how to upgrade this installation.
 
 
-## Task {{% param sectionnumber %}}.1: Running pre-flight check
+## {{% task %}} Running pre-flight check
 
 When rolling out an upgrade with Kubernetes, Kubernetes will first terminate the Pod followed by pulling the new image version and then finally spin up the new image. In order to reduce the downtime of the agent and to prevent `ErrImagePull` errors during the upgrade, the pre-flight check pre-pulls the new image version. If you are running in "Kubernetes Without kube-proxy" mode you must also pass on the Kubernetes API Server IP and/or the Kubernetes API Server Port when generating the `cilium-preflight.yaml` file.
 
@@ -21,7 +21,7 @@ helm install cilium-preflight cilium/cilium --version {{% param "ciliumVersion.p
 ```
 
 
-## Task {{% param sectionnumber %}}.2: Clean up pre-flight check
+## {{% task %}} Clean up pre-flight check
 
 
 To check the preflight Pods we check if the pods are `READY` using:
@@ -44,7 +44,7 @@ helm delete cilium-preflight --namespace=kube-system
 ```
 
 
-## Task {{% param sectionnumber %}}.3: Upgrading Cilium
+## {{% task %}} Upgrading Cilium
 
 During normal cluster operations, all Cilium components should run the same version. Upgrading just one of them (e.g., upgrading the agent without upgrading the operator) could result in unexpected cluster behavior. The following steps will describe how to upgrade all of the components from one stable release to a later stable release.
 
@@ -75,7 +75,7 @@ The `--reuse-values` flag may only be safely used if the Cilium chart version re
 {{% /alert %}}
 
 
-## Task {{% param sectionnumber %}}.4: Explore your installation after the upgrade
+## {{% task %}} Explore your installation after the upgrade
 
 We can run:
 

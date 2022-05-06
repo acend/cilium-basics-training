@@ -1,5 +1,5 @@
 ---
-title: "4. Metrics"
+title: "Metrics"
 weight: 4
 sectionnumber: 4
 ---
@@ -10,7 +10,7 @@ Both Cilium and Hubble can be configured to serve Prometheus metrics independent
 Hubble metrics on the other hand give us information about the traffic of our applications.
 
 
-## Task {{% param sectionnumber %}}.1:  Enable metrics
+## {{% task %}} Enable metrics
 
 We start by enabling different metrics, for dropped and HTTP traffic we also want to have metrics specified by pod.
 
@@ -71,7 +71,7 @@ It is not yet possible to get metrics from Cilium Envoy (port 9095). Envoy only 
 {{% /alert %}}
 
 
-## Task {{% param sectionnumber %}}.2:  Store and visualize metrics
+## {{% task %}} Store and visualize metrics
 
 To make sense of metrics we store them in Prometheus and visualize them with Grafana dashboards.
 Install both into `cilium-monitoring` Namespace to store and visualize Cilium and Hubble metrics.
