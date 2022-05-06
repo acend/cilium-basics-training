@@ -1,5 +1,5 @@
 ---
-title: "7.1 DNS-aware Network Policy"
+title: "DNS-aware Network Policy"
 weight: 71
 sectionnumber: 7.1
 ---
