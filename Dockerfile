@@ -6,6 +6,8 @@ COPY . /src
 
 RUN hugo --environment ${TRAINING_HUGO_ENV} --minify
 
+RUN find /src/public/docs/ -regex '.*\(jpg\|jpeg\|png\|gif\)' -exec cp "{}" /src/public/pdf/ \; 
+
 FROM ubuntu:focal AS wkhtmltopdf
 RUN apt-get update \
     && apt-get install -y curl \
