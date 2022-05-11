@@ -36,10 +36,10 @@ acendTraining:
       name: techlab
       replicaCount: 1
       image:
-        repository: quay.io/acend/cilium-techlab
+        repository: quay.io/acend/cilium-basics-training
         pullPolicy: Always
         tag: ""
-        tagsuffix: ""
+        tagsuffix: "-techlab"
       ingress:
         annotations: 
           kubernetes.io/ingress.class: nginx-public
