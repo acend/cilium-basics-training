@@ -91,6 +91,18 @@ jobs:
             quay.io/acend/cilium-basics-training:pr-${{ github.event.pull_request.number }}-puzzle
             ghcr.io/acend/cilium-basics-training:pr-${{ github.event.pull_request.number }}-puzzle
       -
+        name: Build Techlab Version
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: ./Dockerfile
+          build-args: |
+            TRAINING_HUGO_ENV=techlab
+          push: true
+          tags: |
+            quay.io/acend/cilium-basics-training:pr-${{ github.event.pull_request.number }}-techlab
+            ghcr.io/acend/cilium-basics-training:pr-${{ github.event.pull_request.number }}-techlab
+      -
         name: 'Install Helm'
         uses: azure/setup-helm@v1
         with:
@@ -124,6 +136,7 @@ jobs:
         run: |
           kubectl rollout restart deployment/${TRAINING_HELM_RELEASE}-${TRAINING_HELM_NAME}-acend --kubeconfig $HOME/.kube/config --namespace $TRAINING_NAMESPACE
           kubectl rollout restart deployment/${TRAINING_HELM_RELEASE}-${TRAINING_HELM_NAME}-puzzle --kubeconfig $HOME/.kube/config --namespace $TRAINING_NAMESPACE
+          kubectl rollout restart deployment/${TRAINING_HELM_RELEASE}-${TRAINING_HELM_NAME}-techlab --kubeconfig $HOME/.kube/config --namespace $TRAINING_NAMESPACE
       -
         name: Comment PR Environments in PR
         uses: marocchino/sticky-pull-request-comment@v2
@@ -133,3 +146,4 @@ jobs:
            PR Environments: 
            * acend version <https://cilium-basics-pr-${{ github.event.pull_request.number }}.training.acend.ch>
            * puzzle version <https://cilium-basics-training-pr-${{ github.event.pull_request.number }}.k8s.puzzle.ch>
+           * techlab version <https://cilium-techlab-pr-${{ github.event.pull_request.number }}.training.acend.ch>
