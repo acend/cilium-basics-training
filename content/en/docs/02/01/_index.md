@@ -1,7 +1,6 @@
 ---
 title: "Install Cilium"
 weight: 21
-sectionnumber: 2.1
 OnlyWhenNot: techlab
 ---
 

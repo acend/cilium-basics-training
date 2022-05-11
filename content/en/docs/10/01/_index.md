@@ -1,7 +1,6 @@
 ---
 title: "Host Firewall"
 weight: 101
-sectionnumber: 10.1
 OnlyWhenNot: techlab
 ---
 

@@ -1,7 +1,6 @@
 ---
 title: "Introduction"
 weight: 1
-sectionnumber: 1
 ---
 
 

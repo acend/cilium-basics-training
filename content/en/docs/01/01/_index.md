@@ -1,7 +1,6 @@
 ---
 title: "eBPF"
 weight: 11
-sectionnumber: 1.1
 ---
 
 ## What is eBPF

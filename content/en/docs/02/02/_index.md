@@ -1,7 +1,6 @@
 ---
 title: "Upgrade Cilium"
 weight: 22
-sectionnumber: 2.2
 ---
 
 In the previous lab, we intentionally installed version `v{{% param "ciliumVersion.preUpgrade" %}}` of Cilium. In this lab, we show you how to upgrade this installation.

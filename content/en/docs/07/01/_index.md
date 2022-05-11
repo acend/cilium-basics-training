@@ -1,7 +1,6 @@
 ---
 title: "DNS-aware Network Policy"
 weight: 71
-sectionnumber: 7.1
 ---
 
 

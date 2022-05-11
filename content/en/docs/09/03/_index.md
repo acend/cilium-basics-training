@@ -1,7 +1,6 @@
 ---
 title: "Network Policies"
 weight: 93
-sectionnumber: 9.3
 ---
 
 ## {{% task %}} Allowing Specific Communication Between Clusters

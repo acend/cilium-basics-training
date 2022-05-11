@@ -1,7 +1,6 @@
 ---
 title: "Cilium Network Policies"
 weight: 7
-sectionnumber: 7
 ---
 
 ## Cilium Network Policies

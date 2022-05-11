@@ -1,7 +1,6 @@
 ---
 title: "Metrics"
 weight: 4
-sectionnumber: 4
 ---
 
 With metrics displayed in Grafana or another UI, we can get a quick overview of our cluster state and its traffic.

@@ -1,7 +1,6 @@
 ---
 title: "Enable Cluster Mesh"
 weight: 91
-sectionnumber: 91
 OnlyWhenNot: techlab
 ---
 

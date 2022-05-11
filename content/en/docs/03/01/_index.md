@@ -1,7 +1,6 @@
 ---
 title: "Hubble"
 weight: 31
-sectionnumber: 3.1
 ---
 
 Before we start with the CNI functionality of Cilium and its security components we want to enable the optional Hubble component (which is disabled by default). So we can take full advantage of its eBFP observability capabilities.

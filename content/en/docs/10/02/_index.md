@@ -1,7 +1,6 @@
 ---
 title: "Kubernetes Without kube-proxy"
 weight: 102
-sectionnumber: 10.2
 OnlyWhenNot: techlab
 ---
 
