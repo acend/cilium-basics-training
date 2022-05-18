@@ -1,7 +1,6 @@
 ---
 title: "Install Cilium"
 weight: 21
-OnlyWhenNot: techlab
 ---
 
 Cilium can be installed using multiple ways:
