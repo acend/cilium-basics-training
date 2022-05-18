@@ -100,8 +100,8 @@ jobs:
             TRAINING_HUGO_ENV=techlab
           push: true
           tags: |
-            quay.io/acend/cilium-basics-training:pr-${{ github.event.pull_request.number }}
-            ghcr.io/acend/cilium-basics-training:pr-${{ github.event.pull_request.number }}
+            quay.io/acend/cilium-basics-training:pr-${{ github.event.pull_request.number }}-techlab
+            ghcr.io/acend/cilium-basics-training:pr-${{ github.event.pull_request.number }}-techlab
       -
         name: 'Install Helm'
         uses: azure/setup-helm@v1
