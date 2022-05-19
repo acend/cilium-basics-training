@@ -1,6 +1,7 @@
 ---
 title: "Troubleshooting"
 weight: 5
+sectionnumber: 5
 OnlyWhenNot: techlab
 ---
 

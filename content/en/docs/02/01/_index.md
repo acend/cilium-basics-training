@@ -1,6 +1,7 @@
 ---
 title: "Install Cilium"
 weight: 21
+sectionnumber: 2.1
 ---
 
 Cilium can be installed using multiple ways:

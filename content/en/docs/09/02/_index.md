@@ -1,6 +1,7 @@
 ---
 title: "Load-balancing with Global Services"
 weight: 92
+sectionnumber: 9.2
 OnlyWhenNot: techlab
 ---
 
