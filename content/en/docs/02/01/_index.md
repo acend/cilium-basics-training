@@ -1,5 +1,5 @@
 ---
-title: "Install Cilium"
+title: "2.1 Install Cilium"
 weight: 21
 sectionnumber: 2.1
 ---
@@ -13,7 +13,7 @@ In this lab, we are going to use [Helm](https://helm.sh) which is recommended fo
 The [Cilium command-line](https://github.com/cilium/cilium-cli/) tool is used (Cilium CLI) for verification and troubleshooting.
 
 
-## {{% task %}} Install a Kubernetes Cluster
+## Task {{% param sectionnumber %}}.1: Install a Kubernetes Cluster
 
 We are going to spin up a new Kubernetes cluster with the following command:
 
@@ -77,7 +77,7 @@ But you should not see any CNI related pods!
 {{% /alert %}}
 
 
-## {{% task %}} Install Cilium CLI
+## Task {{% param sectionnumber %}}.2: Install Cilium CLI
 
 The `cilium` CLI tool is a single binary file that can be downloaded from the project's release page. Follow the instructions depending on your operating system or environment.
 
@@ -157,7 +157,7 @@ Errors:          cilium    cilium    daemonsets.apps "cilium" not found
 We don't have yet installed Cilium, therefore the error is perfectly fine.
 
 
-## {{% task %}} Install Cilium
+## Task {{% param sectionnumber %}}.3: Install Cilium
 
 Let's install Cilium with Helm. First we need to add the Cilium Helm repository:
 
@@ -308,7 +308,7 @@ kubectl delete ns cilium-test --wait=false
 ```
 
 
-## {{% task %}} Explore your installation
+## Task {{% param sectionnumber %}}.4: Explore your installation
 
 We have learned about the Cilium components. Let us check out the installed CRDs now:
 

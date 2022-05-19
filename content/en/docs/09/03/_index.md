@@ -1,10 +1,10 @@
 ---
-title: "Network Policies"
+title: "9.3 Network Policies"
 weight: 93
 sectionnumber: 9.3
 ---
 
-## {{% task %}} Allowing Specific Communication Between Clusters
+## Task {{% param sectionnumber %}}.1: Allowing Specific Communication Between Clusters
 
 
 The following policy illustrates how to allow particular pods to communicate between two clusters.

@@ -5,7 +5,7 @@ sectionnumber: 7.1
 ---
 
 
-## {{% task %}} Create and use a DNS-aware Network Policy
+## Task {{% param sectionnumber %}}.1: Create and use a DNS-aware Network Policy
 
 In this task, we want to keep our backend pods from reaching anything except FQDN kubernetes.io.
 
@@ -87,7 +87,7 @@ You can now check the `Hubble Metrics` dashboard in Grafana again. The graphs un
 With the ingress and egress policies in place on `app=backend` pods, we have implemented a simple zero-trust model to all traffic to and from our backend. In a real-world scenario, cluster administrators may leverage network policies and overlay them at all levels and for all kinds of traffic.
 
 
-## {{% task %}} Cleanup
+## Task {{% param sectionnumber %}}.2: Cleanup
 
 To not mess up the proceeding labs we are going to delete the `CiliumNetworkPolicy` again and therefore allow all egress traffic again:
 

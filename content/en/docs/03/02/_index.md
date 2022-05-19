@@ -1,5 +1,5 @@
 ---
-title: "Hubble UI"
+title: "3.2 Hubble UI"
 weight: 32
 sectionnumber: 3.2
 ---
@@ -7,7 +7,7 @@ sectionnumber: 3.2
 Not only does Hubble allow us to inspect flows from the command line, but it also allows us to see them in real-time on a graphical service map via Hubble UI. Again, this also is an optional component that is disabled by default.
 
 
-## {{% task %}}: Enable the Hubble UI component
+## Task {{% param sectionnumber %}}.1: Enable the Hubble UI component
 
 Enabling the optional Hubble UI component with Helm looks like this:
 

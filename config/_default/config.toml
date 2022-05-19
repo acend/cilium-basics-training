@@ -75,7 +75,7 @@ github_repo = "https://github.com/acend/cilium-basics-training"
 github_branch = "main"
 
 enabledModule = "base"
-automaticSectionNumbers = true
+
 kubernetesVersion = "1.23.1"
 
 [params.ciliumVersion]

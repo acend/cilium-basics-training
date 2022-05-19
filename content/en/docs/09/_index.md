@@ -1,12 +1,12 @@
 ---
-title: "Cluster Mesh"
+title: "9. Cluster Mesh"
 weight: 9
 sectionnumber: 9
 OnlyWhenNot: techlab
 ---
 
 
-## {{% task %}} Create a second Kubernetes Cluster
+## Task {{% param sectionnumber %}}.1: Create a second Kubernetes Cluster
 
 To create a Cluster Mesh, we need a second Kubernetes cluster. For the Cluster Mesh to work, the PodCIDR ranges in all clusters and nodes must be non-conflicting and have unique IP addresses. The nodes in all clusters must have IP connectivity between each other and the network between the clusters must allow inter-cluster communication.
 
@@ -85,7 +85,7 @@ kube-system   storage-provisioner                1/1     Running   1          49
 The second cluster and Cilium is ready to use.
 
 
-## {{% task %}} Enable Cluster Mesh on both Cluster
+## Task {{% param sectionnumber %}}.2: Enable Cluster Mesh on both Cluster
 
 Now let us enable the Cluster Mesh using the `cilium` CLI on both clusters:
 
@@ -165,7 +165,7 @@ to wait for the connection to be successful. The output should be:
 The two clusters are now connected.
 
 
-## {{% task %}} Cluster Mesh Troubleshooting
+## Task {{% param sectionnumber %}}.3: Cluster Mesh Troubleshooting
 
 Use the following list of steps to troubleshoot issues with Cluster Mesh:
 

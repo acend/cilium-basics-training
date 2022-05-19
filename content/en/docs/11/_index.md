@@ -1,5 +1,5 @@
 ---
-title: "Cilium Service Mesh"
+title: "11. Cilium Service Mesh"
 weight: 11
 sectionnumber: 11
 OnlyWhenNot: techlab
@@ -7,7 +7,7 @@ OnlyWhenNot: techlab
 Cilium Service Mesh enables functions like ingress or layer 7 loadbalancing.
 
 
-## {{% task %}} Installation
+## Task {{% param sectionnumber %}}.1: Installation
 
 Cilium Service Mesh is still in beta, if you want more information about the current status you can find it [here](https://github.com/cilium/cilium-service-mesh-beta). The beta version uses specific images, because of that we will use a dedicated cluster and install Cilium with the CLI.
 
@@ -24,7 +24,7 @@ cilium hubble enable --ui
 ```
 
 
-## {{% task %}} Create Ingress
+## Task {{% param sectionnumber %}}.2: Create Ingress
 
 Cilium Service Mesh can handle ingress traffic with its Envoy proxy.
 
@@ -80,7 +80,7 @@ We can also use `minikube tunnel -p servicemesh` and then curl the Cluster-IP di
 {{% /alert %}}
 
 
-## {{% task %}} Layer 7 Loadbalancing
+## Task {{% param sectionnumber %}}.3: Layer 7 Loadbalancing
 
 Ingress alone is not really a Service Mesh feature. Let us test a traffic control example by loadbalancing a service inside the proxy.
 
@@ -154,7 +154,7 @@ We see both backends replying. If you call it many times the distribution would 
 This basic traffic control example shows only one function of Cilium Service Mesh, other features include i.e. TLS termination, support for tracing and canary-rollouts.
 
 
-## {{% task %}} Cleanup
+## Task {{% param sectionnumber %}}.4: Cleanup
 
 You can delete the Service Mesh cluster now.
 

@@ -1,5 +1,5 @@
 ---
-title: "eBPF"
+title: "1.1 eBPF"
 weight: 11
 sectionnumber: 1.1
 ---
