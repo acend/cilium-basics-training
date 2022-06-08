@@ -83,7 +83,7 @@ Host policies don’t apply to communications between pods or between pods and t
 
 Create a file `ccwnp.yaml` with the following content:
 
-{{< highlight yaml >}}{{< readfile file="content/en/docs/10/01/ccwnp.yaml" >}}{{< /highlight >}}
+{{< highlight yaml >}}{{< readfile file="/content/en/docs/10/01/ccwnp.yaml" >}}{{< /highlight >}}
 
 And then apply this `CiliumClusterwideNetworkPolicy` with:
 

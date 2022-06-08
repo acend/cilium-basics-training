@@ -9,7 +9,7 @@ sectionnumber: 9.3
 
 The following policy illustrates how to allow particular pods to communicate between two clusters.
 
-{{< highlight yaml >}}{{< readfile file="content/en/docs/09/03/cnp-cm.yaml" >}}{{< /highlight >}}
+{{< highlight yaml >}}{{< readfile file="/content/en/docs/09/03/cnp-cm.yaml" >}}{{< /highlight >}}
 
 {{% alert title="Note" color="primary" %}}
 For the Pods to resolve the `rebel-base` service name they still need connectivity to Kubernetes DNS Service. Therefore access to that is also allowed.
