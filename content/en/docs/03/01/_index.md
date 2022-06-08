@@ -92,7 +92,7 @@ Before we enable Hubble in Cilium we want to make sure we have at least one appl
 
 Let's have a look at the following resource definitions:
 
-{{< highlight yaml >}}{{< readfile file="content/en/docs/03/01/simple-app.yaml" >}}{{< /highlight >}}
+{{< highlight yaml >}}{{< readfile file="/content/en/docs/03/01/simple-app.yaml" >}}{{< /highlight >}}
 
 The application consists of two client deployments (`frontend` and `not-frontend`) and one backend deployment (`backend`). We are going to send requests from the frontend and not-frontend pods to the backend pod.
 
