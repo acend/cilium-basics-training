@@ -23,7 +23,7 @@ To see traffic between nodes, we move the frontend pod from Chapter 3 to the new
 
 Create a file `patch.yaml` with the follwing content_
 
-{{< highlight yaml >}}{{< readfile file="/content/en/docs/08/patch.yaml" >}}{{< /highlight >}}
+{{< readfile file="/content/en/docs/08/patch.yaml" code="true" lang="yaml" >}}
 
 You can patch the frontend deployment now:
 

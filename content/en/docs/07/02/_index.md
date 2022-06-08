@@ -11,7 +11,7 @@ In this Star Wars inspired example, there are three microservices applications: 
 
 The file `sw-app.yaml` contains a Kubernetes Deployment for each of the three services. Each deployment is identified using the Kubernetes labels (`org=empire`, `class=deathstar`), (`org=empire`, `class=tiefighter`), and (`org=alliance`, `class=xwing`). It also includes a deathstar-service, which load balances traffic to all pods with labels `org=empire` and `class=deathstar`.
 
-{{< highlight yaml >}}{{< readfile file="/content/en/docs/07/02/sw-app.yaml" >}}{{< /highlight >}}
+{{< readfile file="/content/en/docs/07/02/sw-app.yaml" code="true" lang="yaml" >}}
 
 Create and apply the file with:
 
@@ -23,7 +23,7 @@ And as we have already some Network Policies in our Namespace the default ingres
 
 Create a file `cnp.yaml` with the following content:
 
-{{< highlight yaml >}}{{< readfile file="/content/en/docs/07/02/cnp.yaml" >}}{{< /highlight >}}
+{{< readfile file="/content/en/docs/07/02/cnp.yaml" code="true" lang="yaml" >}}
 
 Apply the `CiliumNetworkPolicy` with:
 
@@ -78,7 +78,7 @@ Cilium is capable of enforcing HTTP-layer (i.e., L7) policies to limit what URLs
 
 Create a file `cnp-l7.yaml` with the following content:
 
-{{< highlight yaml >}}{{< readfile file="/content/en/docs/07/02/cnp-l7.yaml" >}}{{< /highlight >}}
+{{< readfile file="/content/en/docs/07/02/cnp-l7.yaml" code="true" lang="yaml" >}}
 
 Update the existing rule to apply the L7-aware policy to protect deathstar using with:
 

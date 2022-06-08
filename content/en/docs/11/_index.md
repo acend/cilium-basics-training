@@ -31,7 +31,7 @@ Cilium Service Mesh can handle ingress traffic with its Envoy proxy.
 We deploy [the sample app from chapter 3](https://cilium-basics-pr-109.training.acend.ch/docs/03/01/#task-311-install-the-hubble-cli).
 
 
-{{< highlight yaml >}}{{< readfile file="/content/en/docs/03/01/simple-app.yaml" >}}{{< /highlight >}}
+{{< readfile file="/content/en/docs/03/01/simple-app.yaml" code="true" lang="yaml" >}}
 
 Apply it with:
 
@@ -41,7 +41,7 @@ kubectl apply -f simple-app.yaml
 
 Now we add an ingress resource. Create a file named `ingress.yaml` with the text below inside:
 
-{{< highlight yaml >}}{{< readfile file="/content/en/docs/11/ingress.yaml" >}}{{< /highlight >}}
+{{< readfile file="/content/en/docs/11/ingress.yaml" code="true" lang="yaml" >}}
 
 Apply it with:
 
@@ -85,7 +85,7 @@ Ingress alone is not really a Service Mesh feature. Let us test a traffic contro
 
 Start by creating the second service. Create a file named `backend2.yaml` and put in the text below:
 
-{{< highlight yaml >}}{{< readfile file="/content/en/docs/11/backend2.yaml" >}}{{< /highlight >}}
+{{< readfile file="/content/en/docs/11/backend2.yaml" code="true" lang="yaml" >}}
 
 Apply it:
 ```bash
@@ -103,7 +103,7 @@ As layer 7 loadbalancing requires traffic to be routed through the proxy, we wil
 
 Create a file `cnp-l7-sm.yaml` with the following content:
 
-{{< highlight yaml >}}{{< readfile file="/content/en/docs/11/cnp-l7-sm.yaml" >}}{{< /highlight >}}
+{{< readfile file="/content/en/docs/11/cnp-l7-sm.yaml" code="true" lang="yaml" >}}
 
 And apply the `CiliumNetworkPolicy` with:
 
@@ -114,7 +114,7 @@ kubectl apply -f cnp-l7-sm.yaml
 Until now only the backend service is replying to Ingress traffic. Now we configure Envoy to loadbalance the traffic 50/50 between backend and backend-2 with retries.
 We are using a CustomResource called `CiliumEnvoyConfig` for this. Create a file `envoyconfig.yaml` with the following content:
 
-{{< highlight yaml >}}{{< readfile file="/content/en/docs/11/envoyconfig.yaml" >}}{{< /highlight >}}
+{{< readfile file="/content/en/docs/11/envoyconfig.yaml" code="true" lang="yaml" >}}
 
 {{% alert title="Note" color="primary" %}}
 If you want to read more about Envoy configuration [Envoy Architectural Overview](https://www.envoyproxy.io/docs/envoy/latest/intro/arch_overview/http/http) is a good place to start.
