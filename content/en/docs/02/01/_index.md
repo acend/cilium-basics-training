@@ -167,6 +167,8 @@ helm repo add cilium https://helm.cilium.io/
 
 and then we can install Cilium:
 
+{{% onlyWhenNot techlab %}}
+
 ```bash
 helm upgrade -i cilium cilium/cilium --version {{% param "ciliumVersion.preUpgrade" %}} \
   --namespace kube-system \
@@ -176,6 +178,21 @@ helm upgrade -i cilium cilium/cilium --version {{% param "ciliumVersion.preUpgra
   --set operator.replicas=1 \
   --wait
 ```
+{{% /onlyWhenNot %}}
+
+{{% onlyWhen techlab %}}
+
+```bash
+helm upgrade -i cilium cilium/cilium --version {{% param "ciliumVersion.postUpgrade" %}} \
+  --namespace kube-system \
+  --set ipam.operator.clusterPoolIPv4PodCIDRList={10.1.0.0/16} \
+  --set cluster.name=cluster1 \
+  --set cluster.id=1 \
+  --set operator.replicas=1 \
+  --set upgradeCompatibility=1.10 \
+  --wait
+```
+{{% /onlyWhen %}}
 
 For all values possible in the Cilium Helm chart, have a look at the [Repository](https://github.com/cilium/cilium/tree/master/install/kubernetes/cilium) or the [Helm Reference](https://docs.cilium.io/en/stable/helm-reference/) in Cilium's documentation.
 
