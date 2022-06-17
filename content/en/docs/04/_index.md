@@ -2,6 +2,7 @@
 title: "4. Metrics"
 weight: 4
 sectionnumber: 4
+OnlyWhenNot: techlab
 ---
 
 With metrics displayed in Grafana or another UI, we can get a quick overview of our cluster state and its traffic.
