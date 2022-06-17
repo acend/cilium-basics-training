@@ -189,7 +189,6 @@ helm upgrade -i cilium cilium/cilium --version {{% param "ciliumVersion.postUpgr
   --set cluster.name=cluster1 \
   --set cluster.id=1 \
   --set operator.replicas=1 \
-  --set upgradeCompatibility=1.10 \
   --wait
 ```
 {{% /onlyWhen %}}
