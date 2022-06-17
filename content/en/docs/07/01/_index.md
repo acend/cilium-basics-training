@@ -37,7 +37,7 @@ Again, in Kubernetes, all traffic is allowed by default, and since we did not ap
 
 Let us have a look at the following `CiliumNetworkPolicy`:
 
-{{< highlight yaml >}}{{< readfile file="content/en/docs/07/01/backend-egress-allow-fqdn.yaml" >}}{{< /highlight >}}
+{{< readfile file="/content/en/docs/07/01/backend-egress-allow-fqdn.yaml" code="true" lang="yaml" >}}
 
 The policy will deny all egress traffic from pods labeled `app=backend` except when traffic is destined for `kubernetes.io` or is a DNS request (necessary for resolving `kubernetes.io` from coredns). In the policy editor this looks like this:
 

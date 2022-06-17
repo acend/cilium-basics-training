@@ -16,7 +16,7 @@ We are going to deploy a global service and a sample application on both of our 
 
 First the Kubernetes service. Create a file `svc.yaml` with the following content:
 
-{{< highlight yaml >}}{{< readfile file="content/en/docs/09/02/svc.yaml" >}}{{< /highlight >}}
+{{< readfile file="/content/en/docs/09/02/svc.yaml" code="true" lang="yaml" >}}
 
 Apply this with:
 
@@ -29,7 +29,7 @@ Then deploy our sample application on both clusters.
 
 `cluster1.yaml`:
 
-{{< highlight yaml >}}{{< readfile file="content/en/docs/09/02/cluster1.yaml" >}}{{< /highlight >}}
+{{< readfile file="/content/en/docs/09/02/cluster1.yaml" code="true" lang="yaml" >}}
 
 ```bash
 kubectl --context cluster1 apply -f cluster1.yaml
@@ -37,7 +37,7 @@ kubectl --context cluster1 apply -f cluster1.yaml
 
 `cluster2.yaml`:
 
-{{< highlight yaml >}}{{< readfile file="content/en/docs/09/02/cluster2.yaml" >}}{{< /highlight >}}
+{{< readfile file="/content/en/docs/09/02/cluster2.yaml" code="true" lang="yaml" >}}
 
 ```bash
 kubectl --context cluster2 apply -f cluster2.yaml

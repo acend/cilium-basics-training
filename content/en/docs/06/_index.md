@@ -122,7 +122,7 @@ Until now ingress and egress policy enforcement are still disabled on all of our
 
 We block traffic by applying a network policy. Create a file `backend-ingress-deny.yaml` with the following content:
 
-{{< highlight yaml >}}{{< readfile file="content/en/docs/06/backend-ingress-deny.yaml" >}}{{< /highlight >}}
+{{< readfile file="/content/en/docs/06/backend-ingress-deny.yaml" code="true" lang="yaml" >}}
 
 The policy will deny all ingress traffic as it is of type Ingress but specifies no allow rule, and will be applied to all pods with the `app=backend` label thanks to the podSelector.
 
@@ -218,7 +218,7 @@ Above you see our original policy, we create an new one with the editor now.
 
 The file should look like this:
 
-{{< highlight yaml >}}{{< readfile file="content/en/docs/06/backend-allow-ingress-frontend.yaml" >}}{{< /highlight >}}
+{{< readfile file="/content/en/docs/06/backend-allow-ingress-frontend.yaml" code="true" lang="yaml" >}}
 
 Apply the new policy:
 
