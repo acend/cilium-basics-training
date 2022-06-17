@@ -2,6 +2,7 @@
 title: "10.2 Kubernetes Without kube-proxy"
 weight: 102
 sectionnumber: 10.2
+OnlyWhenNot: techlab
 ---
 
 In this lab, we are going to provision a new Kubernetes cluster without `kube-proxy` to use Cilium as a full replacement for it.

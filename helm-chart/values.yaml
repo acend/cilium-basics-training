@@ -32,6 +32,20 @@ acendTraining:
         useDefaultSecret: true
         appname: cilium-basics-training
         domain: k8s.puzzle.ch
+    - 
+      name: techlab
+      replicaCount: 1
+      image:
+        repository: quay.io/acend/cilium-basics-training
+        pullPolicy: Always
+        tag: ""
+        tagsuffix: "-techlab"
+      ingress:
+        annotations: 
+          kubernetes.io/ingress.class: nginx-public
+        secretOverride: acend-wildcard
+        appname: cilium-techlab
+        domain: training.acend.ch
 
 
 

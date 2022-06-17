@@ -2,6 +2,7 @@
 title: "11. Cilium Service Mesh"
 weight: 11
 sectionnumber: 11
+OnlyWhenNot: techlab
 ---
 Cilium Service Mesh enables functions like ingress or layer 7 loadbalancing.
 

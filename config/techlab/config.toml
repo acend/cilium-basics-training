@@ -1,0 +1,6 @@
+[params]
+enabledModule = "base techlab"
+
+[Languages]
+[Languages.en]
+title = "Cilium Techlab"

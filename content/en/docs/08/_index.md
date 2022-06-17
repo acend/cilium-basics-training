@@ -2,6 +2,7 @@
 title: "8. Transparent Encryption"
 weight: 8
 sectionnumber: 8
+OnlyWhenNot: techlab
 ---
 ## Host traffic/endpoint traffic encryption
 

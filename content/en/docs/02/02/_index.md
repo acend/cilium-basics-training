@@ -1,6 +1,7 @@
 ---
 title: "2.2 Upgrade Cilium"
 weight: 22
+OnlyWhenNot: techlab
 sectionnumber: 2.2
 ---
 
