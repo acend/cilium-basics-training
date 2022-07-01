@@ -4,8 +4,6 @@ title = "Cilium Basics Training"
 enableGitInfo = true
 enableEmoji = true
 
-theme = ["docsy-acend", "docsy-plus", "docsy"]
-
 languageCode = "en-us"
 
 contentDir = "content/en"
@@ -116,3 +114,20 @@ url = "https://twitter.com/acendch"
 name = "LinkedIn"
 icon = "fab fa-linkedin-in"
 url = "https://linkedin.com/company/acendch/"
+
+[module]
+  [module.hugoVersion]
+    extended = true
+    min = "0.100.0"
+  [[module.imports]]
+    path = "github.com/acend/docsy-acend"
+    disable = false
+  [[module.imports]]
+    path = "github.com/acend/docsy-plus"
+    disable = false
+  [[module.imports]]
+    path = "github.com/google/docsy"
+    disable = false
+  [[module.imports]]
+    path = "github.com/google/docsy/dependencies"
+    disable = false

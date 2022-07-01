@@ -14,16 +14,10 @@ The main part are the labs, which can be found at [content/en/docs](content/en/d
 
 This site is built using the static page generator [Hugo](https://gohugo.io/).
 
-The page uses the [docsy theme](https://github.com/google/docsy) which is included as a Git Submodule.
+The page uses the [docsy theme](https://github.com/google/docsy) which is included as a Hugo Module.
 Docsy is being enhanced using [docsy-plus](https://github.com/acend/docsy-plus/) as well as
 [docsy-acend](https://github.com/acend/docsy-acend/) and [docsy-puzzle](https://github.com/puzzle/docsy-puzzle/)
 for brand specific settings.
-
-After cloning the main repo, you need to initialize the submodule like this:
-
-```bash
-git submodule update --init --recursive
-```
 
 The default configuration uses the acend setup from [config/_default](config/_default/config.toml).
 Alternatively you can use the Puzzle setup from [config/puzzle](config/puzzle/config.toml), which is enabled with
@@ -36,12 +30,12 @@ Alternatively you can use the Puzzle setup from [config/puzzle](config/puzzle/co
 * [Docsy Plus](https://github.com/acend/docsy-plus/)
 
 
-### Update submodules for theme updates
+### Update hugo modules for theme updates
 
-Run the following command to update all submodules with their newest upstream version:
+Run the following command to update all modules with their newest upstream version:
 
 ```bash
-git submodule update --remote
+hugo mod get -u
 ```
 
 
