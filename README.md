@@ -32,7 +32,7 @@ Alternatively you can use the Puzzle setup from [config/puzzle](config/puzzle/co
 
 ### Update hugo modules for theme updates
 
-Run the following command to update all modules with their newest upstream version:
+Run the following command to update all hugo modules with their newest upstream version:
 
 ```bash
 hugo mod get -u
