@@ -111,7 +111,7 @@ storage-provisioner                1/1     Running   13 (17m ago)   59m
 As this is a new cluster we want to deploy our `simple-app.yaml` from lab 03 again to run some experiments. Run the following command using the `simple-app.yaml` from lab 03:
 
 ```bash
-kubectl create -f simple-app.yaml
+kubectl apply -f simple-app.yaml
 ```
 
 Now let us redo the task from lab 03.
