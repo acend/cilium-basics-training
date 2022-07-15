@@ -249,7 +249,7 @@ Image versions    cilium             quay.io/cilium/cilium:v1.11.2@sha256:ea6775
 Hubble is now enabled. We can now locally port-forward to the Hubble pod:
 
 ```bash
-cilium hubble port-forward&
+kubectl -n kube-system port-forward svc/hubble-relay 4245:80 &
 ```
 
 {{% alert title="Note" color="primary" %}}

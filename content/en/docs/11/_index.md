@@ -14,7 +14,7 @@ Cilium Service Mesh is still in beta, if you want more information about the cur
 
 ```bash
 minikube start --network-plugin=cni --cni=false --kubernetes-version={{% param "kubernetesVersion" %}} -p servicemesh
-cilium install --version -service-mesh:v1.11.0-beta.1 --config enable-envoy-config=true --kube-proxy-replacement=probe
+cilium install --helm-set ingressController.enabled=true,kubeProxyReplacement=partial --version v1.12.0-rc3
 ```
 
 Wait until cilium is ready (check with `cilium status`) and also enable the Hubble UI:

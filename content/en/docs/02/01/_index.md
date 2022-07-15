@@ -92,7 +92,7 @@ If you are working in our webshell based lab setup please always follow the Linu
 Execute the following command to download the `cilium` CLI:
 
 ```bash
-curl -L --remote-name-all https://github.com/cilium/cilium-cli/releases/latest/download/cilium-linux-amd64.tar.gz{,.sha256sum}
+curl -L --remote-name-all https://github.com/cilium/cilium-cli/releases/download/v{{% param "ciliumVersion.cli" %}}/cilium-linux-amd64.tar.gz{,.sha256sum}
 sha256sum --check cilium-linux-amd64.tar.gz.sha256sum
 sudo tar xzvfC cilium-linux-amd64.tar.gz /usr/local/bin
 rm cilium-linux-amd64.tar.gz{,.sha256sum}
@@ -104,7 +104,7 @@ rm cilium-linux-amd64.tar.gz{,.sha256sum}
 Execute the following command to download the `cilium` CLI:
 
 ```bash
-curl -L --remote-name-all https://github.com/cilium/cilium-cli/releases/latest/download/cilium-darwin-amd64.tar.gz{,.sha256sum}
+curl -L --remote-name-all https://github.com/cilium/cilium-cli/releases/download/v{{% param "ciliumVersion.cli" %}}/cilium-darwin-amd64.tar.gz{,.sha256sum}
 shasum -a 256 -c cilium-darwin-amd64.tar.gz.sha256sum
 sudo tar xzvfC cilium-darwin-amd64.tar.gz /usr/local/bin
 rm cilium-darwin-amd64.tar.gz{,.sha256sum}
@@ -347,7 +347,7 @@ ciliumnodes                        cn,ciliumn     cilium.io/v2                  
 
 And now we check all installed Cilium CRDs
 ```bash
-kubectl get ccnp,cep,cew,ciliumid,clrp,cnp,cn -A
+kubectl get ccnp,cep,cew,ciliumid,cnp,cn -A
 ```
 
 We see 1 node, 1 identity and 1 endpoint:
