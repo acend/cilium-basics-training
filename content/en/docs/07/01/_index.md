@@ -46,7 +46,7 @@ The policy will deny all egress traffic from pods labeled `app=backend` except w
 Create the file `backend-egress-allow-fqdn.yaml` with the above content and apply the network policy:
 
 ```bash
-kubectl apply -f {{ .Page.Permalink }}/backend-egress-allow-fqdn.yaml
+kubectl apply -f backend-egress-allow-fqdn.yaml
 ```
 
 and check if the `CiliumNetworkPolicy` was created:

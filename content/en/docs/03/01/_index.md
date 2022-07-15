@@ -101,7 +101,7 @@ Create a file `simple-app.yaml` with the above content.
 Deploy the app:
 
 ```bash
-kubectl apply -f {{ .Page.Permalink }}/simple-app.yaml
+kubectl apply -f simple-app.yaml
 ```
 
 this gives you the following output:

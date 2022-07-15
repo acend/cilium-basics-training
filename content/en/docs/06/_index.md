@@ -129,7 +129,7 @@ The policy will deny all ingress traffic as it is of type Ingress but specifies 
 Ok, then let's create the policy with:
 
 ```bash
-kubectl apply -f {{ .Page.Permalink }}/backend-ingress-deny.yaml
+kubectl apply -f backend-ingress-deny.yaml
 ```
 
 and you can verify the created `NetworkPolicy` with:
@@ -223,7 +223,7 @@ The file should look like this:
 Apply the new policy:
 
 ```bash
-kubectl apply -f {{ .Page.Permalink }}/backend-allow-ingress-frontend.yaml
+kubectl apply -f backend-allow-ingress-frontend.yaml
 ```
 
 and then execute the connectivity test again:
