@@ -47,10 +47,10 @@ Cilium will match these endpoints with labels and generate identities as a resul
 ```bash
 kubectl run test-identity --image=nginx
 sleep 5 # just wait for the pod to get ready
-kubectl -n kube-system exec daemonset/cilium -- cilium endpoint list | grep -E -B4  'IDENTITY|run'
+kubectl -n kube-system exec daemonset/cilium -- cilium endpoint list | grep -E -B4 -A1  'IDENTITY|run'
 kubectl label pod test-identity this=that
 sleep 5 # give some time to process
-kubectl -n kube-system exec daemonset/cilium -- cilium endpoint list | grep -E -B4  'IDENTITY|run'
+kubectl -n kube-system exec daemonset/cilium -- cilium endpoint list | grep -E -B4 -A1  'IDENTITY|run'
 kubectl delete pod test-identity
 ```
 
@@ -129,7 +129,7 @@ The policy will deny all ingress traffic as it is of type Ingress but specifies 
 Ok, then let's create the policy with:
 
 ```bash
-kubectl apply -f backend-ingress-deny.yaml
+kubectl apply -f {{ .Page.Permalink }}/backend-ingress-deny.yaml
 ```
 
 and you can verify the created `NetworkPolicy` with:
@@ -223,7 +223,7 @@ The file should look like this:
 Apply the new policy:
 
 ```bash
-kubectl apply -f backend-allow-ingress-frontend.yaml
+kubectl apply -f {{ .Page.Permalink }}/backend-allow-ingress-frontend.yaml
 ```
 
 and then execute the connectivity test again:
@@ -290,7 +290,7 @@ With `hubble observe` you can now check the packet being dropped as well as the 
 Our earlier `cilium hubble port-forward` should still be running (can be checked by running jobs or `ps aux | grep "cilium hubble port-forward"`). If it does not, Hubble status will fail and we have to run it again:
 
 ```bash
-cilium hubble port-forward&
+kubectl -n kube-system port-forward svc/hubble-relay 4245:80 &
 hubble status
 ```
 
@@ -322,3 +322,14 @@ kubectl -n kube-system exec -it ds/cilium -- cilium endpoint list
 ```
 
 And now we see that the pods with the label `app=backend` now have ingress policy enforcement enabled.
+
+
+```
+ENDPOINT   POLICY (ingress)   POLICY (egress)   IDENTITY   LABELS (source:key[=value])                                                        IPv6   IPv4         STATUS   
+           ENFORCEMENT        ENFORCEMENT                                                                                                                         
+42         Enabled            Disabled          82094      k8s:app=backend                                                                           10.1.0.208   ready   
+                                                           k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name=default                                         
+                                                           k8s:io.cilium.k8s.policy.cluster=cluster1                                                                      
+                                                           k8s:io.cilium.k8s.policy.serviceaccount=default                                                                
+                                                           k8s:io.kubernetes.pod.namespace=default                                                                        
+```

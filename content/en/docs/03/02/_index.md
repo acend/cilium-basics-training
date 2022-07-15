@@ -95,7 +95,7 @@ hubble status
 Our earlier command Cilium Hubble port-forward should still be running (can be checked by running jobs or `ps aux | grep "cilium hubble port-forward"`). If it does not, Hubble status will fail and we have to run it again:
 
 ```bash
-cilium hubble port-forward&
+kubectl -n kube-system port-forward svc/hubble-relay 4245:80 &
 hubble status
 ```
 
