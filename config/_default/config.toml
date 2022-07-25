@@ -74,11 +74,12 @@ github_branch = "main"
 
 enabledModule = "base"
 
-kubernetesVersion = "1.23.3"
+kubernetesVersion = "1.24.1"
 
 [params.ciliumVersion]
-preUpgrade = "1.10.5"
+preUpgrade = "1.10.12"
 postUpgrade = "1.11.6"
+cli = "0.11.11"
 
 # Enable Lunr.js offline search
 offlineSearch = true
