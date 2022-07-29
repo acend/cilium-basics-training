@@ -9,7 +9,7 @@ menu:
 
 This training can be done in two ways:
 
-* on a local machine (proceed with [Local Machine Setup](#local-setup))
+* on a local machine (proceed with [Local Machine Setup](#local-machine-setup))
 * on a provided virtual machine using the webshell (proceed with [Webshell access](#webshell-access))
 
 
