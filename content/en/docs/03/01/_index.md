@@ -19,8 +19,7 @@ So let us install the `hubble` CLI.
 Execute the following command to download the `hubble` CLI:
 
 ```bash
-export HUBBLE_VERSION=$(curl -s https://raw.githubusercontent.com/cilium/hubble/master/stable.txt)
-curl -L --remote-name-all https://github.com/cilium/hubble/releases/download/$HUBBLE_VERSION/hubble-linux-amd64.tar.gz{,.sha256sum}
+curl -L --remote-name-all https://github.com/cilium/hubble/releases/download/v{{% param "hubbleVersion" %}}/hubble-linux-amd64.tar.gz{,.sha256sum}
 sha256sum --check hubble-linux-amd64.tar.gz.sha256sum
 sudo tar xzvfC hubble-linux-amd64.tar.gz /usr/local/bin
 rm hubble-linux-amd64.tar.gz{,.sha256sum}
@@ -32,8 +31,7 @@ rm hubble-linux-amd64.tar.gz{,.sha256sum}
 Execute the following command to download the `hubble` CLI:
 
 ```bash
-export HUBBLE_VERSION=$(curl -s https://raw.githubusercontent.com/cilium/hubble/master/stable.txt)
-curl -L --remote-name-all https://github.com/cilium/hubble/releases/download/$HUBBLE_VERSION/hubble-darwin-amd64.tar.gz{,.sha256sum}
+curl -L --remote-name-all https://github.com/cilium/hubble/releases/download/v{{% param "hubbleVersion" %}}/hubble-darwin-amd64.tar.gz{,.sha256sum}
 shasum -a 256 -c hubble-darwin-amd64.tar.gz.sha256sum
 sudo tar xzvfC hubble-darwin-amd64.tar.gz /usr/local/bin
 rm hubble-darwin-amd64.tar.gz{,.sha256sum}
@@ -51,7 +49,7 @@ hubble version
 should show
 
 ```
-hubble v0.9.0 compiled with go1.17.3 on linux/amd64
+hubble {{% param "hubbleVersion" %}} compiled with go1.18.3 on linux/amd64
 ```
 
 or

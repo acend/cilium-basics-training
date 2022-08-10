@@ -30,16 +30,16 @@ helm upgrade -i cilium cilium/cilium --version {{% param "ciliumVersion.postUpgr
 
 We now verify that the Cilium agent has different metric endpoints exposed and list some of them:
 
-* hubble port 9091
-* cilium agent port 9090
+* hubble port 9965
+* cilium agent port 9962
 * cilium envoy port 9095
 
 ```bash
 CILIUM_AGENT_IP=$(kubectl get pod -n kube-system -l k8s-app=cilium -o jsonpath="{.items[0].status.hostIP}")
 kubectl run -n kube-system -it --env="CILIUM_AGENT_IP=${CILIUM_AGENT_IP}" --rm curl --image=curlimages/curl -- sh
 echo ${CILIUM_AGENT_IP}
-curl -s ${CILIUM_AGENT_IP}:9090/metrics | grep cilium_nodes_all_num #show total number of cilium nodes
-curl -s ${CILIUM_AGENT_IP}:9091/metrics | grep hubble_tcp_flags_total # show total number of TCP flags
+curl -s ${CILIUM_AGENT_IP}:9962/metrics | grep cilium_nodes_all_num #show total number of cilium nodes
+curl -s ${CILIUM_AGENT_IP}:9965/metrics | grep hubble_tcp_flags_total # show total number of TCP flags
 exit
 ```
 You should see now an output like this.
@@ -47,11 +47,11 @@ You should see now an output like this.
 If you don't see a command prompt, try pressing enter.
 echo ${CILIUM_AGENT_IP}
 192.168.49.2
-/ $ curl -s ${CILIUM_AGENT_IP}:9090/metrics | grep cilium_nodes_all_num #show total number of cilium nodes
+/ $ curl -s ${CILIUM_AGENT_IP}:9962/metrics | grep cilium_nodes_all_num #show total number of cilium nodes
 # HELP cilium_nodes_all_num Number of nodes managed
 # TYPE cilium_nodes_all_num gauge
 cilium_nodes_all_num 1
-/ $ curl -s ${CILIUM_AGENT_IP}:9091/metrics | grep hubble_tcp_flags_total # show total number of TCP flags
+/ $ curl -s ${CILIUM_AGENT_IP}:9965/metrics | grep hubble_tcp_flags_total # show total number of TCP flags
 # HELP hubble_tcp_flags_total TCP flag occurrences
 # TYPE hubble_tcp_flags_total counter
 hubble_tcp_flags_total{family="IPv4",flag="FIN"} 2704
@@ -63,7 +63,7 @@ hubble_tcp_flags_total{family="IPv4",flag="SYN-ACK"} 1549
 The Cilium agent pods run as DaemonSet on the HostNetwork. This means you could also directly call a node.
 ```bash
 NODE=$(kubectl get nodes --selector=kubernetes.io/role!=master -o jsonpath={.items[*].status.addresses[?\(@.type==\"InternalIP\"\)].address})
-curl -s $NODE:9090/metrics | grep cilium_nodes_all_num
+curl -s $NODE:9965/metrics | grep cilium_nodes_all_num
 ```
 {{% /alert %}}
 
@@ -77,7 +77,7 @@ It is not yet possible to get metrics from Cilium Envoy (port 9095). Envoy only 
 To make sense of metrics we store them in Prometheus and visualize them with Grafana dashboards.
 Install both into `cilium-monitoring` Namespace to store and visualize Cilium and Hubble metrics.
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/cilium/cilium/v1.11/examples/kubernetes/addons/prometheus/monitoring-example.yaml
+kubectl apply -f https://raw.githubusercontent.com/cilium/cilium/v1.12/examples/kubernetes/addons/prometheus/monitoring-example.yaml
 ```
 
 Make sure Prometheus and Grafana pods are up and running before continuing with the next step.

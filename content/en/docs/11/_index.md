@@ -9,12 +9,12 @@ Cilium Service Mesh enables functions like ingress or layer 7 loadbalancing.
 
 ## Task {{% param sectionnumber %}}.1: Installation
 
-Cilium Service Mesh is still in beta, if you want more information about the current status you can find it [here](https://github.com/cilium/cilium-service-mesh-beta). The beta version uses specific images, because of that we will use a dedicated cluster and install Cilium with the CLI.
-
 
 ```bash
-minikube start --network-plugin=cni --cni=false --kubernetes-version={{% param "kubernetesVersion" %}} -p servicemesh
-cilium install --helm-set ingressController.enabled=true,kubeProxyReplacement=partial --version v1.12.0-rc3
+helm upgrade -i cilium cilium/cilium --version 1.12.0 \
+  --namespace kube-system \
+  --reuse-values \
+  --set ingressController.enabled=true
 ```
 
 Wait until cilium is ready (check with `cilium status`) and also enable the Hubble UI:

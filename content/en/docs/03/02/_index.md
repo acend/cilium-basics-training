@@ -108,20 +108,18 @@ To start Hubble UI execute
 cilium hubble ui &
 ```
 
-In our Webshell environment you can use the public IP of the VM to access Hubble. A simple way it to execute
+In our Webshell environment you can use the public IP of the VM to access Hubble. A simple way is to execute
 
 ```bash
 echo "http://$(curl -s ifconfig.me):12000"
 ```
-and copy the output in a new browser tab. If you are working locally the browser should open http://localhost:12000/ (open it manually if not).
+and copy the output in a new browser tab. If you are working locally, the browser should open http://localhost:12000/ (open it manually if not).
 
 We can then access the graphical service map by selecting our `default` Namespace:
 
 ![Hubble UI Choose Namespace](../cilium_choose_ns.png)
 
-Then you should see a spinning circle and the message "Waiting for service map data..."
-
-Let's generate some network activity again:
+If you see a spinning circle and the message "Waiting for service map data..." you can generate some network activity again:
 
 ```bash
 for i in {1..10}; do

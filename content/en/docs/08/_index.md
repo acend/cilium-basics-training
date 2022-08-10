@@ -89,9 +89,6 @@ helm upgrade -i cilium cilium/cilium --version {{% param "ciliumVersion.postUpgr
 
 Afterwards restart the Cilium DaemonSet:
 
-{{% alert title="Note" color="primary" %}}
-You will see some deprecation warnings in this command. You can ignore them.
-{{% /alert %}}
 
 ```bash
 kubectl -n kube-system rollout restart ds cilium
@@ -148,10 +145,6 @@ helm upgrade -i cilium cilium/cilium --version {{% param "ciliumVersion.postUpgr
 ```
 
 and then restart the Cilium Daemonset:
-
-{{% alert title="Note" color="primary" %}}
-You will see some deprecation warnings in this command. You can ignore them.
-{{% /alert %}}
 
 ```bash
 kubectl -n kube-system rollout restart ds cilium

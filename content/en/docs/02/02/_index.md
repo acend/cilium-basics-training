@@ -53,7 +53,7 @@ When upgrading from one minor release to another minor release, for example 1.x 
 
 Helm can be used to either upgrade Cilium directly or to generate a new set of YAML files that can be used to upgrade an existing deployment via kubectl. By default, Helm will generate the new templates using the default values files packaged with each new release. You still need to ensure that you are specifying the equivalent options as used for the initial deployment, either by specifying them at the command line or by committing the values to a YAML file.
 
-To minimize datapath disruption during the upgrade, the `upgradeCompatibility` option should be set to the initial Cilium version which was installed in this cluster. Valid options are:
+To minimize datapath disruption during the upgrade, the `upgradeCompatibility` option should be set to the initial Cilium version which was installed in this cluster.
 
 ```bash
 helm upgrade -i cilium cilium/cilium --version {{% param "ciliumVersion.postUpgrade" %}} \
@@ -62,7 +62,7 @@ helm upgrade -i cilium cilium/cilium --version {{% param "ciliumVersion.postUpgr
   --set cluster.name=cluster1 \
   --set cluster.id=1 \
   --set operator.replicas=1 \
-  --set upgradeCompatibility=1.10 \
+  --set upgradeCompatibility=1.11 \
   --wait
 ```
 {{% alert title="Note" color="primary" %}}
