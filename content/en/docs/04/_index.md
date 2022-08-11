@@ -1,5 +1,5 @@
 ---
-title: "4. Metrics"
+title: "Metrics"
 weight: 4
 sectionnumber: 4
 OnlyWhenNot: techlab

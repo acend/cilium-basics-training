@@ -1,5 +1,5 @@
 ---
-title: "9.2 Load-balancing with Global Services"
+title: "Load-balancing with Global Services"
 weight: 92
 sectionnumber: 9.2
 OnlyWhenNot: techlab
@@ -47,7 +47,7 @@ Now you can execute from either cluster the following command (there are two x-w
 
 ```bash
 XWINGPOD=$(kubectl --context cluster1 get pod -l name=x-wing -o jsonpath="{.items[0].metadata.name}")
-for i in {1..10}; do                                       
+for i in {1..10}; do
   kubectl --context cluster1  exec -it $XWINGPOD -- curl -m 1 rebel-base
 done
 ```

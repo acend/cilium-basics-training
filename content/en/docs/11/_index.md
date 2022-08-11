@@ -1,5 +1,5 @@
 ---
-title: "11. Cilium Service Mesh"
+title: "Cilium Service Mesh"
 weight: 11
 sectionnumber: 11
 OnlyWhenNot: techlab
@@ -128,6 +128,7 @@ We see both backends replying. If you call it many times the distribution would 
 
 ```bash
 [                                                                                                                               [10/1834]
+<<<<<<< HEAD
   {                                                                                                                                      
     "id": 1,                                                                                                                             
     "body": "another secret information from a different backend"                                                                                                 
@@ -138,6 +139,18 @@ We see both backends replying. If you call it many times the distribution would 
     "id": 1,                                                                                                                             
     "body": "secret information"                                                                                                         
   }                                                                                                                                      
+=======
+  {
+    "id": 1,
+    "body": "another secret information"
+  }
+]pod "curl" deleted
+[
+  {
+    "id": 1,
+    "body": "secret information"
+  }
+>>>>>>> 82da453 (Use automatic section numbering)
 ]pod "curl" deleted
 ```
 This basic traffic control example shows only one function of Cilium Service Mesh, other features include i.e. TLS termination, support for tracing and canary-rollouts.

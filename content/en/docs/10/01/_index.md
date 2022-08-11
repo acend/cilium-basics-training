@@ -1,5 +1,5 @@
 ---
-title: "10.1 Host Firewall"
+title: "Host Firewall"
 weight: 101
 sectionnumber: 10.1
 OnlyWhenNot: techlab
@@ -106,23 +106,23 @@ You will see that the ingress policy enforcement for the `reserved:host` endpoin
 
 ```
 Defaulted container "cilium-agent" out of: cilium-agent, mount-cgroup (init), clean-cilium-state (init)
-ENDPOINT   POLICY (ingress)   POLICY (egress)   IDENTITY   LABELS (source:key[=value])                                                  IPv6   IPv4         STATUS   
-           ENFORCEMENT        ENFORCEMENT                                                                                                                   
-671        Disabled (Audit)   Disabled          1          k8s:minikube.k8s.io/commit=3e64b11ed75e56e4898ea85f96b2e4af0301f43d                              ready   
-                                                           k8s:minikube.k8s.io/name=cluster1                                                                        
-                                                           k8s:minikube.k8s.io/updated_at=2022_02_14T13_45_35_0700                                                  
-                                                           k8s:minikube.k8s.io/version=v1.25.1                                                                      
-                                                           k8s:node-access=ssh                                                                                      
-                                                           k8s:node-role.kubernetes.io/control-plane                                                                
-                                                           k8s:node-role.kubernetes.io/master                                                                       
-                                                           k8s:node.kubernetes.io/exclude-from-external-load-balancers                                              
-                                                           reserved:host                                                                                            
-810        Disabled           Disabled          129160     k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name=kube-system          10.1.0.249   ready   
-                                                           k8s:io.cilium.k8s.policy.cluster=cluster1                                                                
-                                                           k8s:io.cilium.k8s.policy.serviceaccount=coredns                                                          
-                                                           k8s:io.kubernetes.pod.namespace=kube-system                                                              
-                                                           k8s:k8s-app=kube-dns                                                                                     
-4081       Disabled           Disabled          4          reserved:health                  
+ENDPOINT   POLICY (ingress)   POLICY (egress)   IDENTITY   LABELS (source:key[=value])                                                  IPv6   IPv4         STATUS
+           ENFORCEMENT        ENFORCEMENT
+671        Disabled (Audit)   Disabled          1          k8s:minikube.k8s.io/commit=3e64b11ed75e56e4898ea85f96b2e4af0301f43d                              ready
+                                                           k8s:minikube.k8s.io/name=cluster1
+                                                           k8s:minikube.k8s.io/updated_at=2022_02_14T13_45_35_0700
+                                                           k8s:minikube.k8s.io/version=v1.25.1
+                                                           k8s:node-access=ssh
+                                                           k8s:node-role.kubernetes.io/control-plane
+                                                           k8s:node-role.kubernetes.io/master
+                                                           k8s:node.kubernetes.io/exclude-from-external-load-balancers
+                                                           reserved:host
+810        Disabled           Disabled          129160     k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name=kube-system          10.1.0.249   ready
+                                                           k8s:io.cilium.k8s.policy.cluster=cluster1
+                                                           k8s:io.cilium.k8s.policy.serviceaccount=coredns
+                                                           k8s:io.kubernetes.pod.namespace=kube-system
+                                                           k8s:k8s-app=kube-dns
+4081       Disabled           Disabled          4          reserved:health
 ```
 
 

@@ -1,5 +1,5 @@
 ---
-title: "8. Transparent Encryption"
+title: "Transparent Encryption"
 weight: 8
 sectionnumber: 8
 OnlyWhenNot: techlab

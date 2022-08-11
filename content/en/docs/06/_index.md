@@ -1,5 +1,5 @@
 ---
-title: "6. Network Policies"
+title: "Network Policies"
 weight: 6
 sectionnumber: 6
 OnlyWhenNot: techlab
@@ -141,7 +141,7 @@ kubectl get netpol
 which gives you an output similar to this:
 
 ```
-                                                    
+
 NAME                   POD-SELECTOR   AGE
 backend-ingress-deny   app=backend    2s
 
@@ -325,11 +325,11 @@ And now we see that the pods with the label `app=backend` now have ingress polic
 
 
 ```
-ENDPOINT   POLICY (ingress)   POLICY (egress)   IDENTITY   LABELS (source:key[=value])                                                        IPv6   IPv4         STATUS   
-           ENFORCEMENT        ENFORCEMENT                                                                                                                         
-42         Enabled            Disabled          82094      k8s:app=backend                                                                           10.1.0.208   ready   
-                                                           k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name=default                                         
-                                                           k8s:io.cilium.k8s.policy.cluster=cluster1                                                                      
-                                                           k8s:io.cilium.k8s.policy.serviceaccount=default                                                                
-                                                           k8s:io.kubernetes.pod.namespace=default                                                                        
+ENDPOINT   POLICY (ingress)   POLICY (egress)   IDENTITY   LABELS (source:key[=value])                                                        IPv6   IPv4         STATUS
+           ENFORCEMENT        ENFORCEMENT
+42         Enabled            Disabled          82094      k8s:app=backend                                                                           10.1.0.208   ready
+                                                           k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name=default
+                                                           k8s:io.cilium.k8s.policy.cluster=cluster1
+                                                           k8s:io.cilium.k8s.policy.serviceaccount=default
+                                                           k8s:io.kubernetes.pod.namespace=default
 ```

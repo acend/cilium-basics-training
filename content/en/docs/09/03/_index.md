@@ -1,5 +1,5 @@
 ---
-title: "9.3 Network Policies"
+title: "Network Policies"
 weight: 93
 sectionnumber: 9.3
 ---
@@ -28,7 +28,7 @@ Let us run our `curl` `for` loop again
 
 ```bash
 XWINGPOD=$(kubectl --context cluster1 get pod -l name=x-wing -o jsonpath="{.items[0].metadata.name}")
-for i in {1..10}; do                                       
+for i in {1..10}; do
   kubectl --context cluster1 exec -it $XWINGPOD -- curl -m 1 rebel-base
 done
 ```

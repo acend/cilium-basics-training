@@ -1,5 +1,5 @@
 ---
-title: "2.1 Install Cilium"
+title: "Install Cilium"
 weight: 21
 sectionnumber: 2.1
 ---
@@ -22,7 +22,7 @@ To start from a clean Kubernetes cluster, make sure `cluster1` is not yet availa
 {{% /alert %}}
 
 ```bash
-minikube start --network-plugin=cni --cni=false --kubernetes-version={{% param "kubernetesVersion" %}} -p cluster1 
+minikube start --network-plugin=cni --cni=false --kubernetes-version={{% param "kubernetesVersion" %}} -p cluster1
 ```
 
 {{% alert title="Note" color="primary" %}}
@@ -139,7 +139,7 @@ cilium status
 ```
 
 ```
-cilium status 
+cilium status
     /¯¯\
  /¯¯\__/¯¯\    Cilium:         1 errors
  \__/¯¯\__/    Operator:       disabled
@@ -147,8 +147,8 @@ cilium status
  \__/¯¯\__/    ClusterMesh:    disabled
     \__/
 
-Containers:      cilium             
-                 cilium-operator    
+Containers:      cilium
+                 cilium-operator
 Cluster Pods:    0/0 managed by Cilium
 Errors:          cilium    cilium    daemonsets.apps "cilium" not found
 
@@ -205,7 +205,7 @@ cilium status --wait
 command:
 
 ```
-cilium status 
+cilium status
     /¯¯\
  /¯¯\__/¯¯\    Cilium:         OK
  \__/¯¯\__/    Operator:       OK
@@ -355,7 +355,7 @@ kubectl get ccnp,cep,cew,ciliumid,cnp,cn -A
 We see 1 node, 1 identity and 1 endpoint:
 ```bash
 NAMESPACE     NAME                                               ENDPOINT ID   IDENTITY ID   INGRESS ENFORCEMENT   EGRESS ENFORCEMENT   VISIBILITY POLICY   ENDPOINT STATE   IPV4         IPV6
-kube-system   ciliumendpoint.cilium.io/coredns-64897985d-7485t   465           67688                                                                        ready            10.1.0.215   
+kube-system   ciliumendpoint.cilium.io/coredns-64897985d-7485t   465           67688                                                                        ready            10.1.0.215
 
 NAMESPACE   NAME                             NAMESPACE     AGE
             ciliumidentity.cilium.io/67688   kube-system   18m

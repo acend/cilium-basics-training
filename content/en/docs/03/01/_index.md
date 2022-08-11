@@ -1,5 +1,5 @@
 ---
-title: "3.1 Hubble"
+title: "Hubble"
 weight: 31
 sectionnumber: 3.1
 ---
@@ -140,9 +140,9 @@ replicaset.apps/frontend-76fbb99468      1         1         1       3m17s
 replicaset.apps/not-frontend-8f467ccbd   1         1         1       3m17s
 
 NAME                                                    ENDPOINT ID   IDENTITY ID   INGRESS ENFORCEMENT   EGRESS ENFORCEMENT   VISIBILITY POLICY   ENDPOINT STATE   IPV4         IPV6
-ciliumendpoint.cilium.io/backend-65f7c794cc-b9j66       144           67823                                                                        ready            10.1.0.44    
-ciliumendpoint.cilium.io/frontend-76fbb99468-mbzcm      1898          76556                                                                        ready            10.1.0.161   
-ciliumendpoint.cilium.io/not-frontend-8f467ccbd-cbks8   208           127021                                                                       ready            10.1.0.128   
+ciliumendpoint.cilium.io/backend-65f7c794cc-b9j66       144           67823                                                                        ready            10.1.0.44
+ciliumendpoint.cilium.io/frontend-76fbb99468-mbzcm      1898          76556                                                                        ready            10.1.0.161
+ciliumendpoint.cilium.io/not-frontend-8f467ccbd-cbks8   208           127021                                                                       ready            10.1.0.128
 
 NAME                              NAMESPACE     AGE
 ciliumidentity.cilium.io/127021   default       3m15s

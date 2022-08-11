@@ -1,5 +1,5 @@
 ---
-title: "3.2 Hubble UI"
+title: "Hubble UI"
 weight: 32
 sectionnumber: 3.2
 ---
