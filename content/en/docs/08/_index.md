@@ -91,7 +91,7 @@ helm upgrade -i cilium cilium/cilium --version {{% param "ciliumVersion.postUpgr
   --set prometheus.enabled=true \
   --set operator.prometheus.enabled=true \
   --set hubble.enabled=true \
-  --set hubble.metrics.enabled="{dns,drop:destinationContext=pod;sourceContext=pod,tcp,flow,port-distribution,icmp,http:destinationContext=pod}"
+  --set hubble.metrics.enabled="{dns,drop:destinationContext=pod;sourceContext=pod,tcp,flow,port-distribution,icmp,http:destinationContext=pod}" \
   `# enable wireguard:` \
   --set l7Proxy=false \
   --set encryption.enabled=true \
@@ -172,3 +172,13 @@ kubectl -n kube-system exec -ti ds/cilium -- cilium status | grep Encryption
 ```
 Encryption:                       Disabled
 ```
+
+
+remove the second node and move backend back to first node
+
+```bash
+minikube node delete cluster1-m02 --profile cluster1
+kubectl apply -f simple-app.yaml
+
+```
+

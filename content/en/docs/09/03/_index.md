@@ -60,8 +60,9 @@ All connections to `cluster2` are dropped while the ones to `cluster1` are still
 
 We will disconnect our cluster mesh again and delete the second cluster:
 
-````
+````bash
 cilium clustermesh disconnect --context cluster1 --destination-context cluster2
 minikube delete --profile cluster2
 minikube profile cluster1
+
 ````

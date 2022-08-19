@@ -176,7 +176,7 @@ command terminated with exit code 28
 The network policy correctly switched the default ingress behavior from default allow to default deny. We can also check this in Grafana.
 
 {{% alert title="Note" color="primary" %}}
-Note: our earlier Grafana port-forward should still be running (can be checked by running jobs or `ps aux | grep "cilium-monitoring"`). If it does not open the URL from the command output below (or http://localhost:3000/dashboards with a local setup).
+Note: our earlier Grafana port-forward should still be running (can be checked by running jobs or `ps aux | grep "grafana"`). If it does not open the URL from the command output below (or http://localhost:3000/dashboards with a local setup).
 
 ```bash
 kubectl -n cilium-monitoring port-forward service/grafana --address 0.0.0.0 --address :: 3000:3000 &
@@ -287,7 +287,7 @@ kubectl exec -ti ${NOT_FRONTEND} -- curl -I --connect-timeout 5 backend:8080
 With `hubble observe` you can now check the packet being dropped as well as the reason why (Policy denied).
 
 {{% alert title="Note" color="primary" %}}
-Our earlier `cilium hubble port-forward` should still be running (can be checked by running jobs or `ps aux | grep "cilium hubble port-forward"`). If it does not, Hubble status will fail and we have to run it again:
+Our earlier port-forward should still be running (can be checked by running jobs or `ps aux | grep "port-forward svc/hubble-relay"`). If it does not, Hubble status will fail and we have to run it again:
 
 ```bash
 kubectl -n kube-system port-forward svc/hubble-relay 4245:80 &

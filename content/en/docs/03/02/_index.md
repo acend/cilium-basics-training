@@ -44,20 +44,21 @@ kubectl get pods -A
 We see, there is again a new Pod running for the `hubble-ui` component.
 
 ```
-default       backend-56787b4bd7-dmzdh           1/1     Running   0          138m
-default       frontend-7cbdcb86fd-gdb4q          1/1     Running   0          138m
-default       not-frontend-5cf6d96558-gj4np      1/1     Running   0          138m
-kube-system   cilium-nz77s                       1/1     Running   0          8m48s
-kube-system   cilium-operator-8dd4dc946-n9ght    1/1     Running   0          174m
-kube-system   coredns-558bd4d5db-xzvc9           1/1     Running   0          174m
-kube-system   etcd-minikube                      1/1     Running   0          174m
-kube-system   hubble-relay-f6d85866c-csthd       1/1     Running   0          25m
-kube-system   hubble-ui-9b6d87f-zpvgp            3/3     Running   0          8m16s
-kube-system   kube-apiserver-minikube            1/1     Running   0          174m
-kube-system   kube-controller-manager-minikube   1/1     Running   0          174m
-kube-system   kube-proxy-bqs4d                   1/1     Running   0          174m
-kube-system   kube-scheduler-minikube            1/1     Running   0          174m
-kube-system   storage-provisioner                1/1     Running   1          174m
+NAMESPACE     NAME                               READY   STATUS    RESTARTS       AGE
+default       backend-6f884b6495-v7bvt           1/1     Running   0              94m
+default       frontend-77d99ffc5d-lcsph          1/1     Running   0              94m
+default       not-frontend-7db9747986-snjwp      1/1     Running   0              94m
+kube-system   cilium-ksr7h                       1/1     Running   0              102m
+kube-system   cilium-operator-6f5c6f768d-r2qgn   1/1     Running   0              102m
+kube-system   coredns-6d4b75cb6d-nf8wz           1/1     Running   0              115m
+kube-system   etcd-cluster1                      1/1     Running   0              115m
+kube-system   hubble-relay-84b4ddb556-nr7c8      1/1     Running   0              93m
+kube-system   hubble-ui-579fdfbc58-578g9         2/2     Running   0              19s
+kube-system   kube-apiserver-cluster1            1/1     Running   0              115m
+kube-system   kube-controller-manager-cluster1   1/1     Running   0              115m
+kube-system   kube-proxy-7l6qk                   1/1     Running   0              115m
+kube-system   kube-scheduler-cluster1            1/1     Running   0              115m
+kube-system   storage-provisioner                1/1     Running   1 (115m ago)   115m
 ```
 
 Cilium agents are restarting, and a new Hubble UI Pod is now present on top of the Hubble Relay pod. As above, we can wait for Cilium and Hubble to be ready by running:
@@ -75,21 +76,20 @@ cilium status --wait
  \__/¯¯\__/    ClusterMesh:    disabled
     \__/
 
+Deployment        hubble-relay       Desired: 1, Ready: 1/1, Available: 1/1
+Deployment        cilium-operator    Desired: 1, Ready: 1/1, Available: 1/1
 Deployment        hubble-ui          Desired: 1, Ready: 1/1, Available: 1/1
 DaemonSet         cilium             Desired: 1, Ready: 1/1, Available: 1/1
-Deployment        cilium-operator    Desired: 1, Ready: 1/1, Available: 1/1
-Deployment        hubble-relay       Desired: 1, Ready: 1/1, Available: 1/1
-Containers:       cilium-operator    Running: 1
-                  hubble-relay       Running: 1
+Containers:       cilium             Running: 1
                   hubble-ui          Running: 1
-                  cilium             Running: 1
+                  hubble-relay       Running: 1
+                  cilium-operator    Running: 1
 Cluster Pods:     6/6 managed by Cilium
-Image versions    cilium             quay.io/cilium/cilium:v1.10.5: 1
-                  cilium-operator    quay.io/cilium/operator-generic:v1.10.5: 1
-                  hubble-relay       quay.io/cilium/hubble-relay:v1.10.5: 1
-                  hubble-ui          quay.io/cilium/hubble-ui:v0.7.9@sha256:e0e461c680ccd083ac24fe4f9e19e675422485f04d8720635ec41f2ba9e5562c: 1
-                  hubble-ui          quay.io/cilium/hubble-ui-backend:v0.7.9@sha256:632c938ef6ff30e3a080c59b734afb1fb7493689275443faa1435f7141aabe76: 1
-                  hubble-ui          docker.io/envoyproxy/envoy:v1.18.2@sha256:e8b37c1d75787dd1e712ff389b0d37337dc8a174a63bed9c34ba73359dc67da7: 1
+Image versions    cilium             quay.io/cilium/cilium:v1.12.1:: 1
+                  hubble-ui          quay.io/cilium/hubble-ui:v0.9.1: 1
+                  hubble-ui          quay.io/cilium/hubble-ui-backend:v0.9.1: 1
+                  hubble-relay       quay.io/cilium/hubble-relay:v1.12.1: 1
+                  cilium-operator    quay.io/cilium/operator-generic:v1.12.1: 1
 ```
 
 
@@ -100,7 +100,7 @@ hubble status
 ```
 
 {{% alert title="Note" color="primary" %}}
-Our earlier command Cilium Hubble port-forward should still be running (can be checked by running jobs or `ps aux | grep "cilium hubble port-forward"`). If it does not, Hubble status will fail and we have to run it again:
+Our earlier command kubectl port-forward should still be running (can be checked by running jobs or `ps aux | grep "port-forward"`). If it does not, Hubble status will fail and we have to run it again:
 
 ```bash
 kubectl -n kube-system port-forward svc/hubble-relay 4245:80 &

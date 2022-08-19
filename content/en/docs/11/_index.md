@@ -22,7 +22,7 @@ For Kubernetes Ingress to work kubeProxyReplacement needs to be set to `strict` 
 
 Wait until cilium is ready (check with `cilium status`). For Ingress to work it is necessary to restart the agent and the operator.
 
-```
+```bash
 kubectl -n kube-system rollout restart deployment/cilium-operator
 kubectl -n kube-system rollout restart ds/cilium
 ```
