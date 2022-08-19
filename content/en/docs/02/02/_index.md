@@ -62,6 +62,7 @@ helm upgrade -i cilium cilium/cilium --version {{% param "ciliumVersion.postUpgr
   --set cluster.name=cluster1 \
   --set cluster.id=1 \
   --set operator.replicas=1 \
+  --set kubeProxyReplacement=disabled \
   --set upgradeCompatibility=1.11 \
   --wait
 ```

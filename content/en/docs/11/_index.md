@@ -4,7 +4,7 @@ weight: 11
 sectionnumber: 11
 OnlyWhenNot: techlab
 ---
-Cilium Service Mesh enables functions like ingress or layer 7 loadbalancing.
+With release 1.12 Cilium enabled direct ingress support and service mesh features like layer 7 loadbalancing
 
 
 ## Task {{% param sectionnumber %}}.1: Installation
@@ -14,13 +14,17 @@ Cilium Service Mesh enables functions like ingress or layer 7 loadbalancing.
 helm upgrade -i cilium cilium/cilium --version 1.12.0 \
   --namespace kube-system \
   --reuse-values \
-  --set ingressController.enabled=true
+  --set ingressController.enabled=true \
+  --wait
 ```
 
-Wait until cilium is ready (check with `cilium status`) and also enable the Hubble UI:
+For Kubernetes Ingress to work kubeProxyReplacement needs to be set to `strict` or `partial`. This is why we stay on the `kubeless` cluster.
 
-```bash
-cilium hubble enable --ui 
+Wait until cilium is ready (check with `cilium status`). For Ingress to work it is necessary to restart the agent and the operator.
+
+```
+kubectl -n kube-system rollout restart deployment/cilium-operator
+kubectl -n kube-system rollout restart ds/cilium
 ```
 
 
@@ -28,19 +32,7 @@ cilium hubble enable --ui
 
 Cilium Service Mesh can handle ingress traffic with its Envoy proxy.
 
-
-We deploy [the sample app from chapter 3](https://cilium-basics-pr-109.training.acend.ch/docs/03/01/#task-311-install-the-hubble-cli).
-
-
-{{< readfile file="/content/en/docs/03/01/simple-app.yaml" code="true" lang="yaml" >}}
-
-Apply it with:
-
-```bash
-kubectl apply -f simple-app.yaml
-```
-
-Now we add an ingress resource. Create a file named `ingress.yaml` with the text below inside:
+We will use this feature to allow traffic to our simple app from outside the cluster. Create a file named `ingress.yaml` with the text below inside:
 
 {{< readfile file="/content/en/docs/11/ingress.yaml" code="true" lang="yaml" >}}
 
@@ -53,10 +45,10 @@ kubectl apply -f ingress.yaml
 Check the ingress and the service:
 
 ```bash
-kubectl describe ingress
+kubectl describe ingress backend
 kubectl get svc cilium-ingress-backend
 ```
-We have successfully created an ingress service. Unfortunately, Minikube has no loadbalancer deployed and we will not get a public IP for our service (status stays pending)
+We see that Cilium created a Service with type Loadbalancer for our Ingress. Unfortunately, Minikube has no loadbalancer deployed, in our setup the external IP will stay pending.
 
 As a workaround, we can test the service from inside Kubernetes.
 
@@ -75,9 +67,6 @@ You should get the following output:
   }
 ]pod "curl" deleted
 ```
-{{% alert title="Note" color="primary" %}}
-We can also use `minikube tunnel -p servicemesh` and then curl the Cluster-IP directly from our browser.
-{{% /alert %}}
 
 
 ## Task {{% param sectionnumber %}}.3: Layer 7 Loadbalancing
@@ -141,7 +130,7 @@ We see both backends replying. If you call it many times the distribution would 
 [                                                                                                                               [10/1834]
   {                                                                                                                                      
     "id": 1,                                                                                                                             
-    "body": "another secret information"                                                                                                 
+    "body": "another secret information from a different backend"                                                                                                 
   }                                                                                                                                      
 ]pod "curl" deleted                                                                                                                      
 [                                                                                                                                        
@@ -152,13 +141,3 @@ We see both backends replying. If you call it many times the distribution would 
 ]pod "curl" deleted
 ```
 This basic traffic control example shows only one function of Cilium Service Mesh, other features include i.e. TLS termination, support for tracing and canary-rollouts.
-
-
-## Task {{% param sectionnumber %}}.4: Cleanup
-
-You can delete the Service Mesh cluster now.
-
-```bash
-minikube delete -p servicemesh
-```
-

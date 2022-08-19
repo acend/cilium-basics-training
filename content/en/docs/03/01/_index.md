@@ -167,7 +167,13 @@ When you install Cilium using Helm, then Hubble is already enabled. The value fo
 ```bash
 helm upgrade -i cilium cilium/cilium --version {{% param "ciliumVersion.postUpgrade" %}} \
   --namespace kube-system \
-  --reuse-values \
+  --set ipam.operator.clusterPoolIPv4PodCIDRList={10.1.0.0/16} \
+  --set cluster.name=cluster1 \
+  --set cluster.id=1 \
+  --set operator.replicas=1 \
+  --set upgradeCompatibility=1.11 \
+  --set kubeProxyReplacement=disabled \
+  `# hubble and hubble relay variables:` \
   --set hubble.enabled=true \
   --set hubble.relay.enabled=true \
   --wait

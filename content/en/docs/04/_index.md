@@ -17,12 +17,21 @@ We start by enabling different metrics, for dropped and HTTP traffic we also wan
 
 ```bash
 helm upgrade -i cilium cilium/cilium --version {{% param "ciliumVersion.postUpgrade" %}} \
-   --namespace kube-system \
-   --reuse-values \
-   --set prometheus.enabled=true \
-   --set operator.prometheus.enabled=true \
-   --set hubble.enabled=true \
-   --set hubble.metrics.enabled="{dns,drop:destinationContext=pod;sourceContext=pod,tcp,flow,port-distribution,icmp,http:destinationContext=pod}"
+  --namespace kube-system \
+  --set ipam.operator.clusterPoolIPv4PodCIDRList={10.1.0.0/16} \
+  --set cluster.name=cluster1 \
+  --set cluster.id=1 \
+  --set operator.replicas=1 \
+  --set upgradeCompatibility=1.11 \
+  --set kubeProxyReplacement=disabled \
+  --set hubble.enabled=true \
+  --set hubble.relay.enabled=true \
+  --set hubble.ui.enabled=true \
+  `# enable metrics:` \
+  --set prometheus.enabled=true \
+  --set operator.prometheus.enabled=true \
+  --set hubble.enabled=true \
+  --set hubble.metrics.enabled="{dns,drop:destinationContext=pod;sourceContext=pod,tcp,flow,port-distribution,icmp,http:destinationContext=pod}"
 ```
 
 

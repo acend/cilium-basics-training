@@ -63,28 +63,32 @@ helm upgrade -i cilium cilium/cilium --version {{% param "ciliumVersion.postUpgr
   --wait
 ```
 
-We can now compare the running Pods on `cluster2` and `kubeless` in the `kube-system` Namespace.
+{{% alert title="Note" color="primary" %}}
+Having a cluster running with kubeProxyReplacement set to partial breaks other minikube clusters running on the same host. If you still want to play around with `cluster1` after this chapter, you need to reboot your maching and start only cluster1 with `minikube start --profile cluster1`
+{{% /alert %}}
+
+We can now compare the running Pods on `cluster1` and `kubeless` in the `kube-system` Namespace.
 
 ```bash
-kubectl --context cluster2 -n kube-system get pod
+kubectl --context cluster1 -n kube-system get pod
 ```
 
 Here we see the running `kube-proxy` pod:
 
 ```
 NAME                                    READY   STATUS    RESTARTS       AGE
-cilium-mvh65                            1/1     Running   1 (100m ago)   104m
-cilium-operator-56f9689f68-twv8k        1/1     Running   2 (100m ago)   21h
-clustermesh-apiserver-5cc7c7b64-vbnwk   2/2     Running   4 (100m ago)   21h
-coredns-64897985d-f2s5c                 1/1     Running   2 (100m ago)   21h
-etcd-cluster2                           1/1     Running   2 (100m ago)   21h
-hubble-relay-6486ddd7cc-2c9p2           1/1     Running   2 (100m ago)   21h
-kube-apiserver-cluster2                 1/1     Running   2 (99m ago)    21h
-kube-controller-manager-cluster2        1/1     Running   2 (100m ago)   21h
-kube-proxy-gd8w4                        1/1     Running   2 (100m ago)   21h
-kube-scheduler-cluster2                 1/1     Running   2 (99m ago)    21h
-storage-provisioner                     1/1     Running   4 (100m ago)   21h
-
+cilium-operator-cb65bcb9b-cnxnq          1/1     Running   0             19m
+cilium-tq9kk                             1/1     Running   0             8m42s
+clustermesh-apiserver-67fd99fd9b-x2svr   2/2     Running   0             61m
+coredns-6d4b75cb6d-fd6vk                 1/1     Running   1 (82m ago)   97m
+etcd-cluster1                            1/1     Running   1 (82m ago)   98m
+hubble-relay-84b4ddb556-nvftg            1/1     Running   0             19m
+hubble-ui-579fdfbc58-t6xst               2/2     Running   0             19m
+kube-apiserver-cluster1                  1/1     Running   1 (81m ago)   98m
+kube-controller-manager-cluster1         1/1     Running   1 (82m ago)   98m
+kube-proxy-5j84l                         1/1     Running   1 (82m ago)   97m
+kube-scheduler-cluster1                  1/1     Running   1 (81m ago)   98m
+storage-provisioner                      1/1     Running   2 (82m ago)   98m
 ```
 
 On `kubeless` there is no `kube-proxy` Pod anymore:
@@ -166,15 +170,3 @@ Content-Length: 2109
 Date: Tue, 14 Dec 2021 10:01:16 GMT
 Connection: keep-alive
 ```
-
-
-## Task {{% param sectionnumber %}}.3: Cleanup
-
-We don't need `kubeless` anymore. You can stop `kubeless` with:
-
-```bash
-minikube stop -p kubeless
-minikube delete -p kubeless
-```
-
-to free up resources and speed up things.

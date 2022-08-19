@@ -6,11 +6,7 @@ OnlyWhenNot: techlab
 ---
 
 
-{{% alert title="Note" color="primary" %}}
-This lab should be done on your `cluster1`, make sure to switch to `cluster1` with `minikube profile cluster1`
-{{% /alert %}}
-
-Cilium is also capable to act as a host firewall to enforce security policies for Kubernetes nodes. In this lab, we are going to show you briefly how this works.
+Cilium is capable to act as a host firewall to enforce security policies for Kubernetes nodes. In this lab, we are going to show you briefly how this works.
 
 
 ## Task {{% param sectionnumber %}}.1: Enable the Host Firewall in Cilium
@@ -26,6 +22,7 @@ helm upgrade -i cilium cilium/cilium --version {{% param "ciliumVersion.postUpgr
   --set cluster.id=1 \
   --set operator.replicas=1 \
   --set upgradeCompatibility=1.11 \
+  --set kubeProxyReplacement=disabled \
   --set hubble.enabled=true \
   --set hubble.relay.enabled=true \
   --set hubble.ui.enabled=true \
@@ -33,6 +30,7 @@ helm upgrade -i cilium cilium/cilium --version {{% param "ciliumVersion.postUpgr
   --set operator.prometheus.enabled=true \
   --set hubble.enabled=true \
   --set hubble.metrics.enabled="{dns,drop:destinationContext=pod;sourceContext=pod,tcp,flow,port-distribution,icmp,http:destinationContext=pod}" \
+  `# enable host firewall:` \
   --set hostFirewall.enabled=true \
   --set devices='{eth0}' \
   --wait

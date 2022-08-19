@@ -35,8 +35,8 @@ done
 
 and as an result you see:
 
-```c
-url: (28) Connection timed out after 1001 milliseconds
+```
+curl: (28) Connection timed out after 1001 milliseconds
 command terminated with exit code 28
 curl: (28) Connection timed out after 1000 milliseconds
 command terminated with exit code 28
@@ -54,3 +54,14 @@ command terminated with exit code 28
 ```
 
 All connections to `cluster2` are dropped while the ones to `cluster1` are still working.
+
+
+## Task {{% param sectionnumber %}}.2: Cleanup
+
+We will disconnect our cluster mesh again and delete the second cluster:
+
+````
+cilium clustermesh disconnect --context cluster1 --destination-context cluster2
+minikube delete --profile cluster2
+minikube profile cluster1
+````

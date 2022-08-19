@@ -35,6 +35,7 @@ helm upgrade -i cilium cilium/cilium --version {{% param "ciliumVersion.postUpgr
   --set cluster.name=cluster2 \
   --set cluster.id=2 \
   --set operator.replicas=1 \
+  --set kubeProxyReplacement=disabled \
   --wait
 ```
 
@@ -207,4 +208,4 @@ Image versions    cilium                   quay.io/cilium/cilium:v{{% param "cil
 ```
 
 
-If you cannot resolve the issue with the above commands, follow the steps in [Cilium's Cluster Mesh Troubleshooting Guide](https://docs.cilium.io/en/v1.11/operations/troubleshooting/#troubleshooting-clustermesh).
+If you cannot resolve the issue with the above commands, follow the steps in [Cilium's Cluster Mesh Troubleshooting Guide](https://docs.cilium.io/en/v1.12/operations/troubleshooting/#troubleshooting-clustermesh).
