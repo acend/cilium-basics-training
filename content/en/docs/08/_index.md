@@ -177,6 +177,7 @@ Encryption:                       Disabled
 remove the second node and move backend back to first node
 
 ```bash
+kubectl delete -f simple-app.yaml
 minikube node delete cluster1-m02 --profile cluster1
 kubectl apply -f simple-app.yaml
 
