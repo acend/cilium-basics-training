@@ -79,7 +79,20 @@ Enabling WireGuard based encryption with Helm is simple:
 ```bash
 helm upgrade -i cilium cilium/cilium --version {{% param "ciliumVersion.postUpgrade" %}} \
   --namespace kube-system \
-  --reuse-values \
+  --set ipam.operator.clusterPoolIPv4PodCIDRList={10.1.0.0/16} \
+  --set cluster.name=cluster1 \
+  --set cluster.id=1 \
+  --set operator.replicas=1 \
+  --set upgradeCompatibility=1.11 \
+  --set kubeProxyReplacement=disabled \
+  --set hubble.enabled=true \
+  --set hubble.relay.enabled=true \
+  --set hubble.ui.enabled=true \
+  --set prometheus.enabled=true \
+  --set operator.prometheus.enabled=true \
+  --set hubble.enabled=true \
+  --set hubble.metrics.enabled="{dns,drop:destinationContext=pod;sourceContext=pod,tcp,flow,port-distribution,icmp,http:destinationContext=pod}" \
+  `# enable wireguard:` \
   --set l7Proxy=false \
   --set encryption.enabled=true \
   --set encryption.type=wireguard \
@@ -89,9 +102,6 @@ helm upgrade -i cilium cilium/cilium --version {{% param "ciliumVersion.postUpgr
 
 Afterwards restart the Cilium DaemonSet:
 
-{{% alert title="Note" color="primary" %}}
-You will see some deprecation warnings in this command. You can ignore them.
-{{% /alert %}}
 
 ```bash
 kubectl -n kube-system rollout restart ds cilium
@@ -149,10 +159,6 @@ helm upgrade -i cilium cilium/cilium --version {{% param "ciliumVersion.postUpgr
 
 and then restart the Cilium Daemonset:
 
-{{% alert title="Note" color="primary" %}}
-You will see some deprecation warnings in this command. You can ignore them.
-{{% /alert %}}
-
 ```bash
 kubectl -n kube-system rollout restart ds cilium
 ```
@@ -166,3 +172,14 @@ kubectl -n kube-system exec -ti ds/cilium -- cilium status | grep Encryption
 ```
 Encryption:                       Disabled
 ```
+
+
+remove the second node and move backend back to first node
+
+```bash
+kubectl delete -f simple-app.yaml
+minikube node delete cluster1-m02 --profile cluster1
+kubectl apply -f simple-app.yaml
+
+```
+

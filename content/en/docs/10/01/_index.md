@@ -6,11 +6,7 @@ OnlyWhenNot: techlab
 ---
 
 
-{{% alert title="Note" color="primary" %}}
-This lab should be done on your `cluster1`, make sure to switch to `cluster1` with `minikube profile cluster1`
-{{% /alert %}}
-
-Cilium is also capable to act as a host firewall to enforce security policies for Kubernetes nodes. In this lab, we are going to show you briefly how this works.
+Cilium is capable to act as a host firewall to enforce security policies for Kubernetes nodes. In this lab, we are going to show you briefly how this works.
 
 
 ## Task {{% param sectionnumber %}}.1: Enable the Host Firewall in Cilium
@@ -21,7 +17,20 @@ We need to enable the host firewall in the Cilium config. This can be done using
 ```bash
 helm upgrade -i cilium cilium/cilium --version {{% param "ciliumVersion.postUpgrade" %}} \
   --namespace kube-system \
-  --reuse-values \
+  --set ipam.operator.clusterPoolIPv4PodCIDRList={10.1.0.0/16} \
+  --set cluster.name=cluster1 \
+  --set cluster.id=1 \
+  --set operator.replicas=1 \
+  --set upgradeCompatibility=1.11 \
+  --set kubeProxyReplacement=disabled \
+  --set hubble.enabled=true \
+  --set hubble.relay.enabled=true \
+  --set hubble.ui.enabled=true \
+  --set prometheus.enabled=true \
+  --set operator.prometheus.enabled=true \
+  --set hubble.enabled=true \
+  --set hubble.metrics.enabled="{dns,drop:destinationContext=pod;sourceContext=pod,tcp,flow,port-distribution,icmp,http:destinationContext=pod}" \
+  `# enable host firewall:` \
   --set hostFirewall.enabled=true \
   --set devices='{eth0}' \
   --wait
@@ -30,10 +39,6 @@ helm upgrade -i cilium cilium/cilium --version {{% param "ciliumVersion.postUpgr
 The devices flag refers to the network devices Cilium is configured on such as `eth0`. Omitting this option leads Cilium to auto-detect what interfaces the host firewall applies to.
 
 Make sure to restart the `cilium` Pods with:
-
-{{% alert title="Note" color="primary" %}}
-You will see some deprecation warnings in this command. You can ignore them.
-{{% /alert %}}
 
 ```bash
 kubectl -n kube-system rollout restart ds/cilium

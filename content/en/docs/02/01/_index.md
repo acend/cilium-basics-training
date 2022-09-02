@@ -61,11 +61,11 @@ which produces the following output
 
 ```
 NAMESPACE     NAME                               READY   STATUS              RESTARTS   AGE
-kube-system   coredns-558bd4d5db-wdlrh           0/1     ContainerCreating   0          3m1s
-kube-system   etcd-minikube                      1/1     Running             0          3m7s
+kube-system   coredns-6d4b75cb6d-nf8wz           0/1     ContainerCreating   0          3m1s
+kube-system   etcd-cluster1                      1/1     Running             0          3m7s
 kube-system   kube-apiserver-cluster1            1/1     Running             0          3m16s
 kube-system   kube-controller-manager-cluster1   1/1     Running             0          3m7s
-kube-system   kube-proxy-9bjbq                   1/1     Running             0          3m1s
+kube-system   kube-proxy-7l6qk                   1/1     Running             0          3m1s
 kube-system   kube-scheduler-cluster1            1/1     Running             0          3m7s
 kube-system   storage-provisioner                1/1     Running             0          3m11s
 ```
@@ -85,7 +85,7 @@ The `cilium` CLI tool is a single binary file that can be downloaded from the pr
 ### Linux/Webshell Setup
 
 {{% alert title="Note" color="primary" %}}
-If you are working in our webshell based lab setup please always follow the Linux setup.
+If you are working in our webshell based lab setup, please always follow the Linux setup.
 {{% /alert %}}
 
 
@@ -122,10 +122,10 @@ cilium version
 which should give you an output similar to this:
 
 ```
-cilium-cli: v0.10.1 compiled with go1.17.6 on linux/amd64
-cilium image (default): v{{% param "ciliumVersion.preUpgrade" %}}
-cilium image (stable): v{{% param "ciliumVersion.preUpgrade" %}}
-cilium image (running): unknown. Unable to obtain cilium version, no cilium pods found in Namespace "kube-system"
+cilium-cli: v0.12.0 compiled with go1.18.4 on linux/amd64
+cilium image (default): v1.12.0
+cilium image (stable): v1.12.1
+cilium image (running): unknown. Unable to obtain cilium version, no cilium pods found in namespace "kube-system"
 ```
 
 {{% alert title="Note" color="primary" %}}
@@ -162,7 +162,7 @@ We don't have yet installed Cilium, therefore the error is perfectly fine.
 Let's install Cilium with Helm. First we need to add the Cilium Helm repository:
 
 ```bash
-helm repo add cilium https://helm.cilium.io/
+helm repo add cilium https://helm.cilium.io/ --force-update
 ```
 
 and then we can install Cilium:
@@ -176,6 +176,7 @@ helm upgrade -i cilium cilium/cilium --version {{% param "ciliumVersion.preUpgra
   --set cluster.name=cluster1 \
   --set cluster.id=1 \
   --set operator.replicas=1 \
+  --set kubeProxyReplacement=disabled \
   --wait
 ```
 {{% /onlyWhenNot %}}
@@ -193,7 +194,7 @@ helm upgrade -i cilium cilium/cilium --version {{% param "ciliumVersion.postUpgr
 ```
 {{% /onlyWhen %}}
 
-For all values possible in the Cilium Helm chart, have a look at the [Repository](https://github.com/cilium/cilium/tree/master/install/kubernetes/cilium) or the [Helm Reference](https://docs.cilium.io/en/stable/helm-reference/) in Cilium's documentation.
+For all values possible in the Cilium Helm chart, have a look at the [Repository](https://github.com/cilium/cilium/tree/master/install/kubernetes/cilium) or the [Helm Reference](https://docs.cilium.io/en/stable/helm-reference/) in Cilium's documentation. {{% onlyWhenNot techlab %}} We disable the kubeProxyReplacement because it would cause problems with multiple clusters running on the same kernel in the later chapters.{{% /onlyWhenNot %}}
 
 and now run again the
 
@@ -236,17 +237,16 @@ kubectl get pods -A
 and you should see now the Pods related to Cilium:
 
 ```
-kubectl get pod -A
 NAMESPACE     NAME                               READY   STATUS    RESTARTS   AGE
-kube-system   cilium-hsk8g                       1/1     Running   0          89s
-kube-system   cilium-operator-8dd4dc946-n9ght    1/1     Running   0          89s
-kube-system   coredns-558bd4d5db-xzvc9           1/1     Running   0          111s
-kube-system   etcd-minikube                      1/1     Running   0          118s
-kube-system   kube-apiserver-minikube            1/1     Running   0          118s
-kube-system   kube-controller-manager-minikube   1/1     Running   0          118s
-kube-system   kube-proxy-bqs4d                   1/1     Running   0          111s
-kube-system   kube-scheduler-minikube            1/1     Running   0          118s
-kube-system   storage-provisioner                1/1     Running   1          2m3s
+kube-system   cilium-operator-77577756b6-ksnbw   1/1     Running   0               58s
+kube-system   cilium-q4p6q                       1/1     Running   0               58s
+kube-system   coredns-6d4b75cb6d-nf8wz           1/1     Running   0               2m42s
+kube-system   etcd-cluster1                      1/1     Running   0               2m54s
+kube-system   kube-apiserver-cluster1            1/1     Running   0               2m54s
+kube-system   kube-controller-manager-cluster1   1/1     Running   0               2m54s
+kube-system   kube-proxy-7l6qk                   1/1     Running   0               2m42s
+kube-system   kube-scheduler-cluster1            1/1     Running   0               2m54s
+kube-system   storage-provisioner                1/1     Running   1 (2m11s ago)   2m53s
 
 ```
 
@@ -269,33 +269,37 @@ As we installed an older version of cilium but are using the latest `cilium` CLI
 ```
 ℹ️  Single-node environment detected, enabling single-node connectivity test
 ℹ️  Monitor aggregation detected, will skip some flow validation steps
-✨ [minikube] Creating namespace for connectivity check...
-✨ [minikube] Deploying echo-same-node service...
-✨ [minikube] Deploying same-node deployment...
-✨ [minikube] Deploying client deployment...
-✨ [minikube] Deploying client2 deployment...
-⌛ [minikube] Waiting for deployments [client client2 echo-same-node] to become ready...
-⌛ [minikube] Waiting for deployments [] to become ready...
-⌛ [minikube] Waiting for CiliumEndpoint for pod cilium-test/client-6488dcf5d4-fkv57 to appear...
-⌛ [minikube] Waiting for CiliumEndpoint for pod cilium-test/client2-5998d566b4-l66kc to appear...
-⌛ [minikube] Waiting for CiliumEndpoint for pod cilium-test/echo-same-node-745bd5c77-dqxr9 to appear...
-⌛ [minikube] Waiting for Service cilium-test/echo-same-node to become ready...
-⌛ [minikube] Waiting for NodePort 192.168.49.2:31041 (cilium-test/echo-same-node) to become ready...
+✨ [cluster1] Creating namespace cilium-test for connectivity check...
+✨ [cluster1] Deploying echo-same-node service...
+✨ [cluster1] Deploying DNS test server configmap...
+✨ [cluster1] Deploying same-node deployment...
+✨ [cluster1] Deploying client deployment...
+✨ [cluster1] Deploying client2 deployment...
+⌛ [cluster1] Waiting for deployments [client client2 echo-same-node] to become ready...
+⌛ [cluster1] Waiting for deployments [] to become ready...
+⌛ [cluster1] Waiting for CiliumEndpoint for pod cilium-test/client-7df6cfbf7b-2qcpk to appear...
+⌛ [cluster1] Waiting for CiliumEndpoint for pod cilium-test/client2-547996d7d8-9vf68 to appear...
+⌛ [cluster1] Waiting for pod cilium-test/client-7df6cfbf7b-2qcpk to reach DNS server on cilium-test/echo-same-node-7c4b55f976-bx6ms pod...
+⌛ [cluster1] Waiting for pod cilium-test/client2-547996d7d8-9vf68 to reach DNS server on cilium-test/echo-same-node-7c4b55f976-bx6ms pod...
+⌛ [cluster1] Waiting for pod cilium-test/client-7df6cfbf7b-2qcpk to reach default/kubernetes service...
+⌛ [cluster1] Waiting for pod cilium-test/client2-547996d7d8-9vf68 to reach default/kubernetes service...
+⌛ [cluster1] Waiting for CiliumEndpoint for pod cilium-test/echo-same-node-7c4b55f976-bx6ms to appear...
+⌛ [cluster1] Waiting for Service cilium-test/echo-same-node to become ready...
+⌛ [cluster1] Waiting for NodePort 192.168.49.2:31239 (cilium-test/echo-same-node) to become ready...
 ℹ️  Skipping IPCache check
-⌛ [minikube] Waiting for pod cilium-test/client-6488dcf5d4-fkv57 to reach default/kubernetes service...
-⌛ [minikube] Waiting for pod cilium-test/client2-5998d566b4-l66kc to reach default/kubernetes service...
 🔭 Enabling Hubble telescope...
 ⚠️  Unable to contact Hubble Relay, disabling Hubble telescope and flow validation: rpc error: code = Unavailable desc = connection error: desc = "transport: Error while dialing dial tcp 127.0.0.1:4245: connect: connection refused"
 ℹ️  Expose Relay locally with:
    cilium hubble enable
-   cilium status --wait
    cilium hubble port-forward&
+⚠️  Unable to detect Cilium version, assuming v1.12.0 for connectivity tests: unable to parse cilium version on pod "cilium-q4p6q": Invalid character(s) found in patch number "7\n"
+ℹ️  Cilium version: 1.12.0
 🏃 Running tests...
 
 [=] Test [no-policies]
 ....................
-[=] Test [allow-all]
-................
+[=] Test [allow-all-except-world]
+........
 [=] Test [client-ingress]
 ..
 [=] Test [echo-ingress]
@@ -307,14 +311,14 @@ As we installed an older version of cilium but are using the latest `cilium` CLI
 [=] Test [to-cidr-1111]
 ....
 [=] Test [echo-ingress-l7]
-..
+......
 [=] Test [client-egress-l7]
 ........
 [=] Test [dns-only]
 ........
 [=] Test [to-fqdns]
 ......
-✅ All 11 tests (76 actions) successful, 0 tests skipped, 0 scenarios skipped.
+✅ All 11 tests (72 actions) successful, 0 tests skipped, 0 scenarios skipped.
 ```
 
 Once done, clean up the connectivity test Namespace:
@@ -336,11 +340,9 @@ Which shows CRDs installed by Cilium:
 
 ```bash
 ciliumclusterwidenetworkpolicies   ccnp           cilium.io/v2                           false        CiliumClusterwideNetworkPolicy
-ciliumegressnatpolicies                           cilium.io/v2alpha1                     false        CiliumEgressNATPolicy
 ciliumendpoints                    cep,ciliumep   cilium.io/v2                           true         CiliumEndpoint
 ciliumexternalworkloads            cew            cilium.io/v2                           false        CiliumExternalWorkload
 ciliumidentities                   ciliumid       cilium.io/v2                           false        CiliumIdentity
-ciliumlocalredirectpolicies        clrp           cilium.io/v2                           true         CiliumLocalRedirectPolicy
 ciliumnetworkpolicies              cnp,ciliumnp   cilium.io/v2                           true         CiliumNetworkPolicy
 ciliumnodes                        cn,ciliumn     cilium.io/v2                           false        CiliumNode
 ``````
@@ -403,7 +405,8 @@ We make a few oberservations:
 * Kubernetes uses the configuration file with the lowest number so it takes Cilium with the prefix 05.
 * The configuration file is written as a  [CNI spec](https://github.com/containernetworking/cni/blob/master/SPEC.md#configuration-format).
 * The `cilium` binary was installed to /opt/cni/bin.
-* Cilium created two virtual network interfaces `cilium_net`,`cilium_host` (host traffic) and the vxlan overlay interface `cilium_vxlan`
+* Cilium created a virtual network interfaces pair `cilium_net`,`cilium_host` and the vxlan overlay interface `cilium_vxlan`.
+* We see the virtual network interface (`lxc` device) of the coredns pod (the Endpoint in Cilium terms).
 
 
 ## Install Cilium with the `cilium` cli
@@ -411,7 +414,7 @@ We make a few oberservations:
 This is what the installation with the `cilium` cli would have looked like:
 
 ```
-# cilium install --config cluster-pool-ipv4-cidr=10.1.0.0/16 --cluster-name cluster1 --cluster-id 1 --version v1.10.5
+# cilium install --config cluster-pool-ipv4-cidr=10.1.0.0/16 --cluster-name cluster1 --cluster-id 1 --version {{% param "ciliumVersion.preUpgrade" %}}
 ```
 Be careful to never use CLI and Helm together to install, this can break an already running Cilium installation.
 

@@ -35,6 +35,7 @@ helm upgrade -i cilium cilium/cilium --version {{% param "ciliumVersion.postUpgr
   --set cluster.name=cluster2 \
   --set cluster.id=2 \
   --set operator.replicas=1 \
+  --set kubeProxyReplacement=disabled \
   --wait
 ```
 
@@ -91,7 +92,7 @@ Now let us enable the Cluster Mesh using the `cilium` CLI on both clusters:
 
 
 {{% alert title="Note" color="primary" %}}
-Although so far we used Helm to install and update Cilium, enabling Cilium Service Mesh using Helm is currently [unsupported](https://github.com/cilium/cilium/pull/17851). We have to make an exception from the rule to never mix Helm and CLI installations and do it with the CLI.
+Although so far we used Helm to install and update Cilium, enabling Cilium Service Mesh using Helm is currently [undocumented](https://github.com/cilium/cilium/issues/19057). We make an exception from the rule to never mix Helm and CLI installations and do it with the CLI.
 {{% /alert %}}
 
 ```bash
@@ -207,4 +208,4 @@ Image versions    cilium                   quay.io/cilium/cilium:v{{% param "cil
 ```
 
 
-If you cannot resolve the issue with the above commands, follow the steps in [Cilium's Cluster Mesh Troubleshooting Guide](https://docs.cilium.io/en/v1.11/operations/troubleshooting/#troubleshooting-clustermesh).
+If you cannot resolve the issue with the above commands, follow the steps in [Cilium's Cluster Mesh Troubleshooting Guide](https://docs.cilium.io/en/v1.12/operations/troubleshooting/#troubleshooting-clustermesh).

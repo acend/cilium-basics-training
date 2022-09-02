@@ -19,11 +19,11 @@ So let us install the `hubble` CLI.
 Execute the following command to download the `hubble` CLI:
 
 ```bash
-export HUBBLE_VERSION=$(curl -s https://raw.githubusercontent.com/cilium/hubble/master/stable.txt)
-curl -L --remote-name-all https://github.com/cilium/hubble/releases/download/$HUBBLE_VERSION/hubble-linux-amd64.tar.gz{,.sha256sum}
+curl -L --remote-name-all https://github.com/cilium/hubble/releases/download/v{{% param "hubbleVersion" %}}/hubble-linux-amd64.tar.gz{,.sha256sum}
 sha256sum --check hubble-linux-amd64.tar.gz.sha256sum
 sudo tar xzvfC hubble-linux-amd64.tar.gz /usr/local/bin
 rm hubble-linux-amd64.tar.gz{,.sha256sum}
+
 ```
 
 
@@ -32,11 +32,11 @@ rm hubble-linux-amd64.tar.gz{,.sha256sum}
 Execute the following command to download the `hubble` CLI:
 
 ```bash
-export HUBBLE_VERSION=$(curl -s https://raw.githubusercontent.com/cilium/hubble/master/stable.txt)
-curl -L --remote-name-all https://github.com/cilium/hubble/releases/download/$HUBBLE_VERSION/hubble-darwin-amd64.tar.gz{,.sha256sum}
+curl -L --remote-name-all https://github.com/cilium/hubble/releases/download/v{{% param "hubbleVersion" %}}/hubble-darwin-amd64.tar.gz{,.sha256sum}
 shasum -a 256 -c hubble-darwin-amd64.tar.gz.sha256sum
 sudo tar xzvfC hubble-darwin-amd64.tar.gz /usr/local/bin
 rm hubble-darwin-amd64.tar.gz{,.sha256sum}
+
 ```
 
 
@@ -51,7 +51,7 @@ hubble version
 should show
 
 ```
-hubble v0.9.0 compiled with go1.17.3 on linux/amd64
+hubble {{% param "hubbleVersion" %}} compiled with go1.18.3 on linux/amd64
 ```
 
 or
@@ -169,7 +169,13 @@ When you install Cilium using Helm, then Hubble is already enabled. The value fo
 ```bash
 helm upgrade -i cilium cilium/cilium --version {{% param "ciliumVersion.postUpgrade" %}} \
   --namespace kube-system \
-  --reuse-values \
+  --set ipam.operator.clusterPoolIPv4PodCIDRList={10.1.0.0/16} \
+  --set cluster.name=cluster1 \
+  --set cluster.id=1 \
+  --set operator.replicas=1 \
+  --set upgradeCompatibility=1.11 \
+  --set kubeProxyReplacement=disabled \
+  `# hubble and hubble relay variables:` \
   --set hubble.enabled=true \
   --set hubble.relay.enabled=true \
   --wait
@@ -203,19 +209,19 @@ kubectl get pod -A
 
 ```
 NAMESPACE     NAME                               READY   STATUS    RESTARTS   AGE
-default       backend-56787b4bd7-dmzdh           1/1     Running   0          114m
-default       frontend-7cbdcb86fd-gdb4q          1/1     Running   0          114m
-default       not-frontend-5cf6d96558-gj4np      1/1     Running   0          114m
-kube-system   cilium-28kmn                       1/1     Running   0          73s
-kube-system   cilium-operator-8dd4dc946-n9ght    1/1     Running   0          149m
-kube-system   coredns-558bd4d5db-xzvc9           1/1     Running   0          150m
-kube-system   etcd-minikube                      1/1     Running   0          150m
-kube-system   hubble-relay-f6d85866c-csthd       1/1     Running   0          41s
-kube-system   kube-apiserver-minikube            1/1     Running   0          150m
-kube-system   kube-controller-manager-minikube   1/1     Running   0          150m
-kube-system   kube-proxy-bqs4d                   1/1     Running   0          150m
-kube-system   kube-scheduler-minikube            1/1     Running   0          150m
-kube-system   storage-provisioner                1/1     Running   1          150m
+default       backend-6f884b6495-v7bvt           1/1     Running   0             52s
+default       frontend-77d99ffc5d-lcsph          1/1     Running   0             52s
+default       not-frontend-7db9747986-snjwp      1/1     Running   0             52s
+kube-system   cilium-ksr7h                       1/1     Running   0             9m16s
+kube-system   cilium-operator-6f5c6f768d-r2qgn   1/1     Running   0             9m17s
+kube-system   coredns-6d4b75cb6d-nf8wz           1/1     Running   0             22m
+kube-system   etcd-cluster1                      1/1     Running   0             22m
+kube-system   hubble-relay-84b4ddb556-nr7c8      1/1     Running   0             10s
+kube-system   kube-apiserver-cluster1            1/1     Running   0             22m
+kube-system   kube-controller-manager-cluster1   1/1     Running   0             22m
+kube-system   kube-proxy-7l6qk                   1/1     Running   0             22m
+kube-system   kube-scheduler-cluster1            1/1     Running   0             22m
+kube-system   storage-provisioner                1/1     Running   1 (21m ago)   22m
 ```
 
 Cilium agents are restarting, and a new Hubble Relay pod is now present. We can wait for Cilium and Hubble to be ready by running:

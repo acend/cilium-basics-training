@@ -22,19 +22,19 @@ To run this training on your local machine please make sure the following requir
 
 * Operating System: Linux with Kernel >= 4.9.17 or MacOS
 * Docker [installed](https://docs.docker.com/get-docker/)
-* kubectl >= 1.22 [installed](https://kubernetes.io/docs/tasks/tools/#kubectl)
-* Minikube installed
-* Helm installed
+* kubectl >= 1.24 [installed](https://kubernetes.io/docs/tasks/tools/#kubectl)
+* minikube >= 1.26 installed
+* helm installed
 * Minimum 8GB RAM
 
-A note on Windows with WSL2: As of February 2022 the default kernel in WSL is missing some Netfilter modules. You can compile it [yourself](https://github.com/cilium/cilium/issues/17745#issuecomment-1004299480), but the training staff cannot give you any support with cluster related issues.
+A note on Windows with WSL2: As of August 2022 the default kernel in WSL is missing some Netfilter modules. You can compile it [yourself](https://github.com/cilium/cilium/issues/17745#issuecomment-1004299480), but the training staff cannot give you any support with cluster related issues.
 
 
-## Install Minikube
+## Install minikube
 
-This training uses [Minikube](https://minikube.sigs.k8s.io/docs/) to provide a Kubernetes Cluster.
+This training uses [minikube](https://minikube.sigs.k8s.io/docs/) to provide a Kubernetes Cluster.
 
-Check the [Minikube start Guide](https://minikube.sigs.k8s.io/docs/start/) for instructions on how to install minikube on your system. If you are using the provided virtual machine minikube is already installed.
+Check the [minikube start Guide](https://minikube.sigs.k8s.io/docs/start/) for instructions on how to install minikube on your system. If you are using the provided virtual machine minikube is already installed.
 
 
 ## Install helm
