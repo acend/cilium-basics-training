@@ -7,6 +7,8 @@ github.com/acend/docsy-plus v0.0.0-20220428195954-da462686a1f4 h1:NH8RTlmPMcTPxf
 github.com/acend/docsy-plus v0.0.0-20220428195954-da462686a1f4/go.mod h1:FUTTPmi3S92rVMbCYqXdGNxixdyqACBrFTK7dOuMttQ=
 github.com/acend/docsy-plus v0.0.0-20220803122230-63e7228e737f h1:RMe3ZZ9KHUImhufaGViI6gnSTraEk+xvlTu9ae1lbys=
 github.com/acend/docsy-plus v0.0.0-20220803122230-63e7228e737f/go.mod h1:YDHqf+DCZcx5HvKGzaBluPmLfgHQ2GKkYjggvF98jR4=
+github.com/acend/docsy-plus v0.0.0-20221007192802-3b68a39bfb09 h1:6L6dny1gmnYw6sEZBh7gSCzbmdpOVdhN5sR1ZFt1Kj0=
+github.com/acend/docsy-plus v0.0.0-20221007192802-3b68a39bfb09/go.mod h1:YDHqf+DCZcx5HvKGzaBluPmLfgHQ2GKkYjggvF98jR4=
 github.com/google/docsy v0.4.0 h1:Eyt2aiDC1fnw/Qq/9xnIqUU5n5Yyk4c8gX3nBDdTv/4=
 github.com/google/docsy v0.4.0/go.mod h1:vJjGkHNaw9bO42gpFTWwAUzHZWZEVlK46Kx7ikY5c7Y=
 github.com/google/docsy/dependencies v0.4.0 h1:FXwyjtuFfPIPBauU2t7uIAgS6VYfJf+OD5pzxGvkQsQ=
