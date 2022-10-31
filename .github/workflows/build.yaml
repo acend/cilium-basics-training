@@ -45,7 +45,7 @@ jobs:
           password: ${{ secrets.QUAYIO_TOKEN }}
       -
         name: Log in to the ghcr.io Container registry
-        uses: docker/login-action@21f251affc0769ccac8a1cf17e937592fb492337
+        uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
