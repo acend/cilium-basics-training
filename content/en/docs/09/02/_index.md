@@ -1,14 +1,13 @@
 ---
 title: "Load-balancing with Global Services"
 weight: 92
-sectionnumber: 9.2
 OnlyWhenNot: techlab
 ---
 
 This lab will guide you to perform load-balancing and service discovery across multiple Kubernetes clusters.
 
 
-## Task {{% param sectionnumber %}}.1: Load-balancing with Global Services
+## {{% task %}} Load-balancing with Global Services
 
 Establishing load-balancing between clusters is achieved by defining a Kubernetes service with an identical name and Namespace in each cluster and adding the `annotation io.cilium/global-service: "true"` to declare it global. Cilium will automatically perform load-balancing to pods in both clusters.
 

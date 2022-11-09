@@ -1,7 +1,6 @@
 ---
 title: "Transparent Encryption"
 weight: 8
-sectionnumber: 8
 OnlyWhenNot: techlab
 ---
 ## Host traffic/endpoint traffic encryption
@@ -9,7 +8,7 @@ OnlyWhenNot: techlab
 To secure communication inside a Kubernetes cluster Cilium supports transparent encryption of traffic between Cilium-managed endpoints either using IPsec or [WireGuard®](https://www.wireguard.com/).
 
 
-## Task {{% param sectionnumber %}}.1: Increase cluster size
+## {{% task %}} Increase cluster size
 
 By default Minikube creates single-node clusters. Add a second node to the cluster:
 
@@ -18,7 +17,7 @@ minikube -p cluster1 node add
 ```
 
 
-## Task {{% param sectionnumber %}}.2: Move frontend app to a different node
+## {{% task %}} Move frontend app to a different node
 
 To see traffic between nodes, we move the frontend pod from Chapter 3 to the newly created node:
 
@@ -50,7 +49,7 @@ xwing                          1/1     Running       0             11m   10.1.0.
 ```
 
 
-## Task {{% param sectionnumber %}}.3:  Sniff traffic between nodes
+## {{% task %}} Sniff traffic between nodes
 
 To check if we see unencrypted traffic between nodes we will use tcpdump.
 Let us filter on the host interfce for all packets containing the string `password`:
@@ -72,7 +71,7 @@ done
 You should now see our string `password` sniffed in the network traffic. Hit `Ctrl+C` to stop sniffing but keep the second terminal open.
 
 
-## Task {{% param sectionnumber %}}.4:  Enable node traffic encryption with WireGuard
+## {{% task %}} Enable node traffic encryption with WireGuard
 
 Enabling WireGuard based encryption with Helm is simple:
 
@@ -110,7 +109,7 @@ kubectl -n kube-system rollout restart ds cilium
 Currently, L7 policy enforcement and visibility is [not supported](https://github.com/cilium/cilium/issues/15462) with WireGuard, this is why we have to disable it.
 
 
-## Task {{% param sectionnumber %}}.5:  Verify encryption is working
+## {{% task %}} Verify encryption is working
 
 
 Verify the number of peers in encryption is 1 (this can take a while, the number is sum of nodes - 1)
@@ -144,7 +143,7 @@ As you should see the traffic is encrypted now and we can't find our string anym
 Hit `Ctrl+C` to stop sniffing. You can close the second terminal with `exit`.
 
 
-## Task {{% param sectionnumber %}}.6: CleanUp
+## {{% task %}} CleanUp
 
 To not mess up the next ClusterMesh Lab we are going to disable WireGuard encryption again:
 

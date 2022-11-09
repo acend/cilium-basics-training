@@ -1,14 +1,13 @@
 ---
 title: "Kubernetes Without kube-proxy"
 weight: 102
-sectionnumber: 10.2
 OnlyWhenNot: techlab
 ---
 
 In this lab, we are going to provision a new Kubernetes cluster without `kube-proxy` to use Cilium as a full replacement for it.
 
 
-## Task {{% param sectionnumber %}}.1: Deploy a new Kubernetes Cluster without `kube-proxy`
+## {{% task %}} Deploy a new Kubernetes Cluster without `kube-proxy`
 
 
 Create a new Kubernetes cluster using `minikube`. As `minikube` uses `kubeadm` we can skip the phase where `kubeadm` installs the `kube-proxy` addon. Execute the following command to create a third cluster:
@@ -36,7 +35,7 @@ minikube start --network-plugin=cni --cni=false --kubernetes-version={{% param "
 ```
 
 
-## Task {{% param sectionnumber %}}.1: Deploy Cilium and enable the Kube Proxy replacement
+## {{% task %}} Deploy Cilium and enable the Kube Proxy replacement
 
 As the `cilium` and `cilium-operator` Pods by default try to communicate with the Kubernetes API using the default `kubernetes` service IP, they cannot do this with disabled `kube-proxy`. We, therefore, need to set the `KUBERNETES_SERVICE_HOST` and `KUBERNETES_SERVICE_PORT` environment variables to tell the two Pods how to connect to the Kubernetes API.
 
@@ -110,7 +109,7 @@ storage-provisioner                1/1     Running   13 (17m ago)   59m
 ```
 
 
-## Task {{% param sectionnumber %}}.2: Deploy our simple app again to the new cluster
+## {{% task %}} Deploy our simple app again to the new cluster
 
 As this is a new cluster we want to deploy our `simple-app.yaml` from lab 03 again to run some experiments. Run the following command using the `simple-app.yaml` from lab 03:
 

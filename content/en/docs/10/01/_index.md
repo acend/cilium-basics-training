@@ -1,7 +1,6 @@
 ---
 title: "Host Firewall"
 weight: 101
-sectionnumber: 10.1
 OnlyWhenNot: techlab
 ---
 
@@ -9,7 +8,7 @@ OnlyWhenNot: techlab
 Cilium is capable to act as a host firewall to enforce security policies for Kubernetes nodes. In this lab, we are going to show you briefly how this works.
 
 
-## Task {{% param sectionnumber %}}.1: Enable the Host Firewall in Cilium
+## {{% task %}} Enable the Host Firewall in Cilium
 
 We need to enable the host firewall in the Cilium config. This can be done using Helm:
 
@@ -47,7 +46,7 @@ kubectl -n kube-system rollout restart ds/cilium
 At this point, the Cilium-managed nodes are ready to enforce Network Policies.
 
 
-## Task {{% param sectionnumber %}}.2: Attach a Label to the Node
+## {{% task %}} Attach a Label to the Node
 
 In this lab, we will apply host policies only to nodes with the label `node-access=ssh`. We thus first need to attach that label to a node in the cluster.
 
@@ -56,7 +55,7 @@ kubectl label node cluster1 node-access=ssh
 ```
 
 
-## Task {{% param sectionnumber %}}.2: Enable Policy Audit Mode for the Host Endpoint
+## {{% task %}} Enable Policy Audit Mode for the Host Endpoint
 
 [Host Policies](https://docs.cilium.io/en/latest/policy/language/#hostpolicies) enforce access control over connectivity to and from nodes. Particular care must be taken to ensure that when host policies are imported, Cilium does not block access to the nodes or break the cluster’s normal behavior (for example by blocking communication with kube-apiserver).
 
@@ -81,7 +80,7 @@ PolicyAuditMode          Enabled
 ```
 
 
-## Task {{% param sectionnumber %}}.3: Apply a Host Network Policy
+## {{% task %}} Apply a Host Network Policy
 
 Host Policies match on node labels using a Node Selector to identify the nodes to which the policy applies. The following policy applies to all nodes. It allows communications from outside the cluster only on port TCP/22. All communications from the cluster to the hosts are allowed.
 
@@ -165,7 +164,7 @@ Policy verdict log: flow 0x6b5b1b60 local EP ID 671, remote ID world, proto 6, i
 ```
 
 
-## Task {{% param sectionnumber %}}.4: Clean Up
+## {{% task %}} Clean Up
 
 Once you are confident all required communication to the host from outside the cluster is allowed, you can disable policy audit mode to enforce the host policy.
 
