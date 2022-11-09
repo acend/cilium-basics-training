@@ -1,7 +1,6 @@
 ---
-title: "10.1 Host Firewall"
+title: "Host Firewall"
 weight: 101
-sectionnumber: 10.1
 OnlyWhenNot: techlab
 ---
 
@@ -9,7 +8,7 @@ OnlyWhenNot: techlab
 Cilium is capable to act as a host firewall to enforce security policies for Kubernetes nodes. In this lab, we are going to show you briefly how this works.
 
 
-## Task {{% param sectionnumber %}}.1: Enable the Host Firewall in Cilium
+## {{% task %}} Enable the Host Firewall in Cilium
 
 We need to enable the host firewall in the Cilium config. This can be done using Helm:
 
@@ -47,7 +46,7 @@ kubectl -n kube-system rollout restart ds/cilium
 At this point, the Cilium-managed nodes are ready to enforce Network Policies.
 
 
-## Task {{% param sectionnumber %}}.2: Attach a Label to the Node
+## {{% task %}} Attach a Label to the Node
 
 In this lab, we will apply host policies only to nodes with the label `node-access=ssh`. We thus first need to attach that label to a node in the cluster.
 
@@ -56,7 +55,7 @@ kubectl label node cluster1 node-access=ssh
 ```
 
 
-## Task {{% param sectionnumber %}}.2: Enable Policy Audit Mode for the Host Endpoint
+## {{% task %}} Enable Policy Audit Mode for the Host Endpoint
 
 [Host Policies](https://docs.cilium.io/en/latest/policy/language/#hostpolicies) enforce access control over connectivity to and from nodes. Particular care must be taken to ensure that when host policies are imported, Cilium does not block access to the nodes or break the cluster’s normal behavior (for example by blocking communication with kube-apiserver).
 
@@ -81,7 +80,7 @@ PolicyAuditMode          Enabled
 ```
 
 
-## Task {{% param sectionnumber %}}.3: Apply a Host Network Policy
+## {{% task %}} Apply a Host Network Policy
 
 Host Policies match on node labels using a Node Selector to identify the nodes to which the policy applies. The following policy applies to all nodes. It allows communications from outside the cluster only on port TCP/22. All communications from the cluster to the hosts are allowed.
 
@@ -106,23 +105,23 @@ You will see that the ingress policy enforcement for the `reserved:host` endpoin
 
 ```
 Defaulted container "cilium-agent" out of: cilium-agent, mount-cgroup (init), clean-cilium-state (init)
-ENDPOINT   POLICY (ingress)   POLICY (egress)   IDENTITY   LABELS (source:key[=value])                                                  IPv6   IPv4         STATUS   
-           ENFORCEMENT        ENFORCEMENT                                                                                                                   
-671        Disabled (Audit)   Disabled          1          k8s:minikube.k8s.io/commit=3e64b11ed75e56e4898ea85f96b2e4af0301f43d                              ready   
-                                                           k8s:minikube.k8s.io/name=cluster1                                                                        
-                                                           k8s:minikube.k8s.io/updated_at=2022_02_14T13_45_35_0700                                                  
-                                                           k8s:minikube.k8s.io/version=v1.25.1                                                                      
-                                                           k8s:node-access=ssh                                                                                      
-                                                           k8s:node-role.kubernetes.io/control-plane                                                                
-                                                           k8s:node-role.kubernetes.io/master                                                                       
-                                                           k8s:node.kubernetes.io/exclude-from-external-load-balancers                                              
-                                                           reserved:host                                                                                            
-810        Disabled           Disabled          129160     k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name=kube-system          10.1.0.249   ready   
-                                                           k8s:io.cilium.k8s.policy.cluster=cluster1                                                                
-                                                           k8s:io.cilium.k8s.policy.serviceaccount=coredns                                                          
-                                                           k8s:io.kubernetes.pod.namespace=kube-system                                                              
-                                                           k8s:k8s-app=kube-dns                                                                                     
-4081       Disabled           Disabled          4          reserved:health                  
+ENDPOINT   POLICY (ingress)   POLICY (egress)   IDENTITY   LABELS (source:key[=value])                                                  IPv6   IPv4         STATUS
+           ENFORCEMENT        ENFORCEMENT
+671        Disabled (Audit)   Disabled          1          k8s:minikube.k8s.io/commit=3e64b11ed75e56e4898ea85f96b2e4af0301f43d                              ready
+                                                           k8s:minikube.k8s.io/name=cluster1
+                                                           k8s:minikube.k8s.io/updated_at=2022_02_14T13_45_35_0700
+                                                           k8s:minikube.k8s.io/version=v1.25.1
+                                                           k8s:node-access=ssh
+                                                           k8s:node-role.kubernetes.io/control-plane
+                                                           k8s:node-role.kubernetes.io/master
+                                                           k8s:node.kubernetes.io/exclude-from-external-load-balancers
+                                                           reserved:host
+810        Disabled           Disabled          129160     k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name=kube-system          10.1.0.249   ready
+                                                           k8s:io.cilium.k8s.policy.cluster=cluster1
+                                                           k8s:io.cilium.k8s.policy.serviceaccount=coredns
+                                                           k8s:io.kubernetes.pod.namespace=kube-system
+                                                           k8s:k8s-app=kube-dns
+4081       Disabled           Disabled          4          reserved:health
 ```
 
 
@@ -165,7 +164,7 @@ Policy verdict log: flow 0x6b5b1b60 local EP ID 671, remote ID world, proto 6, i
 ```
 
 
-## Task {{% param sectionnumber %}}.4: Clean Up
+## {{% task %}} Clean Up
 
 Once you are confident all required communication to the host from outside the cluster is allowed, you can disable policy audit mode to enforce the host policy.
 

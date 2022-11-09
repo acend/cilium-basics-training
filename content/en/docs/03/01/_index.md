@@ -1,13 +1,12 @@
 ---
-title: "3.1 Hubble"
+title: "Hubble"
 weight: 31
-sectionnumber: 3.1
 ---
 
 Before we start with the CNI functionality of Cilium and its security components we want to enable the optional Hubble component (which is disabled by default). So we can take full advantage of its eBFP observability capabilities.
 
 
-## Task {{% param sectionnumber %}}.1: Install the Hubble CLI
+## {{% task %}} Install the Hubble CLI
 
 Similar to the `cilium` CLI, the `hubble` CLI interfaces with Hubble and allows observing network traffic within Kubernetes.
 
@@ -86,7 +85,7 @@ Use "hubble [command] --help" for more information about a command.
 ```
 
 
-## Task {{% param sectionnumber %}}.2: Deploy a simple application
+## {{% task %}} Deploy a simple application
 
 Before we enable Hubble in Cilium we want to make sure we have at least one application to observe.
 
@@ -140,9 +139,9 @@ replicaset.apps/frontend-76fbb99468      1         1         1       3m17s
 replicaset.apps/not-frontend-8f467ccbd   1         1         1       3m17s
 
 NAME                                                    ENDPOINT ID   IDENTITY ID   INGRESS ENFORCEMENT   EGRESS ENFORCEMENT   VISIBILITY POLICY   ENDPOINT STATE   IPV4         IPV6
-ciliumendpoint.cilium.io/backend-65f7c794cc-b9j66       144           67823                                                                        ready            10.1.0.44    
-ciliumendpoint.cilium.io/frontend-76fbb99468-mbzcm      1898          76556                                                                        ready            10.1.0.161   
-ciliumendpoint.cilium.io/not-frontend-8f467ccbd-cbks8   208           127021                                                                       ready            10.1.0.128   
+ciliumendpoint.cilium.io/backend-65f7c794cc-b9j66       144           67823                                                                        ready            10.1.0.44
+ciliumendpoint.cilium.io/frontend-76fbb99468-mbzcm      1898          76556                                                                        ready            10.1.0.161
+ciliumendpoint.cilium.io/not-frontend-8f467ccbd-cbks8   208           127021                                                                       ready            10.1.0.128
 
 NAME                              NAMESPACE     AGE
 ciliumidentity.cilium.io/127021   default       3m15s
@@ -162,7 +161,7 @@ echo ${NOT_FRONTEND}
 ```
 
 
-## Task {{% param sectionnumber %}}.3: Enable Hubble in Cilium
+## {{% task %}} Enable Hubble in Cilium
 
 When you install Cilium using Helm, then Hubble is already enabled. The value for this is `hubble.enabled` which is set to `true` in the `values.yaml` of the Cilium Helm Chart. But we also want to enable Hubble Relay. With the following Helm command you can enable Hubble with Hubble Relay:
 
@@ -286,7 +285,7 @@ If the nodes are not yet connected, give it some time and try again. There is a 
 The Hubble CLI is now primed for observing network traffic within the cluster.
 
 
-## Task {{% param sectionnumber %}}.4: Observing flows with Hubble
+## {{% task %}} Observing flows with Hubble
 
 We now want to use the `hubble` CLI to observe some network flows in our Kubernetes cluster. Let us have a look at the following command:
 

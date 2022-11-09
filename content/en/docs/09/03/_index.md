@@ -1,10 +1,9 @@
 ---
-title: "9.3 Network Policies"
+title: "Network Policies"
 weight: 93
-sectionnumber: 9.3
 ---
 
-## Task {{% param sectionnumber %}}.1: Allowing Specific Communication Between Clusters
+## {{% task %}} Allowing Specific Communication Between Clusters
 
 
 The following policy illustrates how to allow particular pods to communicate between two clusters.
@@ -28,7 +27,7 @@ Let us run our `curl` `for` loop again
 
 ```bash
 XWINGPOD=$(kubectl --context cluster1 get pod -l name=x-wing -o jsonpath="{.items[0].metadata.name}")
-for i in {1..10}; do                                       
+for i in {1..10}; do
   kubectl --context cluster1 exec -it $XWINGPOD -- curl -m 1 rebel-base
 done
 ```
@@ -56,7 +55,7 @@ command terminated with exit code 28
 All connections to `cluster2` are dropped while the ones to `cluster1` are still working.
 
 
-## Task {{% param sectionnumber %}}.2: Cleanup
+## {{% task %}} Cleanup
 
 We will disconnect our cluster mesh again and delete the second cluster:
 

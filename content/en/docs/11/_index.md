@@ -1,13 +1,12 @@
 ---
-title: "11. Cilium Service Mesh"
+title: "Cilium Service Mesh"
 weight: 11
-sectionnumber: 11
 OnlyWhenNot: techlab
 ---
 With release 1.12 Cilium enabled direct ingress support and service mesh features like layer 7 loadbalancing
 
 
-## Task {{% param sectionnumber %}}.1: Installation
+## {{% task %}} Installation
 
 
 ```bash
@@ -28,7 +27,7 @@ kubectl -n kube-system rollout restart ds/cilium
 ```
 
 
-## Task {{% param sectionnumber %}}.2: Create Ingress
+## {{% task %}} Create Ingress
 
 Cilium Service Mesh can handle ingress traffic with its Envoy proxy.
 
@@ -69,7 +68,7 @@ You should get the following output:
 ```
 
 
-## Task {{% param sectionnumber %}}.3: Layer 7 Loadbalancing
+## {{% task %}} Layer 7 Loadbalancing
 
 Ingress alone is not really a Service Mesh feature. Let us test a traffic control example by loadbalancing a service inside the proxy.
 
@@ -127,7 +126,7 @@ done
 We see both backends replying. If you call it many times the distribution would be equal.
 
 ```bash
-[                                                                                                                               [10/1834]
+[
   {                                                                                                                                      
     "id": 1,                                                                                                                             
     "body": "another secret information from a different backend"                                                                                                 

@@ -68,6 +68,7 @@ url = "https://www.acend.ch"
   # guessSyntax = "true"
 
 [params]
+automaticSectionNumbers = true
 copyright = "acend gmbh"
 github_repo = "https://github.com/acend/cilium-basics-training"
 github_branch = "main"

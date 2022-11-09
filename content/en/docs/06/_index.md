@@ -1,7 +1,6 @@
 ---
-title: "6. Network Policies"
+title: "Network Policies"
 weight: 6
-sectionnumber: 6
 OnlyWhenNot: techlab
 ---
 
@@ -14,7 +13,7 @@ If you are not yet familiar with Kubernetes Network Policies we suggest going to
 {{% /alert %}}
 
 
-## Task {{% param sectionnumber %}}.1: Cilium Endpoints and Identities
+## {{% task %}} Cilium Endpoints and Identities
 
 Each Pod from our simple application is represented in Cilium as an [Endpoint](https://docs.cilium.io/en/stable/concepts/terminology/#endpoint). We can use the `cilium` tool inside a Cilium Pod to list them.
 
@@ -57,7 +56,7 @@ kubectl delete pod test-identity
 We see that the number for this Pod in the column IDENTITY has changed after we added another label. If you run `endpoint list` right after pod-labeling you might also see `waiting-for-identity` as the status of the endpoint.
 
 
-## Task {{% param sectionnumber %}}.2: Verify connectivity
+## {{% task %}} Verify connectivity
 
 Make sure your `FRONTEND` and `NOT_FRONTEND` environment variable are still set. Otherwise set them again:
 
@@ -118,7 +117,7 @@ and we see, both applications can connect to the `backend` application.
 Until now ingress and egress policy enforcement are still disabled on all of our pods because no network policy has been imported yet selecting any of the pods. Let us change this.
 
 
-## Task {{% param sectionnumber %}}.3: Deny traffic with a Network Policy
+## {{% task %}} Deny traffic with a Network Policy
 
 We block traffic by applying a network policy. Create a file `backend-ingress-deny.yaml` with the following content:
 
@@ -141,14 +140,14 @@ kubectl get netpol
 which gives you an output similar to this:
 
 ```
-                                                    
+
 NAME                   POD-SELECTOR   AGE
 backend-ingress-deny   app=backend    2s
 
 ```
 
 
-## Task {{% param sectionnumber %}}.4: Verify connectivity again
+## {{% task %}} Verify connectivity again
 
 We can now execute the connectivity check again:
 
@@ -190,7 +189,7 @@ In Grafana browse to the dashboard `Hubble`. You should see now data in more gra
 Let's now selectively re-allow traffic again, but only from frontend to backend.
 
 
-## Task {{% param sectionnumber %}}.5: Allow traffic from frontend to backend
+## {{% task %}} Allow traffic from frontend to backend
 
 We can do it by crafting a new network policy manually, but we can also use the Network Policy Editor to help us out:
 
@@ -313,7 +312,7 @@ Jan 13 12:54:49.922: default/not-frontend-8f467ccbd-lh4w4:37134 <> default/backe
 ```
 
 
-## Task {{% param sectionnumber %}}.6: Inspecting the Cilium endpoints again
+## {{% task %}} Inspecting the Cilium endpoints again
 
 We can now check the Cilium endpoints again.
 
@@ -325,11 +324,11 @@ And now we see that the pods with the label `app=backend` now have ingress polic
 
 
 ```
-ENDPOINT   POLICY (ingress)   POLICY (egress)   IDENTITY   LABELS (source:key[=value])                                                        IPv6   IPv4         STATUS   
-           ENFORCEMENT        ENFORCEMENT                                                                                                                         
-42         Enabled            Disabled          82094      k8s:app=backend                                                                           10.1.0.208   ready   
-                                                           k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name=default                                         
-                                                           k8s:io.cilium.k8s.policy.cluster=cluster1                                                                      
-                                                           k8s:io.cilium.k8s.policy.serviceaccount=default                                                                
-                                                           k8s:io.kubernetes.pod.namespace=default                                                                        
+ENDPOINT   POLICY (ingress)   POLICY (egress)   IDENTITY   LABELS (source:key[=value])                                                        IPv6   IPv4         STATUS
+           ENFORCEMENT        ENFORCEMENT
+42         Enabled            Disabled          82094      k8s:app=backend                                                                           10.1.0.208   ready
+                                                           k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name=default
+                                                           k8s:io.cilium.k8s.policy.cluster=cluster1
+                                                           k8s:io.cilium.k8s.policy.serviceaccount=default
+                                                           k8s:io.kubernetes.pod.namespace=default
 ```

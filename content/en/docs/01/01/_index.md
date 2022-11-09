@@ -1,7 +1,6 @@
 ---
-title: "1.1 eBPF"
+title: "eBPF"
 weight: 11
-sectionnumber: 1.1
 ---
 
 ## What is eBPF

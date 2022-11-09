@@ -1,6 +1,5 @@
 ---
-title: "9. Cluster Mesh"
+title: "Cluster Mesh"
 weight: 9
-sectionnumber: 9
 OnlyWhenNot: techlab
 ---

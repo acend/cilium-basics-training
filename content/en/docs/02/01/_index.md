@@ -1,7 +1,6 @@
 ---
-title: "2.1 Install Cilium"
+title: "Install Cilium"
 weight: 21
-sectionnumber: 2.1
 ---
 
 Cilium can be installed using multiple ways:
@@ -13,7 +12,7 @@ In this lab, we are going to use [Helm](https://helm.sh) which is recommended fo
 The [Cilium command-line](https://github.com/cilium/cilium-cli/) tool is used (Cilium CLI) for verification and troubleshooting.
 
 
-## Task {{% param sectionnumber %}}.1: Install a Kubernetes Cluster
+## {{% task %}} Install a Kubernetes Cluster
 
 We are going to spin up a new Kubernetes cluster with the following command:
 
@@ -22,7 +21,7 @@ To start from a clean Kubernetes cluster, make sure `cluster1` is not yet availa
 {{% /alert %}}
 
 ```bash
-minikube start --network-plugin=cni --cni=false --kubernetes-version={{% param "kubernetesVersion" %}} -p cluster1 
+minikube start --network-plugin=cni --cni=false --kubernetes-version={{% param "kubernetesVersion" %}} -p cluster1
 ```
 
 {{% alert title="Note" color="primary" %}}
@@ -77,7 +76,7 @@ But you should not see any CNI related pods!
 {{% /alert %}}
 
 
-## Task {{% param sectionnumber %}}.2: Install Cilium CLI
+## {{% task %}} Install Cilium CLI
 
 The `cilium` CLI tool is a single binary file that can be downloaded from the project's release page. Follow the instructions depending on your operating system or environment.
 
@@ -139,7 +138,7 @@ cilium status
 ```
 
 ```
-cilium status 
+cilium status
     /¯¯\
  /¯¯\__/¯¯\    Cilium:         1 errors
  \__/¯¯\__/    Operator:       disabled
@@ -147,8 +146,8 @@ cilium status
  \__/¯¯\__/    ClusterMesh:    disabled
     \__/
 
-Containers:      cilium             
-                 cilium-operator    
+Containers:      cilium
+                 cilium-operator
 Cluster Pods:    0/0 managed by Cilium
 Errors:          cilium    cilium    daemonsets.apps "cilium" not found
 
@@ -157,7 +156,7 @@ Errors:          cilium    cilium    daemonsets.apps "cilium" not found
 We don't have yet installed Cilium, therefore the error is perfectly fine.
 
 
-## Task {{% param sectionnumber %}}.3: Install Cilium
+## {{% task %}}  Install Cilium
 
 Let's install Cilium with Helm. First we need to add the Cilium Helm repository:
 
@@ -205,7 +204,7 @@ cilium status --wait
 command:
 
 ```
-cilium status 
+cilium status
     /¯¯\
  /¯¯\__/¯¯\    Cilium:         OK
  \__/¯¯\__/    Operator:       OK
@@ -328,7 +327,7 @@ kubectl delete ns cilium-test --wait=false
 ```
 
 
-## Task {{% param sectionnumber %}}.4: Explore your installation
+## {{% task %}} Explore your installation
 
 We have learned about the Cilium components. Let us check out the installed CRDs now:
 
@@ -355,7 +354,7 @@ kubectl get ccnp,cep,cew,ciliumid,cnp,cn -A
 We see 1 node, 1 identity and 1 endpoint:
 ```bash
 NAMESPACE     NAME                                               ENDPOINT ID   IDENTITY ID   INGRESS ENFORCEMENT   EGRESS ENFORCEMENT   VISIBILITY POLICY   ENDPOINT STATE   IPV4         IPV6
-kube-system   ciliumendpoint.cilium.io/coredns-64897985d-7485t   465           67688                                                                        ready            10.1.0.215   
+kube-system   ciliumendpoint.cilium.io/coredns-64897985d-7485t   465           67688                                                                        ready            10.1.0.215
 
 NAMESPACE   NAME                             NAMESPACE     AGE
             ciliumidentity.cilium.io/67688   kube-system   18m

@@ -1,7 +1,6 @@
 ---
-title: "5. Troubleshooting"
+title: "Troubleshooting"
 weight: 5
-sectionnumber: 5
 OnlyWhenNot: techlab
 ---
 
@@ -57,7 +56,6 @@ Global Identity Range:   min 256, max 65535
 Hubble:                  Ok   Current/Max Flows: 4095/4095 (100.00%), Flows/s: 10.60   Metrics: Ok
 Encryption:              Disabled
 Cluster health:          1/1 reachable   (2022-08-10T12:20:16Z)
-
 ```
 
 More detailed information about the status of Cilium can be inspected with:
