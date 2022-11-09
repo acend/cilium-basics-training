@@ -82,6 +82,7 @@ hubbleVersion = "0.10.0"
 preUpgrade = "1.11.7"
 postUpgrade = "1.12.1"
 cli = "0.12.1"
+enterprise = "1.12.3+1"
 
 # Enable Lunr.js offline search
 offlineSearch = true
