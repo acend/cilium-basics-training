@@ -35,7 +35,7 @@ To compile the C code into ebpf bytecode with the corresponding Go source files 
 For a stable outcome we use the toolchain inside a docker container:
 
 ```bash
-docker run -it --rm  --user "1000:1000" -v "$(pwd)/../..":/ebpf -w /ebpf --env MAKEFLAGS \
+docker run -it --rm -v "$(pwd)/../..":/ebpf -w /ebpf --env MAKEFLAGS \
   --env CFLAGS="-fdebug-prefix-map=/ebpf=." \
   --env HOME="/tmp" \
   "ghcr.io/cilium/ebpf-builder:1666886595" /bin/bash
@@ -66,7 +66,8 @@ Now we have everything in place to build and run our app:
 ```bash
 go mod tidy
 go build helloworld.go bpf_bpfel.go
-./helloworld
+exit #exit container
+sudo ./helloworld
 ```
 
 Now we can see, that for each programm called in linux, our code is executed and writes "hello world" to trace_pipe.
