@@ -4,12 +4,12 @@ weight: 12
 OnlyWhenNot: techlab
 ---
 
-To deepen our understanding of eBPF we will write and compile a small eBPF apps ourself:
+To deepen our understanding of eBPF we will write and compile a small eBPF app:
 
 
 ## {{% task %}} Hello World
 
-ebpf-go is a pure Go library that provides utilities for loading, compiling, and debugging eBPF programs written by cilium project.
+ebpf-go is a pure Go library that provides utilities for loading, compiling, and debugging eBPF programs written by the cilium project.
 
 We will use this library and add our own hello world app as an example to it:
 
@@ -22,7 +22,7 @@ mkdir helloworld
 cd helloworld
 ```
 
-In the helloworld directory create two files named `helloworld.bpf.c` (eBPF code) and `helloworld.go` (loading, user side):
+In the `helloworld` directory create two files named `helloworld.bpf.c` (eBPF code) and `helloworld.go` (loading, user side):
 
 helloworld.bpf.c:
 {{< readfile file="/content/en/docs/12/helloworld/helloworld.bpf.c" code="true" lang="c" >}}
@@ -35,11 +35,16 @@ To compile the C code into ebpf bytecode with the corresponding Go source files 
 For a stable outcome we use the toolchain inside a docker container:
 
 ```bash
-docker run -it --rm -v "$(pwd)/../..":/ebpf -w /ebpf --env MAKEFLAGS \
+docker pull "ghcr.io/cilium/ebpf-builder:1666886595"
+docker run -it --rm -v "$(pwd)/../..":/ebpf \
+   -w /ebpf/examples/helloworld \
+  --env MAKEFLAGS \
   --env CFLAGS="-fdebug-prefix-map=/ebpf=." \
   --env HOME="/tmp" \
   "ghcr.io/cilium/ebpf-builder:1666886595" /bin/bash
-cd examples/helloworld/
+```
+Now in the container we generate the ELF and go files:
+```bash
 GOPACKAGE=main go run github.com/cilium/ebpf/cmd/bpf2go -cc clang-14 -cflags '-O2 -g -Wall -Werror' bpf helloworld.bpf.c -- -I../headers
 ```
 

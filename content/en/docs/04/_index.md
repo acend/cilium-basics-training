@@ -29,7 +29,6 @@ helm upgrade -i cilium cilium/cilium --version {{% param "ciliumVersion.postUpgr
   `# enable metrics:` \
   --set prometheus.enabled=true \
   --set operator.prometheus.enabled=true \
-  --set hubble.enabled=true \
   --set hubble.metrics.enabled="{dns,drop:destinationContext=pod;sourceContext=pod,tcp,flow,port-distribution,icmp,http:destinationContext=pod}"
 ```
 
@@ -45,6 +44,8 @@ We now verify that the Cilium agent has different metric endpoints exposed and l
 ```bash
 CILIUM_AGENT_IP=$(kubectl get pod -n kube-system -l k8s-app=cilium -o jsonpath="{.items[0].status.hostIP}")
 kubectl run -n kube-system -it --env="CILIUM_AGENT_IP=${CILIUM_AGENT_IP}" --rm curl --image=curlimages/curl -- sh
+```
+```bash
 echo ${CILIUM_AGENT_IP}
 curl -s ${CILIUM_AGENT_IP}:9962/metrics | grep cilium_nodes_all_num #show total number of cilium nodes
 curl -s ${CILIUM_AGENT_IP}:9965/metrics | grep hubble_tcp_flags_total # show total number of TCP flags
@@ -71,7 +72,7 @@ hubble_tcp_flags_total{family="IPv4",flag="SYN-ACK"} 1549
 The Cilium agent pods run as DaemonSet on the HostNetwork. This means you could also directly call a node.
 ```bash
 NODE=$(kubectl get nodes --selector=kubernetes.io/role!=master -o jsonpath={.items[*].status.addresses[?\(@.type==\"InternalIP\"\)].address})
-curl -s $NODE:9965/metrics | grep cilium_nodes_all_num
+curl -s $NODE:9962/metrics | grep cilium_nodes_all_num
 ```
 {{% /alert %}}
 
@@ -82,7 +83,7 @@ It is not yet possible to get metrics from Cilium Envoy (port 9095). Envoy only 
 
 ## {{% task %}} Store and visualize metrics
 
-To make sense of metrics we store them in Prometheus and visualize them with Grafana dashboards.
+To make sense of metrics, we store them in Prometheus and visualize them with Grafana dashboards.
 Install both into `cilium-monitoring` Namespace to store and visualize Cilium and Hubble metrics.
 ```bash
 kubectl apply -f https://raw.githubusercontent.com/cilium/cilium/v1.12/examples/kubernetes/addons/prometheus/monitoring-example.yaml

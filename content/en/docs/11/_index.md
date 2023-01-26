@@ -10,7 +10,7 @@ With release 1.12 Cilium enabled direct ingress support and service mesh feature
 
 
 ```bash
-helm upgrade -i cilium cilium/cilium --version 1.12.0 \
+helm upgrade -i cilium cilium/cilium --version {{% param "ciliumVersion.postUpgrade" %}} \
   --namespace kube-system \
   --reuse-values \
   --set ingressController.enabled=true \
