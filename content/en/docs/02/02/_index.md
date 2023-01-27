@@ -106,7 +106,9 @@ Image versions    cilium             quay.io/cilium/cilium:v{{% param "ciliumVer
 And we see the right version in the `cilium` and `cilium-operator` images.
 
 
-In Cilium release 1.11.0 automatic mount of eBPF maps in the host filesystem were enabled. These eBPF maps are basically very efficient key-value stores used by Cilium. Having them mounted in the filesystem allows the datapath to continue operating even if the `cilium-agent` is restarting. We can verify that Cilium created global traffic control eBPF maps on the node in /sys/fs/bpf/tc/globals/:
+### Nice to know
+
+In Cilium release 1.11.0 automatic mount of eBPF maps in the host filesystem were enabled. These eBPF maps are basically very efficient key-value stores used by Cilium. Having them mounted in the filesystem, allows the datapath to continue operating even if the `cilium-agent` is restarting. We can verify that Cilium created global traffic control eBPF maps on the node in /sys/fs/bpf/tc/globals/:
 
 ```bash
 docker exec cluster1 ls /sys/fs/bpf/tc/globals/

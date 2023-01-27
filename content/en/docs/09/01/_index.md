@@ -10,7 +10,7 @@ OnlyWhenNot: techlab
 To create a Cluster Mesh, we need a second Kubernetes cluster. For the Cluster Mesh to work, the PodCIDR ranges in all clusters and nodes must be non-conflicting and have unique IP addresses. The nodes in all clusters must have IP connectivity between each other and the network between the clusters must allow inter-cluster communication.
 
 {{% alert title="Note" color="primary" %}}
-The exact ports are documented in the [Firewall Rules](https://docs.cilium.io/en/v1.11/operations/system_requirements/#firewall-requirements) section.
+The exact ports are documented in the [Firewall Rules](https://docs.cilium.io/en/v1.12/operations/system_requirements/#firewall-requirements) section.
 {{% /alert %}}
 
 To start a second cluster run the following command:

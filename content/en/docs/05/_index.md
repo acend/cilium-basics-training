@@ -15,13 +15,10 @@ An initial overview of Cilium can be retrieved by listing all pods to verify whe
 ```bash
 kubectl -n kube-system get pods -l k8s-app=cilium
 ```
-
+In our single node cluster there is only one cilium pod running:
 ```
 NAME           READY     STATUS    RESTARTS   AGE
-cilium-2hq5z   1/1       Running   0          4d
-cilium-6kbtz   1/1       Running   0          4d
-cilium-klj4b   1/1       Running   0          4d
-cilium-zmjj9   1/1       Running   0          4d
+cilium-ksr7h   1/1       Running   0          12m16
 ```
 
 If Cilium encounters a problem that it cannot recover from, it will automatically report the failure state via `cilium status` which is regularly queried by the Kubernetes liveness probe to automatically restart Cilium pods. If a Cilium Pod is in state `CrashLoopBackoff` then this indicates a permanent failure scenario.
@@ -39,23 +36,23 @@ Defaulted container "cilium-agent" out of: cilium-agent, mount-cgroup (init), ap
 KVStore:                 Ok   Disabled
 Kubernetes:              Ok   1.24 (v1.24.3) [linux/amd64]
 Kubernetes APIs:         ["cilium/v2::CiliumClusterwideNetworkPolicy", "cilium/v2::CiliumEndpoint", "cilium/v2::CiliumNetworkPolicy", "cilium/v2::CiliumNode", "core/v1::Namespace", "core/v1::Node", "core/v1::Pods", "core/v1::Service", "discovery/v1::EndpointSlice", "networking.k8s.io/v1::NetworkPolicy"]
-KubeProxyReplacement:    Probe   [eth0 192.168.49.2]
+KubeProxyReplacement:    Disabled   
 Host firewall:           Disabled
 CNI Chaining:            none
-Cilium:                  Ok   1.12.0 (v1.12.0-9447cd1)
-NodeMonitor:             Listening for events on 4 CPUs with 64x4096 of shared memory
+Cilium:                  Ok   1.12.5 (v1.12.5-701acde)
+NodeMonitor:             Listening for events on 8 CPUs with 64x4096 of shared memory
 Cilium health daemon:    Ok   
 IPAM:                    IPv4: 10/254 allocated from 10.1.0.0/24, 
 ClusterMesh:             0/0 clusters ready, 0 global-services
 BandwidthManager:        Disabled
 Host Routing:            Legacy
 Masquerading:            IPTables [IPv4: Enabled, IPv6: Disabled]
-Controller Status:       58/58 healthy
-Proxy Status:            OK, ip 10.1.0.92, 0 redirects active on ports 10000-20000
+Controller Status:       50/50 healthy
+Proxy Status:            OK, ip 10.1.0.182, 0 redirects active on ports 10000-20000
 Global Identity Range:   min 256, max 65535
-Hubble:                  Ok   Current/Max Flows: 4095/4095 (100.00%), Flows/s: 10.60   Metrics: Ok
+Hubble:                  Ok   Current/Max Flows: 4095/4095 (100.00%), Flows/s: 8.71   Metrics: Ok
 Encryption:              Disabled
-Cluster health:          1/1 reachable   (2022-08-10T12:20:16Z)
+Cluster health:          1/1 reachable   (2023-01-26T08:23:50Z)
 ```
 
 More detailed information about the status of Cilium can be inspected with:
@@ -129,14 +126,6 @@ You can run the following script to list the pods which are not managed by Ciliu
 curl -sLO https://raw.githubusercontent.com/cilium/cilium/master/contrib/k8s/k8s-unmanaged.sh
 chmod +x k8s-unmanaged.sh
 ./k8s-unmanaged.sh
-```
-
-```
-kube-system/cilium-hqpk7
-kube-system/kube-addon-manager-minikube
-kube-system/kube-dns-54cccfbdf8-zmv2c
-kube-system/kubernetes-dashboard-77d8b98585-g52k5
-kube-system/storage-provisioner
 ```
 
 {{% alert title="Note" color="primary" %}}
