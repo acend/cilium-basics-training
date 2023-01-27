@@ -112,7 +112,7 @@ hubble status
 To start Hubble UI execute
 
 ```bash
-cilium hubble ui &
+kubectl port-forward -n kube-system --address 0.0.0.0 svc/hubble-ui 12000:80
 ```
 
 In our Webshell environment you can use the public IP of the VM to access Hubble. A simple way is to execute
