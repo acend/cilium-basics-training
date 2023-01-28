@@ -65,14 +65,27 @@ We see two things:
 There are always two files created: bpf_bpfel.o for little endian systems (like x86) and bpfen.o for big endian systems.
 {{% /alert %}}
 
-Now we have everything in place to build and run our app:
+Now we have everything in place to build our app:
 
 
 ```bash
 go mod tidy
 go build helloworld.go bpf_bpfel.go
 exit #exit container
-sudo ./helloworld
 ```
 
-Now we can see, that for each programm called in linux, our code is executed and writes "hello world" to trace_pipe.
+We run our app in the background, cat tracepipe in the background and see if we get a hello world for every command:
+
+```bash
+sudo cat /sys/kernel/debug/tracing/trace_pipe &
+sudo ./helloworld &
+ls #example command
+```
+
+Now we can see, that for each programm called in linux, our code is executed and writes "Hello world" to trace_pipe.
+
+Close now the running apps in the background
+
+```bash
+sudo kill $(jobs -p)
+```
