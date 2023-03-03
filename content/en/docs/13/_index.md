@@ -1,6 +1,6 @@
 ---
 title: "Cilium Enterprise"
-weight: 12
+weight: 13
 
 OnlyWhenNot: techlab
 ---

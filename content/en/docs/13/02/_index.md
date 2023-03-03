@@ -1,6 +1,6 @@
 ---
 title: "Network Policies"
-weight: 122
+weight: 132
 
 OnlyWhenNot: techlab
 ---
