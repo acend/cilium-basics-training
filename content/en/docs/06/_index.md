@@ -23,8 +23,9 @@ First get all Cilium pods with:
 kubectl -n kube-system get pods -l k8s-app=cilium
 ```
 
-```NAME           READY   STATUS    RESTARTS        AGE
-cilium-mvh65   1/1     Running   1 (6h26m ago)   6h30m
+```
+NAME           READY     STATUS    RESTARTS   AGE
+cilium-ksr7h   1/1       Running   0          13m16
 ```
 
 and then run:
@@ -296,19 +297,17 @@ hubble status
 {{% /alert %}}
 
 ```bash
-hubble observe --from-label app=not-frontend
+hubble observe --from-label app=not-frontend --to-label app=backend
 ```
 
 And the output should look like this:
 ```bash
-Jan 13 12:54:46.883: default/not-frontend-8f467ccbd-lh4w4:50802 -> kube-system/coredns-64897985d-7rjfv:53 to-endpoint FORWARDED (UDP)
-Jan 13 12:54:46.883: default/not-frontend-8f467ccbd-lh4w4:50802 -> kube-system/coredns-64897985d-7rjfv:53 to-endpoint FORWARDED (UDP)
-Jan 13 12:54:46.884: default/not-frontend-8f467ccbd-lh4w4:37134 <> default/backend-65f7c794cc-pj2tc:8080 Policy denied DROPPED (TCP Flags: SYN)
-Jan 13 12:54:46.884: default/not-frontend-8f467ccbd-lh4w4:37134 <> default/backend-65f7c794cc-pj2tc:8080 Policy denied DROPPED (TCP Flags: SYN)
-Jan 13 12:54:47.906: default/not-frontend-8f467ccbd-lh4w4:37134 <> default/backend-65f7c794cc-pj2tc:8080 Policy denied DROPPED (TCP Flags: SYN)
-Jan 13 12:54:47.906: default/not-frontend-8f467ccbd-lh4w4:37134 <> default/backend-65f7c794cc-pj2tc:8080 Policy denied DROPPED (TCP Flags: SYN)
-Jan 13 12:54:49.922: default/not-frontend-8f467ccbd-lh4w4:37134 <> default/backend-65f7c794cc-pj2tc:8080 Policy denied DROPPED (TCP Flags: SYN)
-Jan 13 12:54:49.922: default/not-frontend-8f467ccbd-lh4w4:37134 <> default/backend-65f7c794cc-pj2tc:8080 Policy denied DROPPED (TCP Flags: SYN)
+Jan 26 09:07:03.396: default/not-frontend-7db9747986-gktg6:45002 (ID:84671) <> default/backend-6f884b6495-69bbh:8080 (ID:68421) policy-verdict:none INGRESS DENIED (TCP Flags: SYN)
+Jan 26 09:07:03.396: default/not-frontend-7db9747986-gktg6:45002 (ID:84671) <> default/backend-6f884b6495-69bbh:8080 (ID:68421) Policy denied DROPPED (TCP Flags: SYN)
+Jan 26 09:07:04.401: default/not-frontend-7db9747986-gktg6:45002 (ID:84671) <> default/backend-6f884b6495-69bbh:8080 (ID:68421) policy-verdict:none INGRESS DENIED (TCP Flags: SYN)
+Jan 26 09:07:04.401: default/not-frontend-7db9747986-gktg6:45002 (ID:84671) <> default/backend-6f884b6495-69bbh:8080 (ID:68421) Policy denied DROPPED (TCP Flags: SYN)
+Jan 26 09:07:06.418: default/not-frontend-7db9747986-gktg6:45002 (ID:84671) <> default/backend-6f884b6495-69bbh:8080 (ID:68421) policy-verdict:none INGRESS DENIED (TCP Flags: SYN)
+Jan 26 09:07:06.418: default/not-frontend-7db9747986-gktg6:45002 (ID:84671) <> default/backend-6f884b6495-69bbh:8080 (ID:68421) Policy denied DROPPED (TCP Flags: SYN)
 ```
 
 
@@ -326,9 +325,9 @@ And now we see that the pods with the label `app=backend` now have ingress polic
 ```
 ENDPOINT   POLICY (ingress)   POLICY (egress)   IDENTITY   LABELS (source:key[=value])                                                        IPv6   IPv4         STATUS
            ENFORCEMENT        ENFORCEMENT
-42         Enabled            Disabled          82094      k8s:app=backend                                                                           10.1.0.208   ready
-                                                           k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name=default
-                                                           k8s:io.cilium.k8s.policy.cluster=cluster1
-                                                           k8s:io.cilium.k8s.policy.serviceaccount=default
-                                                           k8s:io.kubernetes.pod.namespace=default
+248        Enabled            Disabled          68421      k8s:app=backend                                                                           10.1.0.1     ready   
+                                                           k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name=default                                         
+                                                           k8s:io.cilium.k8s.policy.cluster=cluster1                                                                      
+                                                           k8s:io.cilium.k8s.policy.serviceaccount=default                                                                
+                                                           k8s:io.kubernetes.pod.namespace=default                                                                        
 ```

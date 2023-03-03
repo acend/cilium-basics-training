@@ -29,7 +29,7 @@ jobs:
         name: Set up npm for linting
         uses: actions/setup-node@v3
         with:
-          node-version: '15.x'
+          node-version: '18.x'
       -
         name: Lint Markdown
         run: npm ci && npm run mdlint
@@ -48,7 +48,7 @@ jobs:
           password: ${{ secrets.QUAYIO_TOKEN }}
       -
         name: Log in to the ghcr.io Container registry
-        uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a
+        uses: docker/login-action@3da7dc6e2b31f99ef2cb9fb4c50fb0971e0d0139
         with:
           registry: ghcr.io
           username: ${{ github.actor }}

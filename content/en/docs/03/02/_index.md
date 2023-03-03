@@ -102,7 +102,7 @@ hubble status
 Our earlier command kubectl port-forward should still be running (can be checked by running jobs or `ps aux | grep "port-forward"`). If it does not, Hubble status will fail and we have to run it again:
 
 ```bash
-kubectl -n kube-system port-forward svc/hubble-relay 4245:80 &
+cilium hubble port-forward&
 hubble status
 ```
 
@@ -112,7 +112,7 @@ hubble status
 To start Hubble UI execute
 
 ```bash
-cilium hubble ui &
+kubectl port-forward -n kube-system --address 0.0.0.0 svc/hubble-ui 12000:80
 ```
 
 In our Webshell environment you can use the public IP of the VM to access Hubble. A simple way is to execute
