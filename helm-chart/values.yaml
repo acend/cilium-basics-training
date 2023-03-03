@@ -13,19 +13,19 @@ acendTraining:
         tag: ""
         tagsuffix: ""
       ingress:
-        
+        secretOverride: acend-wildcard
         appname: cilium-basics
         domain: training.acend.ch
     - 
       name: techlab
-      replicaCount: 1
+      replicaCount: 2
       image:
         repository: quay.io/acend/cilium-basics-training
         pullPolicy: Always
         tag: ""
         tagsuffix: "-techlab"
       ingress:
-        useDefaultSecret: true
+        secretOverride: acend-wildcard
         appname: cilium-techlab
         domain: training.acend.ch
 
