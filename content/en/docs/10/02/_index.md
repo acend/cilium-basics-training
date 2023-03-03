@@ -128,7 +128,7 @@ NOT_FRONTEND=$(kubectl get pods -l app=not-frontend -o jsonpath='{.items[0].meta
 echo ${NOT_FRONTEND}
 ```
 
-Then execute
+Then execute:
 
 ```bash
 kubectl exec -ti ${FRONTEND} -- curl -I --connect-timeout 5 backend:8080
