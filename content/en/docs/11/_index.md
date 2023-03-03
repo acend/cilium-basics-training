@@ -140,3 +140,12 @@ We see both backends replying. If you call it many times the distribution would 
 ]pod "curl" deleted
 ```
 This basic traffic control example shows only one function of Cilium Service Mesh, other features include i.e. TLS termination, support for tracing and canary-rollouts.
+
+
+## {{% task %}}  Cleanup
+
+We don't need this cluster anymore and therefore you can delete the cluster with:
+
+````bash
+minikube delete --profile kubeless
+````
