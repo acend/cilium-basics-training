@@ -55,7 +55,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       -
         name: Build Latest Version
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           context: .
           file: ./Dockerfile
@@ -82,7 +82,7 @@ jobs:
           path: trivy-results.txt
       -
         name: Build Puzzle Version
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           context: .
           file: ./Dockerfile
@@ -94,7 +94,7 @@ jobs:
             ghcr.io/acend/cilium-basics-training:latest-puzzle
       -
         name: Build Techlab Version
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           context: .
           file: ./Dockerfile
