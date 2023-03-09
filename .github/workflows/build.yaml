@@ -62,35 +62,6 @@ jobs:
             quay.io/acend/cilium-basics-training:pr-${{ github.event.pull_request.number }}
             ghcr.io/acend/cilium-basics-training:pr-${{ github.event.pull_request.number }}
       -
-        name: Run vulnerability scanner
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: 'quay.io/acend/cilium-basics-training:pr-${{ github.event.pull_request.number }}'
-          format: 'table'
-          output: 'trivy-results.txt'
-          exit-code: '0'
-          ignore-unfixed: true
-          vuln-type: 'os'
-          severity: 'CRITICAL,HIGH'
-      -
-        name: Archive vulnerability scan results
-        uses: actions/upload-artifact@v3
-        with:
-          name: trivy-results-build
-          path: trivy-results.txt
-      -
-        name: Build Puzzle Version
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          file: ./Dockerfile
-          build-args: |
-            TRAINING_HUGO_ENV=puzzle
-          push: true
-          tags: |
-            quay.io/acend/cilium-basics-training:pr-${{ github.event.pull_request.number }}-puzzle
-            ghcr.io/acend/cilium-basics-training:pr-${{ github.event.pull_request.number }}-puzzle
-      -
         name: Build Techlab Version
         uses: docker/build-push-action@v4
         with:
@@ -115,7 +86,7 @@ jobs:
       -
         name: Create KUBECONFIG
         env:
-          KUBE_CONFIG: '${{ secrets.KUBECONFIG_TEST }}'
+          KUBE_CONFIG: '${{ secrets.KUBECONFIG_K8S_ACEND_TEST }}'
         run: |
           mkdir -p $HOME/.kube
           echo "$KUBE_CONFIG" > $HOME/.kube/config
@@ -135,7 +106,6 @@ jobs:
           TRAINING_NAMESPACE: 'acend-cilium-basics-training-test'
         run: |
           kubectl rollout restart deployment/${TRAINING_HELM_RELEASE}-${TRAINING_HELM_NAME}-acend --kubeconfig $HOME/.kube/config --namespace $TRAINING_NAMESPACE
-          kubectl rollout restart deployment/${TRAINING_HELM_RELEASE}-${TRAINING_HELM_NAME}-puzzle --kubeconfig $HOME/.kube/config --namespace $TRAINING_NAMESPACE
           kubectl rollout restart deployment/${TRAINING_HELM_RELEASE}-${TRAINING_HELM_NAME}-techlab --kubeconfig $HOME/.kube/config --namespace $TRAINING_NAMESPACE
       -
         name: Comment PR Environments in PR
@@ -145,5 +115,4 @@ jobs:
           message: |
            PR Environments: 
            * acend version <https://cilium-basics-pr-${{ github.event.pull_request.number }}.training.acend.ch>
-           * puzzle version <https://cilium-basics-training-pr-${{ github.event.pull_request.number }}.k8s.puzzle.ch>
            * techlab version <https://cilium-techlab-pr-${{ github.event.pull_request.number }}.training.acend.ch>

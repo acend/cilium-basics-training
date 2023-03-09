@@ -6,43 +6,25 @@ acendTraining:
   deployments:
     - 
       name: acend
-      replicaCount: 1
+      replicaCount: 2
       image:
         repository: quay.io/acend/cilium-basics-training
         pullPolicy: Always
         tag: ""
         tagsuffix: ""
       ingress:
-        annotations: 
-          kubernetes.io/ingress.class: nginx-public
         secretOverride: acend-wildcard
         appname: cilium-basics
         domain: training.acend.ch
     - 
-      name: puzzle
-      replicaCount: 1
-      image:
-        repository: quay.io/acend/cilium-basics-training
-        pullPolicy: Always
-        tag: ""
-        tagsuffix: "-puzzle"
-      ingress:
-        annotations: 
-          kubernetes.io/ingress.class: nginx-public
-        useDefaultSecret: true
-        appname: cilium-basics-training
-        domain: k8s.puzzle.ch
-    - 
       name: techlab
-      replicaCount: 1
+      replicaCount: 2
       image:
         repository: quay.io/acend/cilium-basics-training
         pullPolicy: Always
         tag: ""
         tagsuffix: "-techlab"
       ingress:
-        annotations: 
-          kubernetes.io/ingress.class: nginx-public
         secretOverride: acend-wildcard
         appname: cilium-techlab
         domain: training.acend.ch
