@@ -30,7 +30,7 @@ RUN wkhtmltopdf --enable-internal-links --enable-local-file-access \
     --dpi 600 \
     /pdf/index.html /pdf.pdf
 
-FROM nginxinc/nginx-unprivileged:1.24-alpine
+FROM nginxinc/nginx-unprivileged:1.25-alpine
 
 LABEL maintainer acend.ch
 LABEL org.opencontainers.image.title "acend.ch's Cilium Basics Training"
