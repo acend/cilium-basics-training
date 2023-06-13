@@ -80,7 +80,7 @@ Let us cat tracepipe first in a second terminal (webshell: don't forget to conne
 sudo cat /sys/kernel/debug/tracing/trace_pipe
 ```
 
-and in the first terminal execute our eBFP app:
+and in the first terminal execute our eBPF app:
 
 ```bash
 sudo ./helloworld
