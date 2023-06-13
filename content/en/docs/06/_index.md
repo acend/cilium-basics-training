@@ -15,7 +15,7 @@ If you are not yet familiar with Kubernetes Network Policies we suggest going to
 
 ## {{% task %}} Cilium Endpoints and Identities
 
-Each Pod from our simple application is represented in Cilium as an [Endpoint](https://docs.cilium.io/en/stable/concepts/terminology/#endpoint). We can use the `cilium` tool inside a Cilium Pod to list them.
+Each Pod from our simple application is represented in Cilium as an [Endpoint](https://docs.cilium.io/en/stable/gettingstarted/terminology/#endpoint). We can use the `cilium` tool inside a Cilium Pod to list them.
 
 First get all Cilium pods with:
 

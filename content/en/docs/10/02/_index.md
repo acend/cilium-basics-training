@@ -1,5 +1,5 @@
 ---
-title: "Kubernetes Without kube-proxy"
+title: "Kubernetes without kube-proxy"
 weight: 102
 OnlyWhenNot: techlab
 ---

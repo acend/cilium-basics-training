@@ -74,18 +74,18 @@ go build helloworld.go bpf_bpfel.go
 exit #exit container
 ```
 
-We run our app in the background, cat tracepipe in the background and see if we get a hello world for every command:
+Let us cat tracepipe first in a second terminal (webshell: don't forget to connect to the vm first):
 
 ```bash
-sudo cat /sys/kernel/debug/tracing/trace_pipe &
-sudo ./helloworld &
-ls #example command
+sudo cat /sys/kernel/debug/tracing/trace_pipe
+```
+
+and in the first terminal execute our eBPF app:
+
+```bash
+sudo ./helloworld
 ```
 
 Now we can see, that for each programm called in linux, our code is executed and writes "Hello world" to trace_pipe.
 
-Close now the running apps in the background
-
-```bash
-sudo kill $(jobs -p)
-```
+Close now apps by hitting Ctrl+c, you can also close the second terminal.

@@ -112,7 +112,7 @@ hubble status
 To start Hubble UI execute
 
 ```bash
-kubectl port-forward -n kube-system --address 0.0.0.0 svc/hubble-ui 12000:80
+kubectl port-forward -n kube-system --address 0.0.0.0 svc/hubble-ui 12000:80 &
 ```
 
 In our Webshell environment you can use the public IP of the VM to access Hubble. A simple way is to execute
@@ -148,7 +148,7 @@ Hubble flows are displayed in real-time at the bottom, with a visualization of t
 Let's run a connectivity test again and see what happens in Hubble UI in the `cilium-test` namespace. In the Hubble UI dropdown change to `cilium-test`. Since this test runs for a few minutes this could be a good time to grab a :coffee:.
 
 ```bash
-cilium connectivity test
+cilium connectivity test --test 'client-egress-to-echo-service-account' --test to-entities-world --test to-fqdns
 ```
 
 We can see that Hubble UI is not only capable of displaying flows within a Namespace, it also helps visualize flows going in or out of it.

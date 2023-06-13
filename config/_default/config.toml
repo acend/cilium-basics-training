@@ -80,7 +80,7 @@ hubbleVersion = "0.11.1"
 
 [params.ciliumVersion]
 preUpgrade = "1.11.7"
-postUpgrade = "1.12.5"
+postUpgrade = "1.12.10"
 cli = "0.12.12"
 enterprise = "1.12.7"
 

@@ -53,7 +53,7 @@ As a workaround, we can test the service from inside Kubernetes.
 
 ```bash
 SERVICE_IP=$(kubectl get svc cilium-ingress-backend -ojsonpath={.spec.clusterIP})
-kubectl run --rm=true -it --restart=Never --image=curlimages/curl -- curl http://${SERVICE_IP}/public
+kubectl run --rm=true -it --restart=Never --image=curlimages/curl -- curl --connect-timeout 5 http://${SERVICE_IP}/public
 ```
 
 You should get the following output:
@@ -119,7 +119,7 @@ Test it by running `curl` a few times -- different backends should respond:
 
 ```bash
 for i in {1..10}; do
-  kubectl run --rm=true -it --image=curlimages/curl --restart=Never curl -- curl  http://backend:8080/private
+  kubectl run --rm=true -it --image=curlimages/curl --restart=Never curl -- curl --connect-timeout 5 http://backend:8080/private
 done
 ```
 
