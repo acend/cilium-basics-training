@@ -112,7 +112,7 @@ i=0; while [ $i -le 300 ]; do kubectl exec -ti ${FRONTEND} -- curl -Is backend:8
 
 In a second terminal access Grafana with kubectl proxy-forward (for those in the webshell: don't forget to connect to the VM first)
 ```bash
-kubectl -n cilium-monitoring port-forward service/grafana --address ::,0.0.0.0 --address :: 3000:3000 &
+kubectl -n cilium-monitoring port-forward service/grafana --address ::,0.0.0.0 3000:3000 &
 echo "http://$(curl -s ifconfig.me):3000/dashboards"
 ```
 
