@@ -95,7 +95,7 @@ helm upgrade -i cilium cilium/cilium --version {{% param "ciliumVersion.postUpgr
   --set l7Proxy=false \
   --set encryption.enabled=true \
   --set encryption.type=wireguard \
-  --set enryption.wireguard.userspaceFallback=true \
+  --set encryption.wireguard.userspaceFallback=true \
   --wait
 ```
 
