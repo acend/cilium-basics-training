@@ -10,6 +10,6 @@ require (
 	github.com/google/docsy v0.6.0 // indirect
 	github.com/google/docsy/dependencies v0.6.0 // indirect
 	github.com/puzzle/docsy-puzzle v0.0.0-20230123144731-757054047a02 // indirect
-	golang.org/x/exp v0.0.0-20230224173230-c95f2b4c22f2 // indirect
+	golang.org/x/exp v0.0.0-20240325151524-a685a6edb6d8 // indirect
 	golang.org/x/sys v0.14.0 // indirect
 )
