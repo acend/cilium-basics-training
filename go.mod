@@ -12,6 +12,6 @@ require (
 	github.com/google/docsy/dependencies v0.7.2 // indirect
 	github.com/puzzle/docsy-puzzle v0.0.0-20230123144731-757054047a02 // indirect
 	github.com/twbs/bootstrap v5.3.3+incompatible // indirect
-	golang.org/x/exp v0.0.0-20240325151524-a685a6edb6d8 // indirect
+	golang.org/x/exp v0.0.0-20240416160154-fe59bbe5cc7f // indirect
 	golang.org/x/sys v0.14.0 // indirect
 )
