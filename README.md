@@ -38,6 +38,13 @@ Run the following command to update all hugo modules with their newest upstream 
 hugo mod get -u
 ```
 
+Command without hugo installation:
+
+```bash
+export HUGO_VERSION=$(grep "FROM docker.io/floryn90/hugo" Dockerfile | sed 's/FROM docker.io\/floryn90\/hugo://g' | sed 's/ AS builder//g')
+docker run --rm --interactive -v $(pwd):/src docker.io/floryn90/hugo:${HUGO_VERSION} mod get -u
+```
+
 
 ### Shortcode usage
 
@@ -83,15 +90,15 @@ To develop locally we don't want to rebuild the entire container image every tim
 We simply mount the working directory into a running container, where hugo is started in the server mode.
 
 ```bash
-export HUGO_VERSION=$(grep "FROM klakegg/hugo" Dockerfile | sed 's/FROM klakegg\/hugo://g' | sed 's/ AS builder//g')
-docker run --rm --interactive --publish 8080:8080 -v $(pwd):/src klakegg/hugo:${HUGO_VERSION} server -p 8080 --bind 0.0.0.0 --enableGitInfo=false
+export HUGO_VERSION=$(grep "FROM floryn90/hugo" Dockerfile | sed 's/FROM floryn90\/hugo://g' | sed 's/ AS builder//g')
+docker run --rm --interactive --publish 8080:8080 -v $(pwd):/src floryn90/hugo:${HUGO_VERSION} server -p 8080 --bind 0.0.0.0 --enableGitInfo=false
 ```
 
 use the following command to set techlab as the hugo environment
 
 ```bash
-export HUGO_VERSION=$(grep "FROM klakegg/hugo" Dockerfile | sed 's/FROM klakegg\/hugo://g' | sed 's/ AS builder//g')
-docker run --rm --interactive --publish 8080:8080 -v $(pwd):/src klakegg/hugo:${HUGO_VERSION} server --environment=techlab -p 8080 --bind 0.0.0.0 --enableGitInfo=false
+export HUGO_VERSION=$(grep "FROM floryn90/hugo" Dockerfile | sed 's/FROM floryn90\/hugo://g' | sed 's/ AS builder//g')
+docker run --rm --interactive --publish 8080:8080 -v $(pwd):/src floryn90/hugo:${HUGO_VERSION} server --environment=techlab -p 8080 --bind 0.0.0.0 --enableGitInfo=false
 ```
 
 
@@ -110,8 +117,8 @@ npm run mdlint
 Npm not installed? no problem
 
 ```bash
-export HUGO_VERSION=$(grep "FROM klakegg/hugo" Dockerfile | sed 's/FROM klakegg\/hugo://g' | sed 's/ AS builder//g')
-docker run --rm --interactive -v $(pwd):/src klakegg/hugo:${HUGO_VERSION}-ci /bin/bash -c "set -euo pipefail;npm install; npm run mdlint;"
+export HUGO_VERSION=$(grep "FROM floryn90/hugo" Dockerfile | sed 's/FROM floryn90\/hugo://g' | sed 's/ AS builder//g')
+docker run --rm --interactive -v $(pwd):/src klfloryn90akegg/hugo:${HUGO_VERSION}-ci /bin/bash -c "set -euo pipefail;npm install; npm run mdlint;"
 ```
 
 

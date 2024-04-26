@@ -5,11 +5,13 @@ go 1.19
 require github.com/cilium/ebpf v0.12.0
 
 require (
-	github.com/acend/docsy-acend v0.0.0-20230301101952-9253f0a31c68 // indirect
-	github.com/acend/docsy-plus v0.0.0-20230303095323-1af8d88aadc7 // indirect
-	github.com/google/docsy v0.6.0 // indirect
-	github.com/google/docsy/dependencies v0.6.0 // indirect
+	github.com/FortAwesome/Font-Awesome v0.0.0-20240108205627-a1232e345536 // indirect
+	github.com/acend/docsy-acend v1.0.0 // indirect
+	github.com/acend/docsy-plus v1.1.0 // indirect
+	github.com/google/docsy v0.9.1 // indirect
+	github.com/google/docsy/dependencies v0.7.2 // indirect
 	github.com/puzzle/docsy-puzzle v0.0.0-20230123144731-757054047a02 // indirect
+	github.com/twbs/bootstrap v5.3.3+incompatible // indirect
 	golang.org/x/exp v0.0.0-20240325151524-a685a6edb6d8 // indirect
 	golang.org/x/sys v0.14.0 // indirect
 )
