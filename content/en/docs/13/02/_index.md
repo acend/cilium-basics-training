@@ -29,7 +29,7 @@ Edit the Policy Name to `backend-allow-ingress-frontend` and also add `app=backe
 
 Afterwards download the CiliumNetworkPolicy which should look like:
 
-{{< readfile file="/content/en/docs/12/02/backend-allow-ingress-frontend.yaml" code="true" lang="yaml" >}}
+{{< readfile file="/content/en/docs/13/02/backend-allow-ingress-frontend.yaml" code="true" lang="yaml" >}}
 
 
 ## {{% task %}} Apply Network Policy
