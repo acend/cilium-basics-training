@@ -75,7 +75,7 @@ jobs:
             ghcr.io/acend/cilium-basics-training:pr-${{ github.event.pull_request.number }}-techlab
       -
         name: 'Install Helm'
-        uses: azure/setup-helm@v3
+        uses: azure/setup-helm@v4
         with:
           version: v3.6.2
       -
