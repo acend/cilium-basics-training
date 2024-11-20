@@ -1,8 +1,10 @@
 module github.com/acend/cilium-basics-training
 
-go 1.19
+go 1.21
 
-require github.com/cilium/ebpf v0.12.0
+toolchain go1.23.3
+
+require github.com/cilium/ebpf v0.16.0
 
 require (
 	github.com/FortAwesome/Font-Awesome v0.0.0-20240716171331-37eff7fa00de // indirect
