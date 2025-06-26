@@ -1,8 +1,10 @@
 module github.com/acend/cilium-basics-training
 
-go 1.19
+go 1.23.0
 
-require github.com/cilium/ebpf v0.12.0
+toolchain go1.24.4
+
+require github.com/cilium/ebpf v0.19.0
 
 require (
 	github.com/FortAwesome/Font-Awesome v0.0.0-20240716171331-37eff7fa00de // indirect
@@ -13,5 +15,5 @@ require (
 	github.com/puzzle/docsy-puzzle v0.0.0-20230123144731-757054047a02 // indirect
 	github.com/twbs/bootstrap v5.3.3+incompatible // indirect
 	golang.org/x/exp v0.0.0-20240325151524-a685a6edb6d8 // indirect
-	golang.org/x/sys v0.27.0 // indirect
+	golang.org/x/sys v0.31.0 // indirect
 )
